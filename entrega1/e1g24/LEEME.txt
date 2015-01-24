@@ -1,0 +1,15 @@
+CI3725 - Etapa 1 - Análisis Lexicográfico
+Integrantes:
+Fabio, Castro, 10-10132
+Antonio, Scaramazza 11-10957
+
+Para la realización de este proyecto se decidió hacer uso del lenguaje Python por
+la familiaridad de los integrantes del grupo con el mismo. Asi pues, debido a las facilidades
+que presenta Python en el manejo de listas, al realizar el analisis de un archivo, el lexer
+almacena cada nuevo token encontrado en un lista y en caso de encontrar errores en otra lista por separado.
+Al momento de imprimir los resultados se verifica si se encontro algun error, si no es el caso se imprimen los
+tokes, en caso contrario se imprimen los errores.
+
+Actualmente el lenguaje solo posee implementado su lexer correspondiente, por lo que no es capaz de realizar
+ninguna operacion ni determinar si las instrucciones poseen sentido. Solo reconoce que se esten usando los tokens
+permitidos y no existan caracteres inesperados.

@@ -1,0 +1,19 @@
+Daniel Rodriguez
+07-41475
+
+Primera Entrega: Lexer
+
+Para la creación del Lexer primero se creo un hash con las palabras reservadas del lenguaje,
+luego se creo una lista con los Tokens que deberian ser reconocidos,
+
+Una vez obtenidos los tokens se inicializaron sus tipos con sus respectivas formas cuidando
+que las palabras reservadas se respetaran para los identificadores
+
+Finalmente se hizo una funcion que se encargaba de hacer el análisis lexicográfico del programa.
+En caso de error imprime los errores y donde se encuentran, y en caso contrario muestra toda la
+lista de tokens, sus tipos, valores y posiciones
+
+No se hicieron pruebas exahustivas, sino se usaron los casos de prueba proporcionados en la página
+http://ldc.usb.ve/~09-10285/
+
+Con estos casos, el lexer reconoce los tokens y marca lo errores correctamente

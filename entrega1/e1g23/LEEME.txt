@@ -1,0 +1,41 @@
+Traductores e Intrepetadores
+Primera Entrega: Lexer
+
+Integrantes: Jean Piero Hernández 11-10457
+			 Yerson Roa Rubio     11-10876
+
+- Decisiones de Implementación:
+	Se decidio utilizar el lenguaje de python ya que posee una sintaxis simple,
+clara y sencilla. Además, es un lenguaje que hemos estado utilizando en todas las
+materias de este trimestre, por lo tanto nos ayuda a programar más rapido debido
+a la legibilidad y el conjunto de herramientas que posee.
+    Se utiliza la libreria PLY para generar el analizador sintactico. Definimos
+las directivas del analizador mediante expresiones regulares y especificamos la
+precedencia de reconocimiento de ciertos operadores creando funciones especificas
+para cada operador que se deseara darle mayor precedencia.
+    Se utiliza un contador de columnas para solventar el problema que conlleva
+el hecho de que PLY solo cuente el numero de linea y la posicion del caracter
+leido respecto al inicio del archivo.
+    Para la definicion de tokens, se dividen en palabras reservadas del sistema
+y cosas que no son palabras reservadas, esto facilita la distincion posterior
+entre variables y palabras reservadas, debido a que ambas son reconocidas como ID.
+    Para el manejo de mensajes, se clasifican por separado errores y mensajes 
+regulares y se retorna la lista correspondiente.
+    
+
+- Estado actual del proyecto:
+	En estos momentos el lenguaje reconoce los identificadores de cada variable, 
+los valores constantes permitidos por el lenguaje Setlan, como números enteros 
+y cadenas de caracteres (Estas encerradas entre comillas dobles); las 
+constantes booleanas y por último los símbolos utilizados para especificar valores,
+operadores, separadores y bloques. Además, reconoce los errores de caracteres como
+en los símbolos $, &, ~ y demas caracteres no definidos en el lenguaje.
+
+- Problemas Presentes:
+	Ninguno.
+
+- Comentarios Adicionales:
+	Se diseño una suite de pruebas con 16 casos de prueba que toman en cuenta todos
+los posibles estilos de entradas y salidas en los que el equipo pudo pensar. Esta 
+suite se encuentra en el archivo TestSuite.py y hace uso de los archivos que se
+encuentran en la carpeta Tests.

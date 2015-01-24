@@ -1,0 +1,72 @@
+#!/usr/bin/env python
+# ------------------------------------------------------------
+# trinity
+#
+# Program for lexical analysis of programs in setlan language.
+#
+# Author:
+# Victor De Ponte, 05-38087, <rdbvictor19@gmail.com>
+#
+# Usage:
+#
+#     $ ./setlan program.stl
+#
+# where program.stl is a file containing the program to be
+# analyzed.
+# ------------------------------------------------------------
+import sys
+
+import ply.lex as lex
+
+from lang import lexical_specs
+
+SUCCESS = 0
+ERR_BAD_USAGE = 1
+ERR_BAD_FILENAME = 2
+ERR_IO_ERROR = 3
+ERR_LEXICOGRAPHICAL_ERROR = 4
+#ERR_SYNTAX_ERROR = 5
+#ERR_SCOPE_ERROR = 6
+#ERR_TYPE_ERROR = 7
+#ERR_ZERO_DIVISION = 8
+
+USAGE = ' Usage:\n\n\t$ ./setlan program.stl\n\n where "program.stl" is a file containing the program to be analyzed.'
+
+def lexInput():
+    matched_tokens = []
+    for token in iter(lexer.token, None):
+        matched_tokens.append(token)
+    if hasattr(lexer, 'errors'):
+        for error in lexer.errors:
+            print error
+        exit(ERR_LEXICOGRAPHICAL_ERROR)
+    else :
+        for token in matched_tokens:
+            print "token %s\t value (%s) at line %d, column %d" % (
+                token.type,
+                str(token.value),
+                token.lineno,
+                token.colno
+                )
+        exit(SUCCESS)
+
+if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        filename = sys.argv[1]
+    else:
+        print USAGE
+        exit(ERR_BAD_USAGE)
+    try :
+        file = open(filename, 'r')
+    except IOError as e:
+        print "setlan: IOError: %s" % str(e)
+        exit(ERR_BAD_FILENAME)
+    try:
+        inputString = file.read()
+    except IOError as e:
+        print "setlan: IOError: %s" % str(e)
+        exit(ERR_IO_ERROR)
+
+    lexer = lex.lex(module=lexical_specs)
+    lexer.input(inputString)
+    lexInput()

@@ -1,0 +1,16 @@
+Autor: Jose Daniel Duran Toro
+Carnet: 10-10222
+
+Se uso python con PLY.
+Los string se imprimen tal como estan en el archivo sin modificar.
+El estado del proyecto es completo, no se presentaron problemas
+pero, es de comentar, que hay varias lineas comentadas, eso es
+porque al principio inicie el proyecto con solo expreciones regulares
+pero luego descubri en la documentacion de PLY que podia poner palabras
+reservadas, y no quisiera borrar las ERs, si es un problema se pueden borrar,
+no afectan al codigo.
+Como edite en windows no se si quite todo bien, quite los retornos que pone windows en
+las nuevas lineas pero no estoy seguro si funciona, los que tienen Win al final del nombre son
+sin modificar para que tambien los tengan cualquier cosa, tampoco se si lo quieren con o sin 
+extencion .py asi que envio ambos tambien
+No se que es el numero de entrega, asi que puse 01

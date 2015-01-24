@@ -1,0 +1,167 @@
+#!/usr/bin/env python
+# -*- coding: UTF8 -*-
+# ------------------------------------------------------------
+# Setlan
+#
+# Intérprete del lenguaje Setlan
+# Parte 1, Análisis Lexicográfico
+# CI-3725
+# 20/01/2015
+#
+# Gustavo Siñovsky 09-11207
+# Luiscarlo Rivera 09-11020
+# ------------------------------------------------------------
+
+import ply.lex as lex
+import sys
+
+lex_error = False
+
+# Palabras reservadas
+reserved = {
+    'program' : 'PROGRAM',
+    'using' : 'USING',
+    'in' : 'IN',
+    'scan' : 'SCAN',
+    'print' : 'PRINT',
+    'println' : 'PRINTLN',
+    'int' : 'INT',
+    'bool' : 'BOOL',
+    'and' : 'AND',
+    'not' : 'NOT',
+    'or' : 'OR',
+    'set' : 'SET',
+    'true' : 'TRUE',
+    'false' : 'FALSE',
+    'if' : 'IF',
+    'then' : 'THEN',
+    'else' : 'ELSE',
+    'min' : 'MIN',
+    'max' : 'MAX',
+    'do' : 'DO',
+    'while' : 'WHILE',
+    'repeat' : 'REPEAT',
+    'return' : 'RETURN',
+}
+
+# Lista de nombre de tokens
+tokens = [
+    'ID',
+    'ASSIGN',
+    'PLUS', 'TIMES', 'MINUS', 'DIV', 'MOD',
+    'GREATERTHAN', 'LESSTHAN', 'LESS', 'GREATER', 'EQUAL',
+    'LPAR', 'RPAR',
+    'LCURLYBRACKET', 'RCURLYBRACKET',
+    'COMMA',
+    'SEMICOLON',
+    'COLON',
+    'UNION', 'DIFFERENCE', 'INTERSECTION',
+    'SETPLUS', 'SETTIMES', 'SETMINUS', 'SETDIV', 'SETMOD',
+    'MAXVALUE', 'MINVALUE', 'SIZE',
+    'CONTAINS',
+    'STRING', 'NUM'
+]+ list(reserved.values())
+
+
+# Expresiones regulares que definen los tokens
+t_ASSIGN = r'\='
+t_PLUS = r'\+'
+t_TIMES = r'\*'
+t_MINUS = r'\-'
+t_DIV = r'/'
+t_MOD = r'\%'
+t_GREATERTHAN = r'\>='
+t_LESSTHAN = r'\<='
+t_LESS = r'\<'
+t_GREATER = r'\>'
+t_EQUAL = r'\=='
+t_LPAR = r'\('
+t_RPAR = r'\)'
+t_LCURLYBRACKET = r'{'
+t_RCURLYBRACKET = r'}'
+t_COMMA = r'\,'
+t_SEMICOLON = r'\;'
+t_COLON = r':'
+t_UNION = r'\+\+'
+t_DIFFERENCE = r'\\'
+t_INTERSECTION = r'\>\<'
+t_SETPLUS = r'\<\+\>'
+t_SETMINUS = r'\<\-\>'
+t_SETDIV = r'\</\>'
+t_SETMOD = r'\<\%\>'
+t_MAXVALUE = r'\>\?'
+t_MINVALUE = r'\<\?'
+t_SIZE = r'\$\?'
+t_CONTAINS = r'@'
+
+
+# Identificadores
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value,'ID') # Chequeo para palabras reservadas
+    return t
+
+# Strings
+def t_STRING(t):
+    r'"([^\\"\n]|\\["n\\])*"'
+    str = t.value[1:-1]
+    return t
+
+# Números
+def t_NUM(num):
+    r'\d+(?![a-zA-Z_])'
+    num.value = int(num.value)
+    return num
+
+# Manejador de comentarios
+def t_COMMENT(t):
+    r'\#.*'
+    pass
+
+# Numero de líneas
+def t_line(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+# Manejador de errores
+def t_error(t):
+    global lex_error
+    print 'Error: Se encontró un caracter inesperado "%s" en la Línea %d, Columna %d. ' %( t.value[0],t.lineno,find_column(ent,t))
+    t.lexer.skip(1)
+    lex_error = True
+
+# Manejador de columnas
+def find_column(input,token):
+    last_cr = input.rfind('\n',0,token.lexpos)
+    if last_cr < 0:
+        last_cr = 0
+    column = (token.lexpos - last_cr)
+    return column    
+
+# Caracter a ignorar
+t_ignore = ' \t'
+
+# Declaración del Lexer
+lexer = lex.lex()    
+
+# Verificación de entrada
+if (len(sys.argv) != 2):
+    print 'Usage: ./setlan [filename]' 
+else:
+    try:
+        with open(sys.argv[1],"r") as f:
+            ent = f.read()
+            lexer.input(ent)
+            tokens = []
+            # Consume tokens mientra no haya error
+            while True:
+                tok = lexer.token()
+                if not tok: break
+                tokens.append(tok)
+            if not lex_error:
+                # Muestra por pantalla cada token consumido
+                for tok in tokens:
+                    print 'token %-20s' % tok.type, 'value (%s) at line %d, column %d' % (str(tok.value), tok.lineno,find_column(ent,tok))
+    #Si ocurre un error, se imprime en pantalla.
+    except IOError:
+        print 'Not a valid filename.'

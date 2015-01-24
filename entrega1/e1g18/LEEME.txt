@@ -1,0 +1,23 @@
+									#___________EQUIPO 18___________#
+									#								#
+									#  Emmanuel De Aguiar  10-10179 #	
+									#  Daniel Pelayo	   10-10539 #
+									#								#
+									#		 SetLan-Entrega 1       #
+									#_______________________________#
+
+- Decisiones de implementacion
+	Para el implemento de este interpretador y traductor se decidio usar el lenguaje Python por
+	el dominio que tenemos con este lenguaje
+- Estado actual del proyecto
+	El proyecto actualmente se encuentra en la primera fase (LEXER), fase en la cual se encargara en encontrar
+	todos los tokens respectivos del lenguaje SetLan
+- Problemas presentes
+	Actualmete no nos encontramos con ningun problema sin embargo es de nuestro interes, como luego podremos
+	expresar y que ejecuten lo que se quiera en las secuencias de escape que pueden existir dentro de los strings
+- Cualquier comentario respecto al proyecto que consideren necesario
+	Es necesario comentar que los simbolos como el punto o los dos puntos no fueron tomados en cuenta porque en
+	el enunciado nunca se les usa en un tipo de datos o estructura ni se les hace mencion. Esto nos parecio raro
+	que el lenguaje no tuviera estos simbolos. Tambien entendimos por la especificacion del lenguaje, que
+	SetLan solo aceptara valores enteros(positivos y negativos), pero no flotantes, por eso la definicion del TokenNumero es simplemente cualquier valor entero que se localice.
+________________________________________________________________________________________________________________

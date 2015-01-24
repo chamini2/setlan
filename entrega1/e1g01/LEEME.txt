@@ -1,0 +1,25 @@
+SETLAN
+=================================================================================
+
+
+Desarrollado por:
+Gustavo Siñovsky 09-11207
+Luiscarlo Rivera 09-11020
+=================================================================================
+
+Setlan es un lenguaje creado en la Universidad Simón Bolívar para el curso CI3725
+ - Traductores e Interpretadores
+=================================================================================
+
+Decisiones de implementación:
+Python 2.7: Lenguaje usado.
+PLY 3.5 : Analizador Lexer y Parser.
+=================================================================================
+
+Estado actual del proyecto:
+
+-(23/01/2015) Reconocedor lexicográfico de los tokens que deben ser aceptados.
+=================================================================================
+
+Problemas presentes:
+Ninguno

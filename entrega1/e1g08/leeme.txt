@@ -1,0 +1,15 @@
+# Lenguaje de programacion para el proyecto: Ruby
+# Etapa del proyecto: Lexer
+# Autores: Jose Peña 11-10775 y Amin Arria 
+
+# Decisiones de Implementacion: Para el lexer decidimos reconocer las distintas palabras
+	a traves de las expresiones regulares, debido a que por cuestiones de tiempo y 
+	entendimiento no decidimos hacerlo a traves de estados-automatas. En General tenemos
+	un case con las distintos casos de expresiones regulares y palabras reservadas que 
+	conforman nuestro proyecto, cada caso genera un token. Por ultimo cabe destacar, que
+	se lleva un contador de las lineas que se leen y de las columnas, las columnas son 
+	contadas por el tamaño de las palabras encontradas y el salto de linea por los \n
+	conseguidos
+
+# Estado del proyecto: Perfecto estado ( opiniones personales )
+# Problemas presentes: Ninguno, hasta ahora

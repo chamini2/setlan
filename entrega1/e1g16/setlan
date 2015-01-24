@@ -1,0 +1,272 @@
+#! /usr/bin/env python
+
+import re
+import os
+import sys
+from   clases import*
+import ply.lex as lex
+import ply.yacc as yacc
+ 
+# Proyecto 1.
+# Tradutores
+# Grupo 16
+# Betzabeh Gonzalez Canonico: 08-10462
+# Andel Nunez 08-10804
+ 
+         #Setlan
+
+#Palabras reservadas del lenguaje
+reservadas = {
+
+    #Inicio de Programa
+    'program' :'TokenProgram',
+
+    #Entrada y salida de datos
+    'scan'    :'TokenScan',
+	'print'   :'TokenPrint',
+    'println' :'TokenPrintln',
+
+    #Bloques
+    'using'   :'TokenUsing',
+    'in'      :'TokenIn',
+
+    #Instrucciones condicionales
+    'if'      :'TokenIf',
+    'else'    :'TokenElse',
+
+    #Iteracion determinada
+    'for'     :'TokenFor',
+	'do'      :'TokenDo',
+
+    #Iteracion indeterminada
+    'while'   :'TokenWhile',
+    'repeat'  :'TokenRepeat',
+
+    #Tipos de datos
+       #Enteros
+    'int'     :'TokenInt',
+       #Booleanos
+    'bool'    :'TokenBool',
+       #Conjuntos
+    'set'     :'TokenSet',
+    'min'     :'TokenMin',
+    'max'     :'TokenMax',
+        
+    #Operadores con booleanos
+    'true'    :'TokenTrue',
+    'false'   :'TokenFalse',
+    'and'     :'TokenAnd',
+    'or'      :'TokenOr',
+    'not'     :'TokenNot',
+
+    }
+
+#################################
+#       Lista de Tokens         #
+#################################
+
+tokens = [
+	
+    #Identificador de Variables
+    'TokenIdent',
+
+   	#Tipos
+	'TokenNum',
+
+    #Operadores aritmeticos 
+	'TokenMult',
+    'TokenDivision',
+	'TokenResto',
+	'TokenSuma',
+	'TokenResta',
+	'TokenNegEnteros',
+
+    #Operadores de Conjuntos
+	'TokenUnion',
+	'TokenDiferencia',
+	'TokenInterseccion',
+	'TokenSumaCjto',
+    'TokenRestaCjto',
+    'TokenMultCjto',
+    'TokenDivisionCjto',
+    'TokenRestoCjto',
+
+    #Operadores logicos
+    'TokenContenCjto', 
+	'TokenIgual',
+    'TokenDesigual',
+	'TokenMenor',
+	'TokenMenorIgual',
+	'TokenMayor',
+	'TokenMayorIgual',
+
+	#Separador de instrucciones
+    'TokenDosPuntos',	
+    'TokenPuntoYComa',
+	'TokenParAbre',
+	'TokenParCierra',
+	'TokenComa',
+	'TokenAsignacion',
+    'TokenLlaveAbre',
+  	'TokenLlaveCier',
+
+	#Comentarios 
+    'TokenComentarios',
+    'TokenString'
+
+] + list(reservadas.values())
+
+#######################################
+#   Expresiones Regulares Simples     #
+#######################################
+
+#Separador de instrucciones
+t_TokenDosPuntos    = r'\:'
+t_TokenPuntoYComa   = r'\;'
+t_TokenParAbre      = r'\('
+t_TokenParCierra    = r'\)'
+t_TokenComa         = r'\,'
+t_TokenAsignacion   = r'\='
+t_TokenLlaveAbre    = r'\{'
+t_TokenLlaveCier  = r'\}'
+
+#Operadores de Conjuntos
+t_TokenUnion        = r'\+\+'
+t_TokenDiferencia   = r'\\'
+t_TokenInterseccion = r'\>\<'
+t_TokenSumaCjto     = r'\<\+\>'
+t_TokenRestaCjto    = r'\<\-\>'
+t_TokenMultCjto     = r'\<\*\>'
+t_TokenDivisionCjto = r'\<\/\>'
+t_TokenRestoCjto    = r'\<\%\>'
+
+#Operadores con enteros
+t_TokenMult         = r'\*'
+t_TokenDivision     = r'\/'
+t_TokenResto        = r'\%'
+t_TokenSuma         = r'\+'
+t_TokenResta        = r'\-'
+#t_TokenNegEnteros  = r'\-'
+
+#Operadores logicos
+t_TokenIgual      = r'\=\='
+t_TokenDesigual   = r'\/\='
+t_TokenMenor      = r'\<'
+t_TokenMayor      = r'\>'
+t_TokenMenorIgual = r'\<\='
+t_TokenMayorIgual = r'\>\='
+t_TokenContenCjto = r'\@'
+
+
+##############################
+#       Identificadores      #
+##############################
+
+# Identificador de variables
+def t_TokenIdent(t):
+    r'[a-zA-Z][\w]*'
+    t.type = reservadas.get(t.value,'TokenIdent')
+    return t
+
+# Identificador literales numericos
+def t_TokenNum(t):
+    r'([-]?(\d+))'
+    return t
+
+# Identificador para los literales
+def t_TokenString(t):
+    r'\"[\w|\W|\s]*\"'
+    return t
+
+# Comentarios
+def t_TokenComentarios(t):
+	r'\#[\w|\W|\S]*\n'
+	t.lexer.lineno += t.value.count('\n')
+
+# Numeros de lineas
+def t_TokenLinea(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+    
+# Errores
+def t_error(t):	
+    t.value= "Error: Se encontro caracter inesperado \"%s\" %s %d %s %d " %( t.value[0],"en linea",t.lineno,", columna ",t.lexpos+1)
+    t.lexer.skip(1)
+    return t
+
+# Ignora espacios en blanco	
+t_ignore = r' '
+
+# Comprueba si se introdujeron los parametros correctamente
+if len(sys.argv)!=2:
+    print "Los argumentos introducidos son incorrectos."
+    exit(1)
+
+# Abrir archivo y comprueba si existe tal archivo
+try:
+   if re.match("[\w|\W]*[.]stl",sys.argv[1]):
+      archivo = open(sys.argv[1],'r')
+   else:
+      exit(1)
+except:
+   print "Error archivo "+ sys.argv[1]
+   exit(1)
+
+# Listas que almacena las salidas
+ListaErrores = []
+ListaTokens  = []
+
+# Tokenizer
+# Construccion del Lexer
+lexer = lex.lex()
+linea = archivo.readline()
+lexer.input(linea)
+while True:
+   while True:
+       tok = lexer.token()
+       if not tok: break      # No mas tokens para extraer
+
+       if not tok.type  == "error": #Si no hay errores 
+           
+           #Asociacion de la clase
+           instanciaClase = tok.type
+           obj = eval(instanciaClase)(tok.lineno,tok.lexpos+1,tok.value)
+
+           if tok.type  == "TokenIdent":
+               ListaTokens.append(tok.type+"\tvalue ("+tok.value+")"+ " Linea "+str(tok.lineno)+", Columna "+str(tok.lexpos+1))
+
+           elif tok.type== "TokenNum":	    
+    	         ListaTokens.append((tok.type+"\tvalue ("+tok.value+")"+ " Linea "+str(tok.lineno)+", Columna "+str(tok.lexpos+1))) 
+          
+           elif tok.type== "TokenString":
+               ListaTokens.append(tok.type+"\tvalue ("+tok.value+")"+ " Linea "+str(tok.lineno)+", Columna "+str(tok.lexpos+1))
+           
+           elif tok.type== "TokenIn" or tok.type== "TokenDo" or tok.type== "TokenIf":
+               ListaTokens.append(tok.type+"\t\tvalue ("+tok.value+")"+ " Linea "+str(tok.lineno)+", Columna "+str(tok.lexpos+1))
+           
+           else:
+               ListaTokens.append(tok.type +"\tvalue ("+tok.value+")"+" Linea "+str(tok.lineno)+", Columna "+str(tok.lexpos+1))   
+
+       else:
+           ListaErrores.append(tok.value)
+
+   linea = archivo.readline()
+   if not linea: break
+   lexer.input(linea)
+
+#Cierra el archivo
+archivo.close()
+
+#Imprime los tokens
+if len(ListaErrores)==0:
+   i = 0
+   while i<len(ListaTokens):
+      print ListaTokens[i]
+      i = i+1
+#Imprime los errores encotrados
+else: 
+   i=0
+   while i<len(ListaErrores):
+      print ListaErrores[i]
+      i = i+1
+#FIN

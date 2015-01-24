@@ -1,0 +1,12 @@
+# Proyecto 1.
+# Tradutores
+# Grupo 16
+# Betzabeh Gonzalez Canonico: 08-10462
+# Andel Nunez 08-10804
+
+Decisiones de implementacion:
+
+Lenguaje a utilizar: Python
+                     Ejecutar el make
+
+Estado actual del proyecto: parece estar bien.

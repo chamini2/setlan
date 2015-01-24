@@ -1,0 +1,12 @@
+Proyecto 1 --- traductores e interpretadores ci3725
+Grupo 15
+Roberto Romero 10-10642
+
+	El proyecto fue realizado con python, con la ayuda del analizador 
+lexicografico "PLY".
+	Se implementaron listas para guardar los tokens y erores 
+respectivamente para facilitar el trabajo al momento de imprimirlos.
+	Se probo con los dos casos de pruebas presentes en el ejemplo
+y funciona correctamente.
+
+	NOTA: No logre que me reconociera el signo de interrogacion ("?").

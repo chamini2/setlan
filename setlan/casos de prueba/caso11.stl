@@ -1,0 +1,131 @@
+program {
+    using int x; in
+
+    repeat              # primer caso, atípico pero cómodo
+        scan x
+    while (x > 0) do
+        print x
+    ;
+
+    scan x;
+    while (x > 0) do {     # segundo caso, un `while do {...}` típico
+        print x;
+        scan x;
+    };
+
+    scan x;
+    repeat {            # tercer caso, parecido a un `do {...} while` de C
+        print x;
+        scan x;
+    } while (x > 0);
+
+    for i min {7, 5, 8, 3, 9, 6, 4, 2, 1, 0} do {
+        using
+            bool i;         # esconde la variable `i` del for
+        in
+        print i, " ";       # siempre imprime `false`
+        i = false;
+    };
+}
+
+# token PROGRAM       value (program) at line 1, column 1
+# token LCURLY        value ({) at line 1, column 9
+# token USING         value (using) at line 2, column 5
+# token INT           value (int) at line 2, column 11
+# token IDENTIFIER    value (x) at line 2, column 15
+# token SEMICOLON     value (;) at line 2, column 16
+# token IN            value (in) at line 2, column 18
+# token REPEAT        value (repeat) at line 4, column 5
+# token SCAN          value (scan) at line 5, column 9
+# token IDENTIFIER    value (x) at line 5, column 14
+# token WHILE         value (while) at line 6, column 5
+# token LPAREN        value (() at line 6, column 11
+# token IDENTIFIER    value (x) at line 6, column 12
+# token GREATER       value (>) at line 6, column 14
+# token INTEGER       value (0) at line 6, column 16
+# token RPAREN        value ()) at line 6, column 17
+# token DO            value (do) at line 6, column 19
+# token PRINT         value (print) at line 7, column 9
+# token IDENTIFIER    value (x) at line 7, column 15
+# token SEMICOLON     value (;) at line 8, column 5
+# token SCAN          value (scan) at line 10, column 5
+# token IDENTIFIER    value (x) at line 10, column 10
+# token SEMICOLON     value (;) at line 10, column 11
+# token WHILE         value (while) at line 11, column 5
+# token LPAREN        value (() at line 11, column 11
+# token IDENTIFIER    value (x) at line 11, column 12
+# token GREATER       value (>) at line 11, column 14
+# token INTEGER       value (0) at line 11, column 16
+# token RPAREN        value ()) at line 11, column 17
+# token DO            value (do) at line 11, column 19
+# token LCURLY        value ({) at line 11, column 22
+# token PRINT         value (print) at line 12, column 9
+# token IDENTIFIER    value (x) at line 12, column 15
+# token SEMICOLON     value (;) at line 12, column 16
+# token SCAN          value (scan) at line 13, column 9
+# token IDENTIFIER    value (x) at line 13, column 14
+# token SEMICOLON     value (;) at line 13, column 15
+# token RCURLY        value (}) at line 14, column 5
+# token SEMICOLON     value (;) at line 14, column 6
+# token SCAN          value (scan) at line 16, column 5
+# token IDENTIFIER    value (x) at line 16, column 10
+# token SEMICOLON     value (;) at line 16, column 11
+# token REPEAT        value (repeat) at line 17, column 5
+# token LCURLY        value ({) at line 17, column 12
+# token PRINT         value (print) at line 18, column 9
+# token IDENTIFIER    value (x) at line 18, column 15
+# token SEMICOLON     value (;) at line 18, column 16
+# token SCAN          value (scan) at line 19, column 9
+# token IDENTIFIER    value (x) at line 19, column 14
+# token SEMICOLON     value (;) at line 19, column 15
+# token RCURLY        value (}) at line 20, column 5
+# token WHILE         value (while) at line 20, column 7
+# token LPAREN        value (() at line 20, column 13
+# token IDENTIFIER    value (x) at line 20, column 14
+# token GREATER       value (>) at line 20, column 16
+# token INTEGER       value (0) at line 20, column 18
+# token RPAREN        value ()) at line 20, column 19
+# token SEMICOLON     value (;) at line 20, column 20
+# token FOR           value (for) at line 22, column 5
+# token IDENTIFIER    value (i) at line 22, column 9
+# token MIN           value (min) at line 22, column 11
+# token LCURLY        value ({) at line 22, column 15
+# token INTEGER       value (7) at line 22, column 16
+# token COMMA         value (,) at line 22, column 17
+# token INTEGER       value (5) at line 22, column 19
+# token COMMA         value (,) at line 22, column 20
+# token INTEGER       value (8) at line 22, column 22
+# token COMMA         value (,) at line 22, column 23
+# token INTEGER       value (3) at line 22, column 25
+# token COMMA         value (,) at line 22, column 26
+# token INTEGER       value (9) at line 22, column 28
+# token COMMA         value (,) at line 22, column 29
+# token INTEGER       value (6) at line 22, column 31
+# token COMMA         value (,) at line 22, column 32
+# token INTEGER       value (4) at line 22, column 34
+# token COMMA         value (,) at line 22, column 35
+# token INTEGER       value (2) at line 22, column 37
+# token COMMA         value (,) at line 22, column 38
+# token INTEGER       value (1) at line 22, column 40
+# token COMMA         value (,) at line 22, column 41
+# token INTEGER       value (0) at line 22, column 43
+# token RCURLY        value (}) at line 22, column 44
+# token DO            value (do) at line 22, column 46
+# token LCURLY        value ({) at line 22, column 49
+# token USING         value (using) at line 23, column 9
+# token BOOL          value (bool) at line 24, column 13
+# token IDENTIFIER    value (i) at line 24, column 18
+# token SEMICOLON     value (;) at line 24, column 19
+# token IN            value (in) at line 25, column 9
+# token PRINT         value (print) at line 26, column 9
+# token IDENTIFIER    value (i) at line 26, column 15
+# token COMMA         value (,) at line 26, column 16
+# token STRING        value (" ") at line 26, column 18
+# token SEMICOLON     value (;) at line 26, column 21
+# token IDENTIFIER    value (i) at line 27, column 9
+# token ASSIGN        value (=) at line 27, column 11
+# token FALSE         value (false) at line 27, column 13
+# token SEMICOLON     value (;) at line 27, column 18
+# token RCURLY        value (}) at line 28, column 5
+# token SEMICOLON     value (;) at line 28, column 6
+# token RCURLY        value (}) at line 29, column 1

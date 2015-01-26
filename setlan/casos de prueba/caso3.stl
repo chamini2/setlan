@@ -1,0 +1,12 @@
+program {
+
+	println "Hola me llamo Setlan";
+
+}
+
+#token PROGRAM       value (program) at line 1, column 1
+#token LCURLY        value ({) at line 1, column 9
+#token PRINTLN       value (println) at line 3, column 2
+#token STRING        value ("Hola me llamo Setlan") at line 3, column 10
+#token SEMICOLON     value (;) at line 3, column 32
+#token RCURLY        value (}) at line 5, column 1

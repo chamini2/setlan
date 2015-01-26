@@ -1,0 +1,8 @@
+program {
+
+	println "Hola soy un String que no cerraron :(;
+
+}
+
+# ERROR: unexpected character '"' at line 3, column 10
+# ERROR: unexpected character ':' at line 3, column 46

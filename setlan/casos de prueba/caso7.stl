@@ -1,0 +1,96 @@
+program {
+	using
+		int x, y, z;
+		bool a, b, c;
+		set s;
+	in
+		scan x;
+		scan y;
+		scan z;
+		print x* (y + z);
+		a = true
+
+		if a {
+			println "Wingardium Leviosa!\n";
+			b = false;
+		} else {
+			println "Alohomora!\n"
+			b = true;
+		}
+
+		c = not(a and b);
+
+}
+
+# token PROGRAM       value (program) at line 1, column 1
+# token LCURLY        value ({) at line 1, column 9
+# token USING         value (using) at line 2, column 2
+# token INT           value (int) at line 3, column 3
+# token IDENTIFIER    value (x) at line 3, column 7
+# token COMMA         value (,) at line 3, column 8
+# token IDENTIFIER    value (y) at line 3, column 10
+# token COMMA         value (,) at line 3, column 11
+# token IDENTIFIER    value (z) at line 3, column 13
+# token SEMICOLON     value (;) at line 3, column 14
+# token BOOL          value (bool) at line 4, column 3
+# token IDENTIFIER    value (a) at line 4, column 8
+# token COMMA         value (,) at line 4, column 9
+# token IDENTIFIER    value (b) at line 4, column 11
+# token COMMA         value (,) at line 4, column 12
+# token IDENTIFIER    value (c) at line 4, column 14
+# token SEMICOLON     value (;) at line 4, column 15
+# token SET           value (set) at line 5, column 3
+# token IDENTIFIER    value (s) at line 5, column 7
+# token SEMICOLON     value (;) at line 5, column 8
+# token IN            value (in) at line 6, column 2
+# token SCAN          value (scan) at line 7, column 3
+# token IDENTIFIER    value (x) at line 7, column 8
+# token SEMICOLON     value (;) at line 7, column 9
+# token SCAN          value (scan) at line 8, column 3
+# token IDENTIFIER    value (y) at line 8, column 8
+# token SEMICOLON     value (;) at line 8, column 9
+# token SCAN          value (scan) at line 9, column 3
+# token IDENTIFIER    value (z) at line 9, column 8
+# token SEMICOLON     value (;) at line 9, column 9
+# token PRINT         value (print) at line 10, column 3
+# token IDENTIFIER    value (x) at line 10, column 9
+# token TIMES         value (*) at line 10, column 10
+# token LPAREN        value (() at line 10, column 12
+# token IDENTIFIER    value (y) at line 10, column 13
+# token PLUS          value (+) at line 10, column 15
+# token IDENTIFIER    value (z) at line 10, column 17
+# token RPAREN        value ()) at line 10, column 18
+# token SEMICOLON     value (;) at line 10, column 19
+# token IDENTIFIER    value (a) at line 11, column 3
+# token ASSIGN        value (=) at line 11, column 5
+# token TRUE          value (true) at line 11, column 7
+# token IF            value (if) at line 13, column 3
+# token IDENTIFIER    value (a) at line 13, column 6
+# token LCURLY        value ({) at line 13, column 8
+# token PRINTLN       value (println) at line 14, column 4
+# token STRING        value ("Wingardium Leviosa!\n") at line 14, column 12
+# token SEMICOLON     value (;) at line 14, column 35
+# token IDENTIFIER    value (b) at line 15, column 4
+# token ASSIGN        value (=) at line 15, column 6
+# token FALSE         value (false) at line 15, column 8
+# token SEMICOLON     value (;) at line 15, column 13
+# token RCURLY        value (}) at line 16, column 3
+# token ELSE          value (else) at line 16, column 5
+# token LCURLY        value ({) at line 16, column 10
+# token PRINTLN       value (println) at line 17, column 4
+# token STRING        value ("Alohomora!\n") at line 17, column 12
+# token IDENTIFIER    value (b) at line 18, column 4
+# token ASSIGN        value (=) at line 18, column 6
+# token TRUE          value (true) at line 18, column 8
+# token SEMICOLON     value (;) at line 18, column 12
+# token RCURLY        value (}) at line 19, column 3
+# token IDENTIFIER    value (c) at line 21, column 3
+# token ASSIGN        value (=) at line 21, column 5
+# token NOT           value (not) at line 21, column 7
+# token LPAREN        value (() at line 21, column 10
+# token IDENTIFIER    value (a) at line 21, column 11
+# token AND           value (and) at line 21, column 13
+# token IDENTIFIER    value (b) at line 21, column 17
+# token RPAREN        value ()) at line 21, column 18
+# token SEMICOLON     value (;) at line 21, column 19
+# token RCURLY        value (}) at line 23, column 1

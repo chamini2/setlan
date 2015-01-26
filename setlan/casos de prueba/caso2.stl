@@ -1,0 +1,11 @@
+program {
+	using 
+		int identificadorValido_;
+		int identificadorNoValido.;
+	in
+		print identificadorValido;
+		println identificadorNoValido.;
+}
+
+# ERROR: unexpected character '.' at line 4, column 28
+# ERROR: unexpected character '.' at line 7, column 32

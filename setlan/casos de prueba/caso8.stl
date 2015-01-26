@@ -1,0 +1,19 @@
+program {
+	using
+		int pi;
+	in
+	# Debo ignorar esta línea
+	# y esta
+	# y esta
+	# y esta
+	# y esta
+	# y esta
+	# y esta
+	# y esta
+	# esta también
+	# y esta
+		pi =  3.14159265359;
+}
+
+# ERROR: unexpected character '.' at line 15, column 10
+# ERROR: overflow for int '14159265359' at line 15, column 22

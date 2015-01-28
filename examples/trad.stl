@@ -1,0 +1,124 @@
+program {
+  using
+    int  X, Y;
+    set  s, d;
+    bool a, b;
+  in
+
+  s = [1,2,3,4];
+  d = [1,2,3];
+
+  s = s * d; # intersección # [1,2,3]
+
+  repeat
+    read X
+  while (X > 0)
+    print X, " es mayor a cero\n"
+  ;
+
+  Y = 0;
+  while (Y < 100)
+    {
+      using
+        bool a;
+      in
+
+      a = X @ s;   # contiene
+      a = a and (not (Y @ s));
+
+      if (a)
+        {
+          s = s + [Y]; # unión
+          s = s / [X]; # diferencia
+        }
+      ;
+      X = X - 1;
+      Y = Y + 1;
+    }
+  ;
+
+  a = true;
+  b = false;
+
+  repeat
+    a = a and b
+  while (a);
+
+  if (not (X @ s)) # no contiene
+    print "X no está en s"
+  ;
+
+  if (Y @ s) # contiene
+    print "X debió meter a Y en s"
+  else
+    print "Y no está en s"
+  ;
+}
+
+
+
+# with
+#   x, y : Int;
+#   s : Set;
+#   a, b : Bool;
+# in block
+#   s = { 1, 2, 3, 4 };
+
+#   repeat
+#     block
+#       read y;
+#       read x;
+#     end;
+#   that while x > 0 and y % 2 == 0 do
+#     block
+#       # minetas 'x' sea positivo y 'y' sea par
+#       s = s ++ x;
+#       if {x, y} << s then
+#         # si el conjunto '{x,y}' está contenido en 's'
+#         println "ambos";
+#       else if y @ s then
+#         block
+#           # si el número 'y' está en 's'
+#           println "solo y";
+#           s = s ++ y;
+#         end;
+#       else
+#         block
+#           print "eran 'y' = ", y, ", 'x' = ", x;
+#           s = s ++ (x + 1);
+#         end;
+#     end;
+# end;
+
+
+# with
+#   x, y : Int;
+#   s : Set;
+#   a, b : Bool;
+# in {
+#   s = [ 1, 2, 3, 4 ];
+
+#   repeat {
+#       read y;
+#       read x;
+#   } that while x > 0 and y % 2 == 0 do {
+#     # minetas 'x' sea positivo y 'y' sea par
+
+#     # agrega 'x' a 's'
+#     s = s ++ x;
+
+#     if [ x, y ] << s then
+#       # si el conjunto '{x,y}' está contenido en 's'
+#       println "ambos";
+
+#     else if y @ s then {
+#       # si el número 'y' pertenece a 's'
+#       println "solo y";
+#       s = s ++ y;
+
+#     }; else {
+#       print "eran 'y' = ", y, ", 'x' = ", x;
+#       s = s ++ (x + 1);
+#     };
+#   };
+# };

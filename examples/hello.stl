@@ -1,0 +1,2 @@
+program
+    println "Hello world."

@@ -11,7 +11,7 @@ Diciembre - Marzo 2014-2015<br>
 En la primera etapa de desarrollo del interpretador para el
 lenguaje `Setlan` se implementó el analizador lexicográfico que
 permite reconocer todos y cada uno de los token que componen un
-programa de `Setlan`, o que se detiene en caso de conseguir un error 
+programa de `Setlan`, o que se detiene en caso de conseguir un error
 lexicográfico en éste. Este segundo paso corresponde
 al diseño de la gramática libre de contexto del lenguaje y la
 implementación de un reconocedor para ella. Además, durante el
@@ -25,9 +25,9 @@ _no es necesario_ que sean reportados errores de tipos o variables
 no declaradas. Su analizador sintáctico deberá _sólo_ verificar la
 correctitud de la sintaxis del programa.
 
-Para la construcción del AST deberán las clases necesarias para
+Para la construcción del AST deberán crear las clases necesarias para
 la representación de cada instrucción y expresión del lenguaje.
-Válgase del uso de tipos recrusivos de datos y herencia de clases.
+Válgase del uso de tipos recursivos de datos y herencia de clases.
 El árbol sintáctico abstracto deberá ser impreso por salida estándar
 cuando sea analizado un programa _sin errores_.
 
@@ -37,11 +37,11 @@ Para la ejecución del interpretador su programa deberá llamarse
 `setlan` y recibirá como primer argumento el nombre del archivo
 con el código en `Setlan` a analizar.
 
-Primero se hace el análisis lexicográfico, donde en caso de haber errores, 
+Primero se hace el análisis lexicográfico, donde en caso de haber errores,
 éstos se deben reportar al igual que en la primera entrega y detener la ejecución; si el análisis lexicográfico no tiene errores, se usa la lista de _tokens_ generada por éste para el análisis sintáctico.
 
 Por salida, se debe mostrar el árbol abstracto sintáctico siguiendo
-el modelo de impresión a continuación. Note que ya __no__ se deberá imprimir 
+el modelo de impresión a continuación. Note que ya __no__ se deberá imprimir
 la lista de _tokens_ que se imprimía en la primera entrega.
 
 En caso de encontrar un error de sintaxis se reportará por salida

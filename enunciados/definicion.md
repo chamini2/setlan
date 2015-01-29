@@ -140,7 +140,7 @@ Que generaría la siguiente impresión en salida estándar:
 
 La condición debe ser una expresión de tipo `bool`, de lo contrario debe mostrarse un error en pantalla y abortar la ejecución.
 
-Ejecutar está instrucción tiene el efecto de evaluar la condición y si su valor es `true` se ejecuta la instrucción 1; si su valor es `false` se ejecuta la instrucción 2. Es posible omitir la palabra clave `else` y la instrucción 2 asociada, de manera que si la expresión es `false` no se ejecuta ninguna instrucción.
+Ejecutar está instrucción tiene el efecto de evaluar la condición y si su valor es `true` se ejecuta la `<instrucción 1>`; si su valor es `false` se ejecuta la `<instrucción 2>`. Es posible omitir la palabra clave `else` y la `<instrucción 2>` asociada, de manera que si la expresión es `false` no se ejecuta ninguna instrucción.
 
 Note que esta especificación del condicional es **muy parecida** a la del lenguaje de programación *C*.
 
@@ -197,7 +197,26 @@ Ejemplo equivalente:
 
     }
 
-Obviamente es más *estético* usar el primer o segundo ejemplo, pero quiere hacerse obvio que la instrucción del `else` es un `if` más, y no es una construcción compleja del lenguaje, así evitamos escribir casos especiales para `else if`.
+Obviamente es más *estético* usar el primer o segundo ejemplo, pero quiere hacerse obvio que la instrucción del `else` es un `if` más, y no es una construcción compleja del lenguaje, así evitamos escribir casos especiales para `else if
+
+##### Asociatividad del `if then else`
+
+Setlan permite construcciones del siguiente estilo:
+
+	if (false)
+		if (false)
+			print "no se debe imprimir"
+		else
+			print "tampoco se debe imprimir"
+
+En este ejemplo hay una instrucción `if then` y una instrucción `if then else` dentro de ésta, se usó indentación para hacer obvio el comportamiento. Es decir, un `else` se debe *asociar* al `if` más cercano *hacia arriba*. Si quisieramos hacer una asociación diferente, se debe especificiar con el uso de llaves; por ejemplo:
+
+	if (false) {
+		if (true)
+			print "no se debe imprimir"
+		;
+	} else
+		print "sí se debe imprimir"
 
 ### Iteración `for`
 
@@ -299,7 +318,7 @@ El siguiente ejemplo pone en evidencia estas reglas:
             using
                 set x;          # inicializado en {}
             in
-            x = {0,1}
+            x = {0,1};
             y = x + {2,3,4};
             println 1, x;       # x es de tipo `set`
             println 2, y;       # y es de tipo `set`
@@ -354,34 +373,20 @@ A continuación una lista de precedencias, de menor a mayor, para estos operador
 - `++`, `\`
 - `><`
 
-También hay operadores que sirven para *mapear* una operación sobre todos los elementos de un conjunto, es decir, modificar todos los elementos de éste. Está la suma `<+>`, la resta `<->`, la multiplicación `<*>`, la división de enteros `</>` y el resto de la divisón `<%>`. Los operadores deben tener un operando de tipo `int` y uno de tipo `set`, y su resultado es de tipo `set`. 
+También hay operadores que sirven para *mapear* una operación sobre todos los elementos de un conjunto, es decir, modificar todos los elementos de éste. Está la suma `<+>`, la resta `<->`, la multiplicación `<*>`, la división de enteros `</>` y el resto de la divisón `<%>`. **Los operadores deben tener el primer operando de tipo `int`, el segundo de tipo `set`, y su resultado es de tipo `set`.**
 
 A continuación una lista de precedencias, de menor a mayor, para estos operadores:
 
 - `<+>`, `<->`
 - `<*>`, `</>`, `<%>`
 
-El orden de los operandos es importante, aquí hay ejemplos ilustrativos:
+Ejemplos ilustrativos:
 
-- Suma `<+>`
-    + `{1,2,5} <+> 2 == {3,4,7}`
-    + `2 <+> {1,2,5} == {3,4,7}`
-
-- Resta `<->`
-    + `{1,2,5} <-> 2 == {-1,0,3}`
-    + `2 <-> {1,2,5} == {1,0,-3}`
-
-- Multiplicación `<*>`
-    + `{1,2,5} <*> 2 == {2,4,10}`
-    + `2 <*> {1,2,5} == {2,4,10}`
-
-- División `</>`
-    + `{1,2,5} </> 2 == {0,1,2}`
-    + `2 </> {1,2,5} == {2,1,0}`
-
-- Resto de la división `<%>`
-    + `{1,2,5} <%> 2 == {1,0,1}`
-    + `2 <%> {1,2,5} == {0,0,2}`
+- `2 <+> {1,2,5} == {3,4,7}`
+- `2 <-> {1,2,5} == {1,0,-3}`
+- `2 <*> {1,2,5} == {2,4,10}`
+- `2 </> {1,2,5} == {2,1,0}`
+- `2 <%> {1,2,5} == {0,0,2}`
 
 También hay operadores unarios sobre conjuntos, uno para conocer el máximo valor del conjunto `>?`, otro para el mínimo valor del conjunto `<?`, y otro para conocer el número de elementos del conjunto `$?` (`$` parace a una *S* de *size*, ¿verdad?... ¿no?, bueno...).
 
@@ -418,6 +423,10 @@ A continuación una lista de precedencias, de menor a mayor, para estos operador
 - `==`, `/=`
 - `@`
 
+## Precedencia de operadores
+
+El orden de evaluación de operaciones en *Setlan* es: operadores sobre `bool`, operadores *comparativos*, operadores *aritméticos*, operadores *sobre conjuntos*, operadores entre conjuntos-aritméticas, unarias, respetando el orden de precedencia de cada operador en cada una de ellas
+
 <!-- \pagebreak -->
 
 ## Comentarios y espacios en blanco
@@ -444,9 +453,9 @@ Programa que calcula todos los números de Fibonacci desde cero (`0`) hasta el n
         scan n;
 
         if (n < 0)
-            println "no negative fibonaccis";
+            println "no negative fibonaccis"
         else if (n == 0)
-            println "fib(0) = 1";
+            println "fib(0) = 1"
         else {
             using
                 int low, high, count, tmp;

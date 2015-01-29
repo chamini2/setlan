@@ -1,0 +1,6 @@
+program
+    if (true)
+        if (true)
+            dinero_abe = dinero_abe-250
+    else
+        dinero_abe = dinero_abe-150

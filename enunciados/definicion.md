@@ -131,7 +131,7 @@ Que generaría la siguiente impresión en salida estándar:
 
     $ ./setlan print.stl
     ¡Hola, mundo! 
-    Esto es una comilla escapada " y un backslash \\
+    Esto es una comilla escapada " y un backslash \
 
 ### Condicional `if then else`
 

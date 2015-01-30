@@ -15,12 +15,7 @@ program {
 }
 
 # token PROGRAM       value (program) at line 1, column 1
-# token ASSIGN        value (=) at line 1, column 9
-# token ASSIGN        value (=) at line 1, column 11
-# token ASSIGN        value (=) at line 1, column 13
-# token ASSIGN        value (=) at line 1, column 15
-# token ASSIGN        value (=) at line 1, column 17
-# token LCURLY        value ({) at line 1, column 18
+# token LCURLY        value ({) at line 1, column 9
 # token USING         value (using) at line 2, column 2
 # token SET           value (set) at line 3, column 3
 # token IDENTIFIER    value (x) at line 3, column 7

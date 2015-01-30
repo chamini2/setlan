@@ -1,3 +1,4 @@
+.DS_Store
 setlan/parser.out
 setlan/parsetab.py
 *.out

@@ -1,0 +1,8 @@
+"un string con \n, \\, \"", dos identificadores, "segundo string"
+
+# token STRING        value ("un string con \n, \\, \"") at line 1, column 1
+# token COMMA         value (,) at line 1, column 27
+# token IDENTIFIER    value (dos) at line 1, column 29
+# token IDENTIFIER    value (identificadores) at line 1, column 33
+# token COMMA         value (,) at line 1, column 48
+# token STRING        value ("segundo string") at line 1, column 50

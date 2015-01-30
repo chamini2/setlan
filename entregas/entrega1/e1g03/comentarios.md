@@ -1,0 +1,4 @@
+- `setlan`, no `Setlan`.
+- tenían `'MIN'`, `'MAX'`, `'not'`, `'and'`, `'or'`, en `reserved`, pero `'min'`, `'max'`, `'NOT'`, `'AND'`, `'OR'` en tokens.
+- inconsistencia con tokens en mayúsculas y minúsculas.
+- hacen chequeo de overflow con la función `int()` de Python, eso usa los enteros de la máquina en la que está corriendo, por ejemplo, mi computador al ser de 64 bits, usa enteros de 64 bits, en la especificación se espcifíca que deben ser enteros de 32 bits.

@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 #CI3725
 #Entrega 1 Grupo 14
 #Angel Franco 07-40913

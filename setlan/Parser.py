@@ -29,15 +29,20 @@ def span(symbol, pos):
 
     return startpos, endpos
 
+# to get the position span from a symbol to other
+def from_to_span(symbol, from_pos, to_pos):
+    start, _ = span(symbol, from_pos)
+    _, end = span(symbol, to_pos)
+    return start, end
+
 
 # The first rule to evaluate
 # A Setlan program always begins with the reserved word 'program'
 # and has one, and only one statement
 def p_program(symbol):
     """program : PROGRAM statement"""
-    # start, _ = span(symbol, 1)
-    # _, end = span(symbol, 2)
-    # symbol[0] = Program((start, end), symbol[2])
+    pos = from_to_span(symbol, 1, 2)
+    symbol[0] = Program(pos, symbol[2])
 
 ###############################################################################
 #############################     STATEMENTS      #############################
@@ -48,6 +53,9 @@ def p_program(symbol):
 # ID '=' expression
 def p_statement_assing(symbol):
     """statement : IDENTIFIER ASSIGN expression"""
+    pos = from_to_span(symbol, 1, 3)
+    variable = Variable(span(symbol, 1), symbol[1])
+    symbol[0] = Assign(pos, variable, symbol[3])
 
 
 # The block statement
@@ -57,29 +65,50 @@ def p_statement_assing(symbol):
 def p_statement_block(symbol):
     """statement : LCURLY statement_list RCURLY
                  | LCURLY USING declare_list IN statement_list RCURLY"""
+    if len(symbol) == 4:
+        pos = from_to_span(symbol, 1, 3)
+        statements = symbol[2]
+        sym_table = None # whatevs
+    else:
+        pos = from_to_span(symbol, 1, 6)
+        statements = symbol[5]
+        sym_table = symbol[3]
+
+    symbol[0] = Block(pos, statements, sym_table)
 
 
 # A grammar rule to create multiple declarations in a block statement
 def p_statement_declare_list(symbol):
     """declare_list : declaration
                     | declare_list declaration"""
+    if len(symbol) == 2:
+        symbol[0] = symbol[1]
+    else:
+        symbol[0] = symbol[1] + symbol[2]
 
 # A grammar rule to create a declaration in a list of declarations
 def p_statement_declaration(symbol):
     """declaration : data_type declare_comma_list SEMICOLON"""
+    symbol[0] = map(lambda var: (symbol[1], var))
 
 # A grammar rule to create multiple variables in a declaration
 def p_statement_declare_comma_list(symbol):
     """declare_comma_list : IDENTIFIER
                           | declare_comma_list COMMA IDENTIFIER"""
-
+    if len(symbol) == 2:
+        variable = Variable(span(symbol, 1), symbol[1])
+        symbol[0] = [variable]
+    else:
+        variable = Variable(span(symbol, 3), symbol[3])
+        symbol[0] = symbol[1] + [variable]
 
 # The type of the declaration
 def p_data_type(symbol):
     """data_type : INT
                  | BOOL
                  | SET"""
-    symbol[0] = eval(symbol[1].title()) # Assigns the class: Int, Bool or Set
+    # Assigns the class: Int_Type, Bool_Type or Set_Type
+    symbol[0] = eval(symbol[1].title()+"_Type")
 
 
 # Multiple statements in a block statement have a separation token, the ';'
@@ -95,16 +124,22 @@ def p_statement_statement_list(symbol):
 
 
 # The read statement, it works on a variable
-def p_statement_read(symbol):
+def p_statement_scan(symbol):
     """statement : SCAN IDENTIFIER"""
-
+    pos = from_to_span(symbol, 1, 2)
+    variable = Variable(span(symbol, 2), symbol[2])
+    symbol[0] = Scan(pos, variable)
 
 # The print statement, it prints on standard output the list of elements
 # given to it, in order
-def p_statement_write(symbol):
+def p_statement_print(symbol):
     """statement : PRINT print_comma_list
                  | PRINTLN print_comma_list"""
-
+    pos = from_to_span(symbol, 1, 2)
+    printables = symbol[1]
+    if symbol[1].lower() == 'println':
+        printables += '"\n"'
+    symbol[0] = Print(pos, printables)
 
 # To generate the list of elements for a 'print' or a 'println'
 def p_statement_print_comma_list(symbol):
@@ -115,11 +150,15 @@ def p_statement_print_comma_list(symbol):
     else:
         symbol[0] = symbol[1] + [symbol[3]]
 
-# An expression or a string are both valid printables
-def p_statement_print_printable(symbol):
-    """printable : expression
-                 | STRING"""
+# An expression is a valid printable
+def p_statement_print_printable_exp(symbol):
+    """printable : expression"""
     symbol[0] = symbol[1]
+
+# A string is a valid printables
+def p_statement_print_printable_str(symbol):
+    """printable : STRING"""
+    symbol[0] = String(span(symbol, 1), symbol[1])
 
 ############################     CONDITIONAL      #############################
 
@@ -128,7 +167,15 @@ def p_statement_print_printable(symbol):
 def p_statement_if(symbol):
     """statement : IF LPAREN expression RPAREN statement
                  | IF LPAREN expression RPAREN statement ELSE statement"""
-
+    if len(symbol) == 6:
+        pos = from_to_span(symbol, 1, 5)
+        else_st = None
+    else:
+        pos = from_to_span(symbol, 1, 7)
+        else_st = symbol[7]
+    condition = symbol[3]
+    then_st = symbol[5]
+    symbol[0] = If(pos, condition, then_st, else_st)
 
 ###############################     LOOP      #################################
 
@@ -137,10 +184,14 @@ def p_statement_if(symbol):
 # the for, this variable has a value of every value in the set specified
 def p_statement_for(symbol):
     """statement : FOR IDENTIFIER direction expression DO statement"""
+    pos = from_to_span(symbol, 1, 6)
+    variable = Variable(span(symbol, 1), symbol[1])
+    symbol[0] = For(pos, variable, symbol[3], symbol[4], symbol[6])
 
 def p_statement_for_direction(symbol):
     """direction : MIN
                  | MAX"""
+    symbol[0] = eval(symbol[1].title() + '_Direction')
 
 
 # The while statement, while some condition holds, keep doing a statement
@@ -148,6 +199,23 @@ def p_statement_while(symbol):
     """statement : REPEAT statement WHILE LPAREN expression RPAREN DO statement
                  |                  WHILE LPAREN expression RPAREN DO statement
                  | REPEAT statement WHILE LPAREN expression RPAREN"""
+    if len(symbol) == 9:
+        pos = from_to_span(symbol, 1, 8)
+        repeat_st = symbol[2]
+        condition = symbol[5]
+        do_st = symbol[8]
+    else:
+        pos = from_to_span(symbol, 1, 6)
+        if symbol[1].lower() == 'while':
+            repeat_st = None
+            condition = symbol[3]
+            do_st = symbol[6]
+        elif symbol[1].lower() == 'repeat':
+            repeat_st = symbol[2]
+            condition = symbol[5]
+            do_st = None
+    symbol[0] = While(pos, repeat_st, condition, do_st)
+
 
 ###############################################################################
 #############################     EXPRESSIONS     #############################
@@ -186,19 +254,20 @@ precedence = (
 # A number is a valid expression
 def p_exp_int_literal(symbol):
     """expression : INTEGER"""
-    # symbol[0] = Int(span(symbol, 1), symbol[1])
+    symbol[0] = Int(span(symbol, 1), symbol[1])
 
 
 # A boolean is a valid expression
 def p_exp_bool_literal(symbol):
     """expression : TRUE
                   | FALSE"""
-    # symbol[0] = Bool(span(symbol, 1), symbol[1].upper())
+    symbol[0] = Bool(span(symbol, 1), eval(symbol[1].title()))
 
 
 # A set is a valid expression
 def p_exp_set_literal(symbol):
     """expression : LCURLY expression_list RCURLY"""
+    symbol[0] = Set(from_to_span(symbol, 1, 3), symbol[2])
 
 # A list of expressions for sets
 def p_exp_list(symbol):
@@ -213,43 +282,91 @@ def p_exp_list(symbol):
 # An ID is a variable expression, since an ID is an int, bool or set
 def p_expression_id(symbol):
     """expression : IDENTIFIER"""
-
+    symbol[0] = Variable(span(symbol, 1), symbol[1])
 
 # An expression between parenthesis is still an expression
-def p_expression_group(symbol):
+def p_expression_parenthesis(symbol):
     """expression : LPAREN expression RPAREN"""
+    symbol[0] = symbol[2]
+    symbol[0].lexspan = from_to_span(symbol, 1, 3)
 
 #############################     OPERATORS     ###############################
 #############################      BINARY       ###############################
 
 # Binary operations
 def p_exp_binary(symbol):
-    """expression : expression PLUS         expression
-                  | expression MINUS        expression
-                  | expression TIMES        expression
-                  | expression DIVIDE       expression
-                  | expression MODULO       expression
+    """expression : expression PLUS   expression
+                  | expression MINUS  expression
+                  | expression TIMES  expression
+                  | expression DIVIDE expression
+                  | expression MODULO expression
+
                   | expression UNION        expression
                   | expression DIFFERENCE   expression
                   | expression INTERSECTION expression
-                  | expression SPLUS        expression
-                  | expression SMINUS       expression
-                  | expression STIMES       expression
-                  | expression SDIVIDE      expression
-                  | expression SMODULO      expression
-                  | expression OR           expression
-                  | expression AND          expression"""
 
+                  | expression SPLUS   expression
+                  | expression SMINUS  expression
+                  | expression STIMES  expression
+                  | expression SDIVIDE expression
+                  | expression SMODULO expression
 
-# Binary operations to compare
-def p_exp_compare(symbol):
-    """expression : expression LESS      expression
+                  | expression OR  expression
+                  | expression AND expression
+
+                  | expression LESS      expression
                   | expression LESSEQ    expression
                   | expression GREATER   expression
                   | expression GREATEREQ expression
                   | expression EQUAL     expression
                   | expression UNEQUAL   expression
-                  | expression CONTAINS  expression """
+                  | expression CONTAINS  expression"""
+    pos = from_to_span(symbol, 1, 3)
+    if symbol[2] == '+':
+        exp = Plus(pos, symbol[1], symbol[3])
+    elif symbol[2] == '-':
+        exp = Minus(pos, symbol[1], symbol[3])
+    elif symbol[2] == '*':
+        exp = Times(pos, symbol[1], symbol[3])
+    elif symbol[2] == '/':
+        exp = Divide(pos, symbol[1], symbol[3])
+    elif symbol[2] == '%':
+        exp = Modulo(pos, symbol[1], symbol[3])
+    elif symbol[2] == '++':
+        exp = Union(pos, symbol[1], symbol[3])
+    elif symbol[2] == '\\':
+        exp = Difference(pos, symbol[1], symbol[3])
+    elif symbol[2] == '><':
+        exp = Intersection(pos, symbol[1], symbol[3])
+    elif symbol[2] == '<+>':
+        exp = SetPlus(pos, symbol[1], symbol[3])
+    elif symbol[2] == '<->':
+        exp = SetMinus(pos, symbol[1], symbol[3])
+    elif symbol[2] == '<*>':
+        exp = SetTimes(pos, symbol[1], symbol[3])
+    elif symbol[2] == '</>':
+        exp = SetDivide(pos, symbol[1], symbol[3])
+    elif symbol[2] == '<%>':
+        exp = SetModulo(pos, symbol[1], symbol[3])
+    elif symbol[2] == 'or':
+        exp = Or(pos, symbol[1], symbol[3])
+    elif symbol[2] == 'and':
+        exp = And(pos, symbol[1], symbol[3])
+    elif symbol[2] == '<':
+        exp = Less(pso, symbol[1], symbol[3])
+    elif symbol[2] == '<=':
+        exp = LessEq(pso, symbol[1], symbol[3])
+    elif symbol[2] == '>':
+        exp = Greater(pso, symbol[1], symbol[3])
+    elif symbol[2] == '>=':
+        exp = GreaterEq(pso, symbol[1], symbol[3])
+    elif symbol[2] == '==':
+        exp = Equal(pso, symbol[1], symbol[3])
+    elif symbol[2] == '/=':
+        exp = Unequal(pso, symbol[1], symbol[3])
+    elif symbol[2] == '@':
+        exp = Contains(pso, symbol[1], symbol[3])
+    symbol[0] = exp
 
 #############################       UNARY       ###############################
 
@@ -261,6 +378,18 @@ def p_exp_int_unary(symbol):
                   | SMAX  expression
                   | SMIN  expression
                   | SSIZE expression"""
+    pos = from_to_span(symbol, 1, 2)
+    if symbol[1] == '-':
+        exp = Minus(pos, symbol[2])
+    elif symbol[1] == 'not':
+        exp = Not(pos, symbol[2])
+    elif symbol[1] == '>?':
+        exp = Max(pos, symbol[2])
+    elif symbol[1] == '<?':
+        exp = Min(pos, symbol[2])
+    elif symbol[1] == '$?':
+        exp = Size(pos, symbol[2])
+    symbol[0] = exp
 
 ################################## ERROR ######################################
 
@@ -290,8 +419,8 @@ def parsing(data, debug=0):
     if parser.error:
         ast = None
 
-    if ast:
-        ast.check()
+    # if ast:
+    #     ast.check()
 
     return ast
 

@@ -12,7 +12,7 @@ import re
 static_error = []
 
 def indent(n):
-    return n * '|   '
+    return n * '    '
 
 ###############################################################################
 
@@ -25,7 +25,7 @@ class Program(object):
         # self.sym_table = SymTable()
 
     def __str__(self):
-        return "program" + self.statement.pretty_string(1)
+        return "PROGRAM" + self.statement.pretty_string(1)
 
 ###############################################################################
 
@@ -62,9 +62,9 @@ class Assign(Statement):
         # self.sym_table = None
 
     def pretty_string(self, level):
-        string = "\n" + indent(level) + "="
+        string = "\n" + indent(level) + "ASSIGN"
         string += self.variable.pretty_string(level + 1)
-        string += "\n" + indent(level + 1) + "value:"
+        string += "\n" + indent(level + 1) + "value"
         string += self.expression.pretty_string(level + 2)
         return string
 
@@ -76,24 +76,24 @@ class Block(Statement):
     def __init__(self, lexspan, statements, sym_table):
         self.lexspan = lexspan
         self.statements = statements
-        # self.sym_table = sym_table
+        self.sym_table = sym_table
 
     def pretty_string(self, level):
-        string = "\n" + indent(level) + "{"
+        string = "\n" + indent(level) + "BLOCK"
 
         if self.sym_table:
-            string += "\n" + indent(level + 1) + "using"
+            string += "\n" + indent(level + 1) + "USING"
 
             for typ, var in self.sym_table:
-                string += "\n" + indent(level + 2) + typ
+                string += "\n" + indent(level + 2) + str(typ)
                 string += " " + str(var)
 
-            string += "\n" + indent(level + 1) + "in"
+            string += "\n" + indent(level + 1) + "IN"
 
         for stat in self.statements:
-            string += stat.pretty_string(level + 2)
+            string += stat.pretty_string(level + 1)
 
-        string += "\n" + indent(level) + "}"
+        string += "\n" + indent(level) + "BLOCK_END"
         return string
 
 ###############################################################################
@@ -107,7 +107,7 @@ class Scan(Statement):
         # self.sym_table = None
 
     def pretty_string(self, level):
-        string = "\n" + indent(level) + "scan"
+        string = "\n" + indent(level) + "SCAN"
         string += self.variable.pretty_string(level + 1)
         return string
 
@@ -122,10 +122,11 @@ class Print(Statement):
         # self.sym_table = None
 
     def pretty_string(self, level):
-        string = "\n" + indent(level) + "print"
+        string = "\n" + indent(level) + "PRINT"
+        string = "\n" + indent(level + 1) + "elements"
 
         for elm in self.elements:
-            string += elm.pretty_string(level + 1)
+            string += elm.pretty_string(level + 2)
 
         return string
 
@@ -142,16 +143,16 @@ class If(Statement):
         # self.sym_table = None
 
     def pretty_string(self, level):
-        string = "\n" + indent(level) + "if"
+        string = "\n" + indent(level) + "IF"
 
         string += "\n" + indent(level + 1) + "condition"
         string += self.condition.pretty_string(level + 2)
 
-        string += "\n" + indent(level + 1) + "then"
+        string += "\n" + indent(level + 1) + "THEN"
         string += self.then_st.pretty_string(level + 2)
 
         if self.else_st:
-            string += "\n" + indent(level + 1) + "else"
+            string += "\n" + indent(level + 1) + "ELSE"
             string += self.else_st.pretty_string(level + 2)
 
         return string
@@ -164,17 +165,20 @@ class For(Statement):
     def __init__(self, lexspan, variable, direction, in_set, statement):
         self.lexspan = lexspan
         self.variable = variable
+        self.direction = direction
         self.in_set = in_set
         self.statement = statement
         # self.sym_table = None
 
     def pretty_string(self, level):
-        string = "\n" + indent(level) + "for"
+        string = "\n" + indent(level) + "FOR"
         string += self.variable.pretty_string(level + 1)
-        string += "\n" + indent(level) + str(direction)
+        string += "\n" + indent(level + 1) + "direction"
+        string += "\n" + indent(level + 2) + str(self.direction)
+        string += "\n" + indent(level + 1) + "IN"
         string += self.in_set.pretty_string(level + 1)
-        string += "\n" + indent(level) + "do"
-        string += self.statement.pretty_string(level + 1)
+        string += "\n" + indent(level + 1) + "DO"
+        string += self.statement.pretty_string(level + 2)
 
         return string
 ###############################################################################
@@ -192,14 +196,15 @@ class While(Statement):
     def pretty_string(self, level):
         string = ""
         if self.repeat_st:
-            string += "\n" + indent(level) + "repeat"
+            string += "\n" + indent(level) + "REPEAT"
             string += self.repeat_st.pretty_string(level + 1)
 
-        string += "\n" + indent(level) + "while"
-        string += self.condition.pretty_string(level + 1)
+        string += "\n" + indent(level) + "WHILE"
+        string += "\n" + indent(level + 1) + "condition"
+        string += self.condition.pretty_string(level + 2)
 
         if self.do_st:
-            string += "\n" + indent(level) + "do"
+            string += "\n" + indent(level) + "DO"
             string += self.do_st.pretty_string(level + 1)
 
         return string
@@ -215,7 +220,7 @@ class Expression(object): pass
 # For inheritance
 class Direction(object):
     def pretty_string(self, level):
-        return "\n" + indent(level) + self.__class__.__name__[:-10]
+        return "\n" + indent(level) + self.__class__.__name__[:-10].lower()
 
 class Min_Direction(Direction): pass
 class Max_Direction(Direction): pass
@@ -224,7 +229,7 @@ class Max_Direction(Direction): pass
 # just for checking the type of an exprssion.
 class Type(object):
     def pretty_string(self, level):
-        return "\n" + indent(level) + self.__class__.__name__[:-5]
+        return "\n" + indent(level) + self.__class__.__name__[:-5].lower()
 
 class Variable_Type(Type): pass
 class Int_Type(Type): pass
@@ -237,11 +242,7 @@ class Unary_Type(Type): pass
 ###############################################################################
 
 
-class Literal(Expression):
-    def pretty_string(self, level):
-        string = "\n" + indent(level) + self.__class__.__name__
-        string += "\n" + indent(level + 1) + str(self.value)
-        return string
+class Literal(Expression): pass
 
 ###############################################################################
 
@@ -253,6 +254,11 @@ class Variable(Literal):
         self.lexspan = lexspan
         self.value = value
         self.sym_table = None
+
+    def pretty_string(self, level):
+        string = "\n" + indent(level) + self.__class__.__name__.lower()
+        string += "\n" + indent(level + 1) + str(self.value)
+        return string
 
     def __eq__(self, other):
         return self.value == other.value
@@ -280,6 +286,11 @@ class Int(Literal):
         self.value = value
         self.sym_table = None
 
+    def pretty_string(self, level):
+        string = "\n" + indent(level) + self.__class__.__name__.lower()
+        string += "\n" + indent(level + 1) + str(self.value)
+        return string
+
     def __str__(self):
         return str(self.value)
 
@@ -299,6 +310,11 @@ class Bool(Literal):
         self.lexspan = lexspan
         self.value = value
         self.sym_table = None
+
+    def pretty_string(self, level):
+        string = "\n" + indent(level) + self.__class__.__name__.lower()
+        string += "\n" + indent(level + 1) + str(self.value).lower()
+        return string
 
     def __str__(self):
         return str(self.value)
@@ -320,6 +336,13 @@ class Set(Literal):
         self.value = value
         self.sym_table = None
 
+    def pretty_string(self, level):
+        string = "\n" + indent(level) + self.__class__.__name__.lower()
+        for elm in self.value:
+            string += elm.pretty_string(level + 1)
+        return string
+
+
 #######################################
 
 
@@ -331,7 +354,18 @@ class String(Literal):
         self.value = value
         self.sym_table = None
 
+    def pretty_string(self, level):
+        string = "\n" + indent(level) + self.__class__.__name__.lower()
+        string += "\n" + indent(level + 1) + str(self)
+        return string
+
     def __str__(self):
+        # string = self.value[1:-1]
+        # string = string.replace('\t','\\t')
+        # string = string.replace('\\','\\\\')
+        # string = string.replace('"','\\"')
+        # string = string.replace('\n','\\n')
+        # return '"' + string + '"'
         return self.value
 
     def check(self):
@@ -392,12 +426,16 @@ class Binary(Expression):
         self.sym_table = None
 
     def __str__(self):
-        string = str(self.operator) + ' ('
-        string += str(self.left) + ', ' + str(self.right) + ')'
+        string = '(' + str(self.left) + str(self.operator) 
+        string += '  ' + str(self.right) + ')'
         return string
 
     def pretty_string(self, level):
-        return "\n" + indent(level) + str(self)
+        string = "\n" + indent(level) + self.__class__.__name__.upper() 
+        string += " " + str(self.operator)
+        string += self.left.pretty_string(level + 1)
+        string += self.right.pretty_string(level + 1)
+        return string
 
 ###############################################################################
 
@@ -592,6 +630,16 @@ class Unary(Expression):
         self.operator = operator # for printing
         self.operand = operand
         self.sym_table = None
+
+    def __str__(self):
+        string = '(' + str(self.operator) + ' ' + str(self.operand) + ')'
+        return string
+
+    def pretty_string(self, level):
+        string = "\n" + indent(level) + self.__class__.__name__.upper() 
+        string += " " + str(self.operator)
+        string += self.operand.pretty_string(level + 1)
+        return string
 
 ###############################################################################
 

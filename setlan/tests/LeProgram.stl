@@ -1,0 +1,161 @@
+#Programa con todas las intrucciones y tokens. No posee errores.
+program {
+    using
+        int i,j,k;
+        bool b,c,d;
+        set s,t,u;
+    in
+    
+    #Instrucciones con enteros
+    i = 1;
+    j = i+5;
+    k = i*j-8/5%7/8/8+(8-7/7*(10+6*(-5)))--5--4;
+    
+    #Instrucciones con booleanos
+    b = true or false and true and true or not false;
+    c = true or (b and true or not not not false) and (((true)));
+    d = b and c;
+    
+    #Instrucciones con conjuntos
+    s = {1,1,2,3,5,8,13,21,34,55};
+    t = s ++ {1,1,2,3,5} ++ {89} ++ {0} >< {1,1} >< {2} ++ {3} ++ {5,8} \ {3,1,4,1,5} ++ {0,2,4,6,8} \ ({1,1,1,5,8,6} ++ s >< s);
+    u = 5 <-> (3 <*> 2 <+> s ++ 8 <%> 1 </> {0,1,2,3,4,5});
+    
+    #E/S
+    scan i;
+    print "This is a test string.\n\"\\";
+    print "Who read this is Marico", i+j%k*8/(i+i-j--i), b or c and not not true or d, 5<%> s ++ t >< u / {1,2,3};
+    
+    #Condicionales
+    if(1 @ s or 2 @ t++u/{4,5,6} and i >= j+k*8)
+        i = j
+    else if (>? s + <? {7,8,9} >< t - $? u == 7 and >? 2 <+> t ++ {1,2,3}) {
+        if(1+i /= 8 and 7 >= k*k*k or 4 @ s and not not not 7 > k*k*k or (>? 2 <*> u + 5) < 10 and 1 <= 2)
+            print "I like big butts that can not lie.\n"
+        else
+            print "Oh My God, Look at her butt.\n"
+        ;
+    }
+    else
+        if(true) {
+            using
+                int i,j,k;
+            in
+            
+            if(false) {
+                using
+                    int i,j,k;
+                in
+                    if(true) {
+                        using
+                            int i,j,k;
+                        in
+                        
+                        println "First value of i: ",i;
+                    };
+                    println "Second value of i: ",i;
+            };
+            println "Third value of i: ",i;
+        }
+    ;
+    
+    #Iteración determinada
+    for i min 2 <%> s++ {0,1,2} >< { } do {
+        using
+            int c;
+        in
+        c = i;
+        println "i took the value of: ",i;
+        for i max s do {
+            println "Now i took the value of: ",i;
+            c = c+1; # c = c+1 puede escribirse (en lenguajes que permitan la instrucción) como c++, pun intended :).
+        };
+        
+    };
+    
+    #Iteración indeterminada
+    
+    #Caso 1
+    repeat {
+        print "Hello, I'm the repeating Sring. And these are my friends: The expressions, ",>?{0,1,2},$?(3<*>s++t><{0,1,2})+7/8*(i+j+k)*<?4<+>{1,2,3};
+    }
+    while(true)
+    do {
+        using
+            int i,j,k;
+        in
+            k = i+j;
+            println k;
+            i = j;
+            j = k;
+    };
+    
+    #Caso 2
+    while(true or false) do {
+        using
+            bool t,f;
+        in
+        
+        t = true;
+        f = false;
+    };
+    
+    #Caso 3
+    repeat {
+        using
+            int i;
+            set t;
+        in
+        
+        i = 31415;
+        t = {i,>?{0,1,2,3},$?{},i*i,i+i};
+        s = s ++ t;
+        
+    } while (>?s >= 5);
+    
+    #Instrucciones compuestas
+    repeat {
+        using
+            int i;
+        in
+        
+        i = >?s+1;
+        if($? 2 <*>t++u == 10) {
+            using
+                int j;
+            in
+            j = 0;
+            while(true) do {
+                print j,j+1,j+2;
+                j = j+1;
+                repeat {
+                    using
+                        int i;
+                    in
+                    i = >?s+1;
+                    if($? 2 <*>t++u == 10) {
+                        using
+                            int j;
+                        in
+                        j = 0;
+                        while(true) do {
+                            print j,j+1,j+2;
+                            j = j+1;                    
+                        };
+                    };
+                } while (j < 100);
+            };
+        }
+        else
+            println "I didn't get the recursive-thing."
+        ;
+    } while(>?{1,1,2,3,5,8} + 10 >= 25) do {
+        using
+            set vacio;
+        in
+        
+        vacio = {};
+        
+        println "Max of empty is: ",<?vacio;
+    };
+}

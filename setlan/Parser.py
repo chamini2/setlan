@@ -89,7 +89,7 @@ def p_statement_declare_list(symbol):
 # A grammar rule to create a declaration in a list of declarations
 def p_statement_declaration(symbol):
     """declaration : data_type declare_comma_list SEMICOLON"""
-    symbol[0] = map(lambda var: (symbol[1], var))
+    symbol[0] = map(lambda var: (symbol[1], var),symbol[2])
 
 # A grammar rule to create multiple variables in a declaration
 def p_statement_declare_comma_list(symbol):
@@ -108,7 +108,7 @@ def p_data_type(symbol):
                  | BOOL
                  | SET"""
     # Assigns the class: Int_Type, Bool_Type or Set_Type
-    symbol[0] = eval(symbol[1].title()+"_Type")
+    symbol[0] = symbol[1].lower()
 
 
 # Multiple statements in a block statement have a separation token, the ';'
@@ -136,9 +136,10 @@ def p_statement_print(symbol):
     """statement : PRINT print_comma_list
                  | PRINTLN print_comma_list"""
     pos = from_to_span(symbol, 1, 2)
-    printables = symbol[1]
+    printables = symbol[2]
     if symbol[1].lower() == 'println':
-        printables += '"\n"'
+        _, end = pos
+        printables += [String((end, end),r'"\n"')]
     symbol[0] = Print(pos, printables)
 
 # To generate the list of elements for a 'print' or a 'println'
@@ -185,13 +186,13 @@ def p_statement_if(symbol):
 def p_statement_for(symbol):
     """statement : FOR IDENTIFIER direction expression DO statement"""
     pos = from_to_span(symbol, 1, 6)
-    variable = Variable(span(symbol, 1), symbol[1])
+    variable = Variable(span(symbol, 2), symbol[2])
     symbol[0] = For(pos, variable, symbol[3], symbol[4], symbol[6])
 
 def p_statement_for_direction(symbol):
     """direction : MIN
                  | MAX"""
-    symbol[0] = eval(symbol[1].title() + '_Direction')
+    symbol[0] = symbol[1].lower()
 
 
 # The while statement, while some condition holds, keep doing a statement
@@ -266,8 +267,17 @@ def p_exp_bool_literal(symbol):
 
 # A set is a valid expression
 def p_exp_set_literal(symbol):
-    """expression : LCURLY expression_list RCURLY"""
+    """expression : LCURLY maybe_expression_list RCURLY"""
     symbol[0] = Set(from_to_span(symbol, 1, 3), symbol[2])
+
+# A list of expressions for sets
+def p_may_exp_list(symbol):
+    """maybe_expression_list : 
+                             | expression_list"""
+    if len(symbol) == 1:
+        symbol[0] = []
+    else:
+        symbol[0] = symbol[1]
 
 # A list of expressions for sets
 def p_exp_list(symbol):
@@ -353,19 +363,19 @@ def p_exp_binary(symbol):
     elif symbol[2] == 'and':
         exp = And(pos, symbol[1], symbol[3])
     elif symbol[2] == '<':
-        exp = Less(pso, symbol[1], symbol[3])
+        exp = Less(pos, symbol[1], symbol[3])
     elif symbol[2] == '<=':
-        exp = LessEq(pso, symbol[1], symbol[3])
+        exp = LessEq(pos, symbol[1], symbol[3])
     elif symbol[2] == '>':
-        exp = Greater(pso, symbol[1], symbol[3])
+        exp = Greater(pos, symbol[1], symbol[3])
     elif symbol[2] == '>=':
-        exp = GreaterEq(pso, symbol[1], symbol[3])
+        exp = GreaterEq(pos, symbol[1], symbol[3])
     elif symbol[2] == '==':
-        exp = Equal(pso, symbol[1], symbol[3])
+        exp = Equal(pos, symbol[1], symbol[3])
     elif symbol[2] == '/=':
-        exp = Unequal(pso, symbol[1], symbol[3])
+        exp = Unequal(pos, symbol[1], symbol[3])
     elif symbol[2] == '@':
-        exp = Contains(pso, symbol[1], symbol[3])
+        exp = Contains(pos, symbol[1], symbol[3])
     symbol[0] = exp
 
 #############################       UNARY       ###############################
@@ -380,7 +390,7 @@ def p_exp_int_unary(symbol):
                   | SSIZE expression"""
     pos = from_to_span(symbol, 1, 2)
     if symbol[1] == '-':
-        exp = Minus(pos, symbol[2])
+        exp = Negate(pos, symbol[2])
     elif symbol[1] == 'not':
         exp = Not(pos, symbol[2])
     elif symbol[1] == '>?':

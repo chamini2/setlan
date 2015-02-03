@@ -69,21 +69,92 @@ program {
     for i min s do {
         println i*a;
         a = a+b;
-    }
+    };
 }
 ```
 
 y su respectiva salida correspondiente:
 
 ```
-# El AST será publicado más adelante
+PROGRAM
+    BLOCK
+        USING
+            set s
+            int a
+            int b
+        IN
+        ASSIGN
+            variable
+                s
+            value
+                set
+                    int
+                        1
+                    int
+                        1
+                    int
+                        2
+                    int
+                        3
+                    int
+                        5
+                    int
+                        8
+        ASSIGN
+            variable
+                a
+            value
+                int
+                    2
+        ASSIGN
+            variable
+                b
+            value
+                TIMES *
+                    variable
+                        a
+                    int
+                        3
+        FOR
+            variable
+                i
+            direction
+                min
+            IN
+            variable
+                s
+            DO
+                BLOCK
+                        elements
+                            TIMES *
+                                variable
+                                    i
+                                variable
+                                    a
+                            string
+                                "\n"
+                    ASSIGN
+                        variable
+                            a
+                        value
+                            PLUS +
+                                variable
+                                    a
+                                variable
+                                    b
+                BLOCK_END
+    BLOCK_END
 ```
+
+***Nota:*** estos ejemplos de salida **no** son un formato obligatorio. 
+Sólo se espera que su salida sea de fácil lectura y la impresión haga
+entendible la estructura del programa. Sí es importante que el AST impreso por su interpretador mantenga una "estructura de árbol" como la aquí mostrada.
 
 Un ejemplo de programa con errores en su código:
 
 ```
 program {
-    usign
+    using
         int a,b,c;
         int x,y;
     in
@@ -102,7 +173,7 @@ program {
 y su salida correspondiente:
 
 ```
-Error de sintaxis: Token ';' inesperado en línea 8, columna 8.
+ERROR: unexpected token ';' at line 8, column 9
 ```
 
 ## Implementación

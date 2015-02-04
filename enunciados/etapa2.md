@@ -188,9 +188,7 @@ como deberán seguir con él en etapas posteriores.
 
 + _Python:_
 	- Interpretador _python_ 2.7.
-	- _Python Lex-Yacc (PLY)._ Para esta primera etapa de
-desarrollo utilizarán el submódulo **Lex** de _PLY_. Sin embargo,
-el submódulo **Yacc** será empleado en siguientes etapas.
+	- _Python Lex-Yacc (PLY)._ Se utilizará _PLY_, su submódulo `lex` para el _lexer_ y el submódulo `yacc` para el _parser_.
 + _Ruby:_
 	- Interpretador _ruby_ 1.9.
 	- Para esta etapa de desarrollo no existe una herramienta en

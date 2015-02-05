@@ -63,8 +63,8 @@ def p_statement_assing(symbol):
 # It has an optional declarations list and a list of statements
 # each declaration and each statement is separated by a ';'
 def p_statement_block(symbol):
-    """statement : LCURLY statement_list RCURLY
-                 | LCURLY USING declare_list IN statement_list RCURLY"""
+    """statement : LCURLY maybe_statement_list RCURLY
+                 | LCURLY USING declare_list IN maybe_statement_list RCURLY"""
     if len(symbol) == 4:
         pos = from_to_span(symbol, 1, 3)
         statements = symbol[2]
@@ -110,6 +110,14 @@ def p_data_type(symbol):
     # Assigns the class: Int_Type, Bool_Type or Set_Type
     symbol[0] = symbol[1].lower()
 
+# A list of expressions for sets
+def p_may_statement_list(symbol):
+    """maybe_statement_list : 
+                            | statement_list"""
+    if len(symbol) == 1:
+        symbol[0] = []
+    else:
+        symbol[0] = symbol[1]
 
 # Multiple statements in a block statement have a separation token, the ';'
 def p_statement_statement_list(symbol):

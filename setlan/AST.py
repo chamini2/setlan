@@ -123,7 +123,7 @@ class Print(Statement):
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "PRINT"
-        string = "\n" + indent(level + 1) + "elements"
+        string += "\n" + indent(level + 1) + "elements"
 
         for elm in self.elements:
             string += elm.pretty_string(level + 2)

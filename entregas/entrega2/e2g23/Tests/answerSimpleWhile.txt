@@ -1,0 +1,33 @@
+Program
+    Block Start
+        While
+            Condition
+                LessThanEq
+                    Variable
+                        count
+                    Variable
+                        n
+            Do
+                Block Start
+                    Println
+                        String
+                            "fib("
+                        Variable
+                            count
+                        String
+                            ") = "
+                        Variable
+                            low
+                    Assign
+                        Variable
+                                count
+                        Value
+                            Plus
+                                Variable
+                                    count
+                                Int
+                                    1
+                Block End
+
+            End While
+    Block End

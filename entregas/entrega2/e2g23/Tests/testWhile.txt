@@ -1,0 +1,13 @@
+program {
+    using
+        int n;
+    in
+
+    while (count <= n) do {
+        tmp = low + high;
+        low = high;
+        high = tmp;
+        println "fib(", count, ") = ", low;
+        count = count + 1;
+    };
+}

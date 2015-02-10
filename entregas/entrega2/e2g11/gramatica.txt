@@ -1,0 +1,33 @@
+S -> program I                                          # Inicio
+----------
+I -> { D } | id = E | scan id | println A | print A     # Instrucciones
+     | if ( E ) I else I | if ( E ) I 
+     | for id min E do I | for id max E do I
+     | repeat I while ( E ) do I | while ( E ) do I
+     | repeat I while ( E )
+----------
+E -> ( E ) | E * E | E / E | E % E | E + E | E - E      # Expresiones
+     | E <= E | E < E | E >= E | E > E | E == E
+     | E /= E | E and E | E or E | E ++ E | E >< E
+     | E \ E | E @ E | E <+> E | E <-> E | E <*> E
+     | E <\> E | E <%> E | - E | { W }
+     | not E | >? E | <? E | $? E
+     | numero | true | false | id
+----------
+D -> using V in K | K | vacio                           # Declaracion
+----------
+K -> I ; K | I ;                                        # Varias Instrucciones
+----------
+V -> T V | T                                            # Varios Tipos
+----------
+T -> int B | set B | bool B                             # Tipos
+----------
+B -> C ; | id ; T | id ;                                # Auxiliar para varios tipos
+----------  
+C -> id , C | id , id                                   # Auxiliar para varios tipos
+----------
+A -> E , A | E | F , A | F                              # Imprimir
+----------
+F -> string                                             # Cadenas
+----------
+W -> E , W | E | vacio                                  # Elementos de conjunto

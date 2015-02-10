@@ -1,0 +1,91 @@
+NOMBRE : Analizador sintactico para Setlan
+MATERIA: CI3725 - Traductores e Interpretadores
+AUTORES: Aldrix Marfil     #10-10940
+         Leonardo Martinez #11-10576
+GRUPO  : 7
+
+ULT. MODIFICACION: 09/02/2015
+
+Gramatica para el Lenguaje de Programacion Setlan
+
+Simbolo de partida: PROGRAM
+
+'Identifier' = \w[\w\d]*
+'Number'     = \d+
+'String'     = "[^"\\\r\n]*(?:\\.[^"\\\r\n]*)*"
+
+PROGRAM     -> 'program' INSTRUCCION
+
+VACIO       -> <EMPTY>
+
+INSTRUCCION -> 'Identifier' '=' EXPRESION
+            |  'print' LISTA_EXPRESIONES
+            |  'println' LISTA_EXPRESIONES
+            |  'scan' 'Identifier'
+            |  '{' VACIO '}'
+            |  '{' LISTA_INSTRUCCIONES '}'
+            |  '{' DECLARACION LISTA_INSTRUCCIONES '}'
+            |  'if' '(' EXPRESION ')' INSTRUCCION 'else' INSTRUCCION
+            |  'if' '(' EXPRESION ')' INSTRUCCION 
+            |  'for' 'Identifier' DIRECCION EXPRESION 'do' INSTRUCCION
+            |  'repeat' INSTRUCCION 'while' '(' EXPRESION ')' 'do' INSTRUCCION
+            |  'while' '(' EXPRESION ')' 'do' INSTRUCCION
+            |  'repeat' INSTRUCCION 'while' '(' EXPRESION ')'
+
+DECLARACION -> 'using' LISTA_DECLARACIONES 'in'
+
+DIRECCION   -> 'min'
+            |  'max'
+
+EXPRESION   -> 'number'
+            |  'string'
+            |  'false'
+            |  'true'
+            |  'identifier'
+            |  '(' EXPRESION ')'
+            |  '{' VACIO '}'
+            |  '{' LISTA_EXPRESIONES '}'
+            |  EXPRESION '+' EXPRESION
+            |  EXPRESION '-' EXPRESION
+            |  EXPRESION '*' EXPRESION
+            |  EXPRESION '/' EXPRESION
+            |  EXPRESION '%' EXPRESION
+            |  EXPRESION '<' EXPRESION
+            |  EXPRESION '>' EXPRESION
+            |  EXPRESION '<=' EXPRESION
+            |  EXPRESION '>=' EXPRESION
+            |  EXPRESION '==' EXPRESION
+            |  EXPRESION '/=' EXPRESION
+            |  EXPRESION '@' EXPRESION
+            |  EXPRESION '++' EXPRESION
+            |  EXPRESION '><' EXPRESION
+            |  EXPRESION '\' EXPRESION
+            |  EXPRESION '<+>' EXPRESION
+            |  EXPRESION '<->' EXPRESION
+            |  EXPRESION '<*>' EXPRESION
+            |  EXPRESION '</>' EXPRESION
+            |  EXPRESION '<%>' EXPRESION
+            |  EXPRESION 'and' EXPRESION
+            |  EXPRESION 'or' EXPRESION
+            |  '-' EXPRESION
+            |  'not' EXPRESION
+            |  '>?' EXPRESION
+            |  '<?' EXPRESION
+            |  '$?' EXPRESION
+ 
+TYPE        -> 'int'
+            |  'bool'
+            |  'set'
+
+LISTA_INSTRUCCIONES   -> INSTRUCCION
+                      |  INSTRUCCION ';'
+                      |  INSTRUCCION ';' LISTA_INSTRUCCIONES
+
+LISTA_EXPRESIONES     -> EXPRESION
+                      |  EXPRESION ',' LISTA_EXPRESIONES
+
+LISTA_IDENTIFICADORES -> 'Identifier'
+                      | 'Identifier' ',' LISTA_IDENTIFICADORES
+
+LISTA_DECLARACIONES   -> TYPE LISTA_IDENTIFICADORES ';'
+                      | TYPE LISTA_IDENTIFICADORES ';' LISTA_DECLARACIONES

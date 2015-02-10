@@ -1,0 +1,33 @@
+Program
+    Block Start
+        Using
+            int
+                Variable
+                    n
+        In
+        For
+            Variable
+                a
+            Direction
+                min
+            In
+                Union
+                    Variable
+                        b
+                    Int
+                        1
+            Do
+                Assign
+                    Variable
+                            c
+                    Value
+                        Plus
+                            Variable
+                                c
+                            Times
+                                Variable
+                                    i
+                                Int
+                                    2
+        End For
+    Block End

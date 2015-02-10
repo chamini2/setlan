@@ -1,0 +1,4 @@
+program myProg {
+    def a(b):
+        return x;
+}

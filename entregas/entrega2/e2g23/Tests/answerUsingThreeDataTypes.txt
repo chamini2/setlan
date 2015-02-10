@@ -1,0 +1,39 @@
+Program
+    Block Start
+        Using
+            bool
+                Variable
+                    p
+            bool
+                Variable
+                    q
+            int
+                Variable
+                    a
+            int
+                Variable
+                    b
+            int
+                Variable
+                    c
+            set
+                Variable
+                    S
+            set
+                Variable
+                    Q
+        In
+        Print
+            Equals
+                Variable
+                    p
+                Variable
+                    q
+            Variable
+                S
+        Println
+            Variable
+                Q
+            String
+                "hola"
+    Block End

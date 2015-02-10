@@ -1,0 +1,7 @@
+program {
+    using 
+        int a,b,c;
+        set S,Q;
+    in
+    print S, a;
+}

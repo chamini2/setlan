@@ -1,0 +1,74 @@
+Gramatica para el Leguaje Setlan
+
+starting symbol: PROGRAM
+
+'id'     = \w[\w\d]*
+'number' = \d+
+
+PROGRAM -> 'program' STATEMENT
+
+STATEMENT -> 'id' '=' EXPRESSION
+          |  '{' STATEMENT_LIST '}'
+          |  '{' 'using' DECLARE_LIST 'in' STATEMENT_LIST '}'
+          |  'scan' 'id'
+          |  'print' COMMA_LIST
+          |  'println' COMMA_LIST
+          |  'if' '(' EXPRESSION ')'  STATEMENT 'else' STATEMENT
+          |  'if' '(' EXPRESSION ')'  STATEMENT
+          |  'for' 'id' 'max' EXPRESSION 'do' STATEMENT
+          |  'for' 'id' 'min' EXPRESSION 'do' STATEMENT
+          |  'while' '(' EXPRESSION ')' 'do' STATEMENT
+          |  'repeat' STATEMENT 'while' '(' EXPRESSION ')' 
+          |  'repeat' STATEMENT 'while' '(' EXPRESSION ')' 'do' STATEMENT
+
+EXPRESSION -> 'number'
+           |  'true'
+           |  'false'
+           |  'string'
+           |  'id'
+           |  '(' EXPRESSION ')'
+           |  EXPRESSION '+'   EXPRESSION
+           |  EXPRESSION '-'   EXPRESSION
+           |  EXPRESSION '*'   EXPRESSION
+           |  EXPRESSION '/'   EXPRESSION
+           |  EXPRESSION '%'   EXPRESSION
+           |  EXPRESSION 'or'  EXPRESSION
+           |  EXPRESSION 'and' EXPRESSION
+           |  EXPRESSION '<'   EXPRESSION
+           |  EXPRESSION '<='  EXPRESSION
+           |  EXPRESSION '>'   EXPRESSION
+           |  EXPRESSION '>='  EXPRESSION
+           |  EXPRESSION '=='  EXPRESSION
+           |  EXPRESSION '/='  EXPRESSION
+           |  EXPRESSION '>>'  EXPRESSION
+           |  EXPRESSION '@' EXPRESSION
+           |  EXPRESSION '<+>'   EXPRESSION
+           |  EXPRESSION '<->'  EXPRESSION
+           |  EXPRESSION '<*>'  EXPRESSION
+           |  EXPRESSION '</>' EXPRESSION
+           |  EXPRESSION '<%>' EXPRESSION
+           |  EXPRESSION '++' EXPRESSION
+           |  EXPRESSION '><' EXPRESSION
+           |  EXPRESSION '\\' EXPRESSION 
+           |  SETMAX   EXPRESSION 
+           |  SETMIN   EXPRESSION 
+           |  SETLEN   EXPRESSION 
+           |  '-' EXPRESSION
+           |  'not' EXPRESSION
+
+STATEMENT_LIST -> 
+               | STATEMENT_LIST STATEMENT ';'
+
+DECLARE_LIST -> DATA_TYPE DECLARE_COMMA_LIST ';'
+             |  DECLARE_LIST DATA_TYPE DECLARE_COMMA_LIST ';'
+
+DECLARE_COMMA_LIST -> 'id'
+                   |  DECLARE_COMMA_LIST ',' 'id'
+
+DATA_TYPE -> 'int'
+          |  'bool'
+          |  'set'
+
+COMMA_LIST -> EXPRESSION
+           |  COMMA_LIST ',' EXPRESSION
+

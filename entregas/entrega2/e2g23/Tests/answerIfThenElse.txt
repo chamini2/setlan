@@ -1,0 +1,19 @@
+Program
+    Block Start
+        If
+            Condition
+                GreaterThan
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If working!"
+            Statement False
+                Print
+                    String
+                        "Else working!"
+        End If
+    Block End

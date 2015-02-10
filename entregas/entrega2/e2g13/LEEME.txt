@@ -1,0 +1,60 @@
+Leeme.txt
+
+Grupo 13
+Manuel Gonzalez 11-10390
+Jonathan Ng 11-10199
+ 
+Decisiones de diseno
+
+     En la entrega pasada, se realizo el analizador lexicografico para el
+interprete de setlan y que funciono correctamente. Para esta entrega se corrigieron 
+algunos errores menores que surgieron en esta entrega. 
+
+      Para esta segunda etapa se pidio implementar el analizador sintactico para 
+SetLan. Para empezar se redacto una gramatica libre de contexto en notacion BNF como lo 
+sugiere PLY, dicha gramatica se encuentra en el archivo 'gramatica.txt'. 
+Esta gramatica fue transcrita al parser de PLY siguiendo el formato 
+y recomendaciones de la documentacion. Cabe destacar que dicha gramatica fue editada
+y mejorada en varias ocasiones para poder satisfacer todos los requerimientos 
+del lenguaje.
+
+      Para cada produccion de la gramatica, se crearon varias clases para poder 
+agrupar las expresiones similares y poder crear  posteriormente el arbol de 
+sintaxis abstracto. Estas clases se encuentran en el archivo 'AST.py'. 
+Cabe mencionar que por ejemplo existen clases como BinaryOp que agrupan todos 
+los operadores binarios sin importar que tipo de dato manejen ya que para esta 
+segunda etapa no es necesaria dicha comprobacion. 
+
+     Finalmente se implementaron funciones para poder imprimir correctamente por 
+pantalla el arbol de sintaxis y para esto se utilizo un sistema de identacion 
+por niveles.
+
+
+Estado Actual del Proyecto
+
+     Actualmente el parser de SetLan esta funcionando como lo esperado.
+Se corrieron varios casos de prueba, en primer lugar para los casos propuestos 
+por los preparadores del curso y este arrojado los resultados correctos.
+Tambien se crearon casos de prueba adicionales para realizar pruebas en cuanto 
+a ver si reconocia sentencias o expresiones como bloques vacios, conjuntos vacios,
+reglas de alcance para los bloques, USING IN vacios (sin declaraciones), y otros
+casos para los errores de sintaxis.
+
+      Solamente se tuvo problemas de integracion entre el parser y el lexer de 
+SetLan, ya que no se estaba claro como debia ser por lo que se decidio correr 
+el archivo principal directamente sobre el archivo de parser 'setlan.py'
+
+Comentarios
+     El proyecto esta siendo desarrollado sobre la plataforma de Windows, aunque 
+para todas las entregas se ejecuta en Linux para poder cambiar los permisos de 
+ejecucion y correr los casos de prueba pertinentes.
+
+      El unico incoveniente que presenta actualmente es con respecto a la ejecucion
+en Linux. Se probo ejecutando el archivo sobre el interprete de Python
+
+$ python setlan.py <nombreArchivo> , y su comportamiento fue el esperado. 
+
+     El problema reside en ejecutar directamente el archivo usando comandos como
+$ ./setlan <nombreArchivo>. En el caso de nuestras maquinas no fue posible 
+ejecutarlo de esta manera, aunque se cree que el problema es por falta
+de configuracion en estas.

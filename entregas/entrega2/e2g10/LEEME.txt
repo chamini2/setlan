@@ -1,0 +1,44 @@
+## Interpretador del lenguaje Setlan.
+## Etapa 2.
+## Autores:  - Mónica Figuera   11-10328
+##           - Carlos Spaggiari 11-10987
+
+** 1. Estado actual del proyecto. **
+
+Con la etapa 2 del proyecto, se está realizando el análisis lexicográfico
+y sintáctico para el interpretador del lenguaje Setlan.
+
+Primero se verifica que todo programa del lenguaje tenga los tokens válidos
+del mismo y luego que la sintaxis del programa sea la correcta, mostrando
+el análisis sintáctico realizado mediante el AST.
+
+
+** 2. Problemas presentes. **
+
+Se produjeron algunos shitf-reduce conflicts que fueron resueltos modificando
+la precedencia de los operadores y algunas reglas en la gramática.
+Por ejemplo, en el caso de:
+if (cond)
+	if (cond)
+		inst
+	else
+		inst
+
+Se agregó la regla de precedencia:
+    ('right','ELSE'),
+
+para que al encontrar un else luego de un paréntesis el analizador asociara
+ese else al nivel del primer if anterior.
+
+
+** 3. Comentarios. **
+
+Aunque reglas como string, identifier y number no eran estrictamente necesarias
+a efectos de la gramática pues cada producción solo contiene su token; es decir:
+
+string -> STRING
+identifier -> IDENTIFIER
+number -> NUMBER,
+
+se decidió crearlas para hacer una impresión más legible del AST, poniendo
+el tipo de token encontrado en el output. 

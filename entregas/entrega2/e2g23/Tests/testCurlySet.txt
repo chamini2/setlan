@@ -1,0 +1,8 @@
+program {
+    using
+        set S;
+        int a,b,c;
+    in
+    S = {b,4,a};
+    println S;
+}

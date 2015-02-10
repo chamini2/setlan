@@ -1,0 +1,8 @@
+# Lenguaje de programacion para el proyecto: Ruby
+# Etapa del proyecto: Parse
+# Autores: Jose Peña 11-10775 y Amin Arria 
+
+# Decisiones de Implementacion: Todo surgio bien, decidimos hacerlo con estados, donde cada estado de la gramatica iba a ser una funcion y estas se llamaban entre si, realmente no tuvimos muchos problemas, excepto por el print especificado alla abajo. Tambien vale destacar que no estabamos muy seguros con las instrucciones que terminaban en ; y las que no.
+
+# Estado del proyecto: Buen estado
+# Problemas presentes: print a*a

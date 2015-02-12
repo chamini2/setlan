@@ -1,0 +1,50 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+"""Interpreter for RangeX Language
+CI3725 - Entrega 2 Grupo 7.
+Alberto Cols, 09-10177
+Matteo Ferrando, 09-10285
+"""
+
+import parser
+
+
+def main(argv=None):
+    import sys      # argv, exit
+
+    if argv is None:
+        argv = sys.argv
+
+    if len(argv) == 1:
+        print "ERROR: No input file"
+        return
+    elif len(argv) > 2:
+        print "ERROR: Invalid number of arguments"
+        return
+
+    try:
+        # Opens and reads file to interpret
+        file_string = open(argv[1], 'r').read()
+    except IOError:
+        print "ERROR: Must give an input file"
+        return
+
+    ast = parser.parsing(file_string)
+
+    # Check for Overflow or Unexpected character errors
+    if parser.lexer_error:
+        ast = None
+        for error in parser.lexer_error:
+            print error
+    # Check for Syntax errors
+    elif parser.parser_error:
+        ast = None
+        for error in parser.parser_error:
+            print error
+    else:
+        print ast
+
+
+if __name__ == "__main__":
+    main()

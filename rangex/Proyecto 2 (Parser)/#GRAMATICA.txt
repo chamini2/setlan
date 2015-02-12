@@ -1,0 +1,68 @@
+Grammar for RangeX Programming Language
+
+starting symbol: PROGRAM
+
+'id'     = \w[\w\d]*
+'number' = \d+
+
+PROGRAM -> 'program' STATEMENT
+
+STATEMENT -> 'id' '=' EXPRESSION
+          |  'begin' STATEMENT_LIST 'end'
+          |  'begin' 'declare' DECLARE_LIST STATEMENT_LIST 'end'
+          |  'read' 'id'
+          |  'write' COMMA_LIST
+          |  'writeln' COMMA_LIST
+          |  'if' EXPRESSION 'then' STATEMENT
+          |  'if' EXPRESSION 'then' STATEMENT 'else' STATEMENT
+          |  'case' EXPRESSION 'of' CASE_LIST 'end'
+          |  'for' 'id' 'in' EXPRESSION 'do' STATEMENT
+          |  'while' EXPRESSION 'do' STATEMENT
+
+EXPRESSION -> 'number'
+           |  'true'
+           |  'false'
+           |  EXPRESSION '..' EXPRESSION
+           |  'string'
+           |  'id'
+           |  '(' EXPRESSION ')'
+           |  EXPRESSION '+'   EXPRESSION
+           |  EXPRESSION '-'   EXPRESSION
+           |  EXPRESSION '*'   EXPRESSION
+           |  EXPRESSION '/'   EXPRESSION
+           |  EXPRESSION '%'   EXPRESSION
+           |  EXPRESSION '<>'  EXPRESSION
+           |  EXPRESSION 'or'  EXPRESSION
+           |  EXPRESSION 'and' EXPRESSION
+           |  EXPRESSION '<'   EXPRESSION
+           |  EXPRESSION '<='  EXPRESSION
+           |  EXPRESSION '>'   EXPRESSION
+           |  EXPRESSION '>='  EXPRESSION
+           |  EXPRESSION '=='  EXPRESSION
+           |  EXPRESSION '/='  EXPRESSION
+           |  EXPRESSION '>>'  EXPRESSION
+           |  '-' EXPRESSION
+           |  'rtoi'   '(' EXPRESSION ')'
+           |  'length' '(' EXPRESSION ')'
+           |  'top'    '(' EXPRESSION ')'
+           |  'bottom' '(' EXPRESSION ')'
+           |  'not' EXPRESSION
+
+STATEMENT_LIST -> STATEMENT
+               |  STATEMENT_LIST ';' STATEMENT
+
+DECLARE_LIST -> DECLARE_COMMA_LIST 'as' DATA_TYPE
+             |  DECLARE_LIST ';' DECLARE_COMMA_LIST 'as' DATA_TYPE
+
+DECLARE_COMMA_LIST -> 'id'
+                   |  DECLARE_COMMA_LIST ',' 'id'
+
+DATA_TYPE -> 'int'
+          |  'bool'
+          |  'range'
+
+COMMA_LIST -> EXPRESSION
+           |  COMMA_LIST ',' EXPRESSION
+
+CASE_LIST -> EXPRESSION '->' STATEMENT
+          |  CASE_LIST EXPRESSION '->' STATEMENT

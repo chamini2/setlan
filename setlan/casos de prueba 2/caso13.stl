@@ -1,0 +1,31 @@
+# Precedencia 4
+
+program {
+	using bool b; in
+	b = >? {4,1,2} /= 4 * 1;
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             bool b
+#         IN
+#         ASSIGN
+#             variable
+#                 b
+#             value
+#                 UNEQUAL /=
+#                     MAX >?
+#                         set
+#                             int
+#                                 4
+#                             int
+#                                 1
+#                             int
+#                                 2
+#                     TIMES *
+#                         int
+#                             4
+#                         int
+#                             1
+#     BLOCK_END

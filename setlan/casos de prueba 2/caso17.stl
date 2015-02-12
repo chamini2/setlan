@@ -1,0 +1,11 @@
+# Error 5
+
+program {
+	print "Solo se puede declarar al comienzo de un bloque"
+	using 
+		int x;
+	in
+	print x;
+}
+
+# ERROR: unexpected token 'using' at line 5, column 2

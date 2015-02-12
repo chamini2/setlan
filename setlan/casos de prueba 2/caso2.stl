@@ -1,0 +1,46 @@
+# Alcance del Else
+
+program {
+	using bool b; in
+
+	b = true;
+
+	if (b)
+		if (b)
+			print "soy el segundo if"
+		else
+			print "soy el else del segundo if"
+	;
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             bool b
+#         IN
+#         ASSIGN
+#             variable
+#                 b
+#             value
+#                 bool
+#                     true
+#         IF
+#             condition
+#                 variable
+#                     b
+#             THEN
+#                 IF
+#                     condition
+#                         variable
+#                             b
+#                     THEN
+#                         PRINT
+#                             elements
+#                                 string
+#                                     "soy el segundo if"
+#                     ELSE
+#                         PRINT
+#                             elements
+#                                 string
+#                                     "soy el else del segundo if"
+#     BLOCK_END

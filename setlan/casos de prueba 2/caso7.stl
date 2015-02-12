@@ -1,0 +1,37 @@
+# Asociatividad 1
+
+program {
+	using bool n; in
+	n = {0,1,2} == 2 <+> {1,2,0,2}; 
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             bool n
+#         IN
+#         ASSIGN
+#             variable
+#                 n
+#             value
+#                 EQUAL ==
+#                     set
+#                         int
+#                             0
+#                         int
+#                             1
+#                         int
+#                             2
+#                     SETPLUS <+>
+#                         int
+#                             2
+#                         set
+#                             int
+#                                 1
+#                             int
+#                                 2
+#                             int
+#                                 0
+#                             int
+#                                 2
+#     BLOCK_END

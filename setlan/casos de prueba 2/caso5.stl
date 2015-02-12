@@ -1,0 +1,51 @@
+program {
+	println "Aprendí a contar! mira: ";
+
+	for i min {2, 1, 3, 5, 6, 4, 9, 7, 8} do {
+		println i;
+	};
+}
+
+# PROGRAM
+#     BLOCK
+#         PRINT
+#             elements
+#                 string
+#                     "Aprendí a contar! mira: "
+#                 string
+#                     "\n"
+#         FOR
+#             variable
+#                 i
+#             direction
+#                 min
+#             IN
+#             set
+#                 int
+#                     2
+#                 int
+#                     1
+#                 int
+#                     3
+#                 int
+#                     5
+#                 int
+#                     6
+#                 int
+#                     4
+#                 int
+#                     9
+#                 int
+#                     7
+#                 int
+#                     8
+#             DO
+#                 BLOCK
+#                     PRINT
+#                         elements
+#                             variable
+#                                 i
+#                             string
+#                                 "\n"
+#                 BLOCK_END
+#     BLOCK_END

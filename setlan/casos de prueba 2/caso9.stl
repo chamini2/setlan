@@ -1,0 +1,12 @@
+# Error 2
+
+program {
+	if (true)
+		print "colocar ; antes de un else es incorrecto";
+	;
+	else 
+		print "No sé qué escribir aquí";
+	;
+}
+
+ERROR: unexpected token ';' at line 6, column 2

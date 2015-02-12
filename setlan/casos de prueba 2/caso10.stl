@@ -1,0 +1,9 @@
+# Error 3
+
+program {
+	if true
+		print "No colocar la condición de un if entre paréntesis es incorrecto";
+	;	
+}
+
+# ERROR: unexpected token 'true' at line 4, column 5

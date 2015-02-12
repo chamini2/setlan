@@ -1,0 +1,27 @@
+# While
+
+program {
+	using bool tuMeIgnoras; in
+
+	while (tuMeIgnoras) do {
+		print "El semaforo se pone rojo cuando me ve";
+	};
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             bool tuMeIgnoras
+#         IN
+#         WHILE
+#             condition
+#                 variable
+#                     tuMeIgnoras
+#         DO
+#             BLOCK
+#                 PRINT
+#                     elements
+#                         string
+#                             "El semaforo se pone rojo cuando me ve"
+#             BLOCK_END
+#     BLOCK_END

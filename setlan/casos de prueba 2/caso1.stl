@@ -1,0 +1,40 @@
+# IF and ELSE
+
+program {
+	using int x; in
+
+	scan x;
+
+	if (x < 0)
+		print "negativo"
+	else
+		print "no negativo"
+	;
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             int x
+#         IN
+#         SCAN
+#             variable
+#                 x
+#         IF
+#             condition
+#                 LESSEQ <=
+#                     variable
+#                         x
+#                     int
+#                         0
+#             THEN
+#                 PRINT
+#                     elements
+#                         string
+#                             "negativo"
+#             ELSE
+#                 PRINT
+#                     elements
+#                         string
+#                             "no negativo"
+#     BLOCK_END

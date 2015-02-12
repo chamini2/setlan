@@ -1,0 +1,14 @@
+# Instrucción vacía
+
+program {
+	using 
+		bool x;
+	in
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             bool x
+#         IN
+#     BLOCK_END

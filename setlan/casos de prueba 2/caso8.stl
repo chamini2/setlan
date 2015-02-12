@@ -1,0 +1,40 @@
+# Precedencia 2
+
+program {
+	using int a; in
+	a = 1;
+	print 2 + 4 * 3 - 8 / 5 % -a;
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             int a
+#         IN
+#         ASSIGN
+#             variable
+#                 a
+#             value
+#                 int
+#                     1
+#         PRINT
+#             elements
+#                 MINUS -
+#                     PLUS +
+#                         int
+#                             2
+#                         TIMES *
+#                             int
+#                                 4
+#                             int
+#                                 3
+#                     MODULO %
+#                         DIVIDE /
+#                             int
+#                                 8
+#                             int
+#                                 5
+#                         NEGATE -
+#                             variable
+#                                 a
+#     BLOCK_END

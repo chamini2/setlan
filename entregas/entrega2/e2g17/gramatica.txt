@@ -1,0 +1,246 @@
+# # # # # # # # # # # # # # # # # # # # # # # 
+    TRADUCTORES E INTERPRETADORES CI3725
+    Segunda entrega del proyecto.
+    Gramatica del Lenguaje Setlan
+    Autores-> Carlos Martínez - 11-10584
+         Christian Teixeira - 11-11016
+# # # # # # # # # # # # # # # # # # # # # # # 
+
+# Reglas de Precedencia (Menor a Mayor)
+
+    # Operadores sobre bool
+    ('OR')
+    ('AND')
+    ('NOT')
+
+    # Operadores comparativos
+    ('LESSTHAN', 'GREATERTHAN', 'LTOREQUAL', 'GTOREQUAL')
+    ('EQUAL', 'NOTEQUAL')
+
+    # Operadores aritmeticos
+    ('PLUS', 'MINUS')
+    ('ASTERISK', 'INTDIV', 'PERCENT')
+    ('UMINUS')
+
+    # Operadores sobre conjuntos
+    ('UNION', 'COMPLEMENT')
+    ('INTERSECTION')
+
+    # Operadores entre conjuntos-aritmeticas
+    ('SETSUM', 'SETSUBSTRACT')
+    ('SETMULT', 'SETDIV', 'SETMOD')
+    ('ARROBA')
+
+    # Operadores unarios sobre conjuntos
+    ('SETMAX', 'SETMIN', 'SETLENGTH')
+
+# Producciones de la Gramatica
+
+program -> PROGRAM start
+
+
+start -> print
+        | block
+        | empty
+
+
+block -> LCURLY RCURLY
+        | LCURLY print_inblock RCURLY
+        | LCURLY instr_block RCURLY
+        | LCURLY using instr_block RCURLY
+
+
+instr -> print
+        | condition
+        | loop
+        | for_loop
+        | empty
+
+
+instr_block -> assign instr_block
+              | scan instr_block
+              | print_inblock instr_block
+              | condition_block instr_block
+              | loop_block instr_block
+              | for_loop_block instr_block
+              | empty
+
+
+using -> USING vardec IN
+
+
+vardec -> type var_list SEMICOLON
+        | type var_list SEMICOLON vardec
+
+
+type -> INT
+        | BOOL
+        | SET
+
+
+var_list -> identifier
+            | identifier COMMA var_list
+
+
+assign -> identifier ASSIGN assign_expr SEMICOLON
+
+
+assign_expr -> expr
+               | setexpr
+               | boolexpr
+
+
+scan -> SCAN identifier SEMICOLON
+
+
+print -> PRINT elements
+
+
+print_inblock -> PRINT elements SEMICOLON
+
+
+print -> PRINTLN elements
+
+
+print_inblock -> PRINTLN elements SEMICOLON
+
+
+elements -> expr
+            | setexpr
+            | boolexpr
+            | elements COMMA elements
+
+
+elements -> STRING
+
+
+integer -> INTEGER
+
+
+term -> integer
+
+
+identifier -> IDENTIFIER
+
+
+term -> identifier
+
+
+expr -> term
+        | LPAREN expr RPAREN
+        | MINUS expr %prec UMINUS
+
+
+expr -> expr PLUS expr
+        | expr MINUS expr
+        | expr ASTERISK expr
+        | expr INTDIV expr
+        | expr PERCENT expr
+
+
+set -> LCURLY setelem RCURLY
+       | identifier
+
+
+setelem -> expr
+           | expr COMMA setelem
+
+
+setexpr -> LPAREN setexpr RPAREN
+
+
+setexpr -> set
+           | setexpr UNION setexpr
+           | setexpr INTERSECTION setexpr
+           | setexpr COMPLEMENT setexpr
+
+
+setexpr -> term SETSUM set
+           | term SETSUBSTRACT set
+           | term SETMULT set
+           | term SETDIV set
+           | term SETMOD set
+
+
+setexpr -> SETMAX set
+           | SETMIN set
+           | SETLENGTH set
+
+
+boolexpr -> term
+            | NOT boolexpr
+            | LPAREN boolexpr RPAREN
+
+
+boolexpr -> TRUE
+            | FALSE
+
+
+boolexpr -> boolexpr AND boolexpr
+            | boolexpr OR boolexpr
+
+
+boolexpr -> term LESSTHAN term
+            | term GREATERTHAN term
+            | term LTOREQUAL term
+            | term GTOREQUAL term
+            | term EQUAL term
+            | term NOTEQUAL term
+
+
+boolexpr -> set EQUAL set
+            | set NOTEQUAL set
+
+
+boolexpr -> term ARROBA set
+
+
+condition -> IF LPAREN boolexpr RPAREN instr
+             | IF LPAREN boolexpr RPAREN instr ELSE instr
+             | IF LPAREN boolexpr RPAREN instr ELSE instr_block
+             | IF LPAREN boolexpr RPAREN instr_block ELSE instr
+
+
+condition_block -> IF LPAREN boolexpr RPAREN block
+                   | IF LPAREN boolexpr RPAREN instr ELSE block SEMICOLON
+                   | IF LPAREN boolexpr RPAREN instr_block ELSE block SEMICOLON
+                   | IF LPAREN boolexpr RPAREN block ELSE instr
+                   | IF LPAREN boolexpr RPAREN block ELSE instr_block
+                   | IF LPAREN boolexpr RPAREN block ELSE block SEMICOLON
+                   | condition
+
+
+loop -> REPEAT instr WHILE LPAREN boolexpr RPAREN DO instr SEMICOLON
+        | REPEAT instr WHILE LPAREN boolexpr RPAREN DO instr_block SEMICOLON
+        | REPEAT instr_block WHILE LPAREN boolexpr RPAREN DO instr
+        | REPEAT instr_block WHILE LPAREN boolexpr RPAREN DO instr_block
+        | REPEAT instr WHILE LPAREN boolexpr RPAREN
+        | REPEAT instr_block WHILE LPAREN boolexpr RPAREN
+
+
+loop -> WHILE LPAREN boolexpr RPAREN DO instr
+        | WHILE LPAREN boolexpr RPAREN DO instr_block
+
+
+loop_block -> REPEAT instr WHILE LPAREN boolexpr RPAREN DO block SEMICOLON
+              | REPEAT instr_block WHILE LPAREN boolexpr RPAREN DO block
+              | REPEAT block WHILE LPAREN boolexpr RPAREN DO instr
+              | REPEAT block WHILE LPAREN boolexpr RPAREN DO instr_block
+              | REPEAT block WHILE LPAREN boolexpr RPAREN DO block SEMICOLON
+              | REPEAT block WHILE LPAREN boolexpr RPAREN
+              | loop
+
+
+loop_block -> WHILE LPAREN boolexpr RPAREN DO block SEMICOLON
+
+
+for_loop -> FOR identifier direction setexpr DO instr
+            | FOR identifier direction setexpr DO instr_block
+
+
+for_loop_block -> FOR identifier direction setexpr DO block
+                  | for_loop
+
+
+direction -> MIN
+             | MAX

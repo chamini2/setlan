@@ -1,0 +1,43 @@
+
+    program
+        if (true) {
+            print "a";
+            print "b";
+        } else {
+            if (true)
+                print "c"
+            ;
+
+            if (true) {
+                print "d";
+                print "d";
+            };
+
+            if (true) {
+                print "e";
+                print "e";
+            } else {
+                print "f";
+                print "f";
+            };
+
+            if (true) {
+                print "g";
+                print "g";
+            } else
+                print "h"
+            ;
+
+            if (true)
+                print "i"
+            else
+                print "j"
+            ;
+
+            if (true)
+                print "k"
+            else {
+                print "l";
+                print "l";
+            };
+        }

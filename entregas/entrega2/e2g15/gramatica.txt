@@ -1,0 +1,80 @@
+#Autor: Roberto Romero 10-10642
+#Grupo: 15
+#Fecha: 8/02/2015
+#
+#proyecto 2 Traductores e interpretadores ci3725
+#
+#-----------------------------------------------
+#gramatica del lenguaje setlan
+#-----------------------------------------------
+
+0     S            -> program
+1     program      -> TokenProgram instruction
+2     instructions -> assign
+                      | scan
+                      | declare
+                      | using
+                      | print
+                      | println
+                      | if
+                      | while
+                      | for
+                      | block
+3     instruction  -> instructions
+                      | instructions TokenSemicolon instruction
+4     block        -> TokenOpenCurly instruction TokenCloseCurly
+5     using        -> TokenUsing instruction TokenIn instruction  
+6     if           -> if_then
+                      | if_then_else
+7     if_then      -> TokenIf expression TokenThen instructions
+8     if_then_else -> TokenIf expression TokenThen instructions TokenElse instructions
+9     while        -> TokenWhile expression TokenDo instructions
+10    for          -> TokenFor id TokenMin expression TokenDo instruction
+11    declare      -> empty
+12    declare      -> type id
+13    declare      -> type list_id
+14    print        -> TokenPrint list
+15    println      -> TokenPrintln list
+16    list         -> id TokenComma list
+                      | string TokenComma list
+17    assign       -> id TokenAssign expression
+18    assign_set   -> id TokenAssign TokenOpenCurly list_number TokenCloseCurly
+19    scan         -> TokenScan id
+20    expression   -> expression TokenPlus expression
+                     | expression TokenMinus expression
+                     | expression TokenMultiply expression
+                     | expression TokenSetdivide expression
+                     | expression TokenUnion expression
+                     | expression TokenIntersection expression
+                     | expression TokenSetmod expression
+                     | expression TokenSetplus expression
+                     | expression TokenSetmultiply expression
+                     | expression TokenMod expression
+                     | expression TokenDivide expression
+                     | expression TokenOr expression
+                     | expression TokenAnd expression
+                     | expression TokenMinor expression
+                     | expression TokenGreater expression
+                     | expression TokenMinorequal expression
+                     | expression TokenGreaterequal expression
+                     | expression TokenEquals expression
+                     | expression TokenNotequal expression
+                     | paren 
+                     | bool
+                     | id
+                     | number
+21    paren        -> TokenParenL expression TokenParenR
+22    function     -> function_id paren
+23    function_id  -> TokenSetgreater
+                      | TokenSetminor
+                      | TokenSetelements
+                      | TokenSetin
+24    type         -> TokenInt 
+                      | TokenBool 
+                      | TokenSet
+25    bool         -> TokenTrue
+                      | TokenFalse
+26    number       -> TokenNumber
+27    id           -> TokenID
+28    string       -> TokenString
+29    empty        -> λ

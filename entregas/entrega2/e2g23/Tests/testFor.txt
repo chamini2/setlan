@@ -1,0 +1,8 @@
+program {
+    using
+        int n;
+    in
+
+    for a min b ++ 1 do
+        c = c + i * 2
+}

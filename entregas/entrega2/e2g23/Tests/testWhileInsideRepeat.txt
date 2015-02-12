@@ -1,0 +1,28 @@
+program {
+    while (count <= n) do {
+        println "fib(", count, ") = ", low;
+        count = count + 1;
+
+        repeat{
+            f = e or a + b @ c ++ d;
+            
+            repeat
+                f = e or a + b @ c ++ d
+            while (not f) do
+                e = a < b or f;
+
+        }while ($? f < 100);
+    };
+
+    repeat{
+        f = e or a + b @ c ++ d;
+        while (a < f) do {
+            a = b + a;
+            f = f - 1;
+        };
+    }while (not f) do
+        {   e = a < b or f;
+            for i min d ++ c do
+            c = c + 2 + i;
+        };
+}

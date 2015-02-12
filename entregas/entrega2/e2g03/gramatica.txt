@@ -1,0 +1,80 @@
+Grammar
+
+Rule 0     S' -> inicio
+Rule 1     inicio -> PROGRAM instruccion
+Rule 2     instruccion -> asignacion
+Rule 3     instruccion -> if
+Rule 4     instruccion -> scan
+Rule 5     instruccion -> print
+Rule 6     instruccion -> for
+Rule 7     instruccion -> repeat
+Rule 8     instruccion -> bloque
+Rule 9     instruccion -> empty
+Rule 10    asignacion -> ID EQUALS expresion
+Rule 11    if -> IF expresion instruccion else
+Rule 12    else -> empty
+Rule 13    else -> ELSE instruccion
+Rule 14    else -> ELSE bloque SEMICOLON
+Rule 15    scan -> SCAN ID
+Rule 16    print -> PRINT lista
+Rule 17    print -> PRINTLN lista
+Rule 18    lista -> expresion
+Rule 19    lista -> STRING
+Rule 20    lista -> lista COMMA expresion
+Rule 21    lista -> lista COMMA STRING
+Rule 22    orden -> MIN
+Rule 23    orden -> MAX
+Rule 24    for -> FOR ID orden expresion DO instruccion
+Rule 25    repeat -> REPEAT instruccion WHILE expresion
+Rule 26    repeat -> REPEAT instruccion WHILE expresion DO instruccion
+Rule 27    repeat -> WHILE expresion DO instruccion
+Rule 28    bloque -> OPENCURLY listainstruc CLOSECURLY
+Rule 29    bloque -> OPENCURLY USING listad SEMICOLON IN listainstruc CLOSECURLY
+Rule 30    listad -> tipo listacoma
+Rule 31    listad -> listad SEMICOLON tipo listacoma
+Rule 32    listacoma -> ID
+Rule 33    listacoma -> listacoma COMMA ID
+Rule 34    tipo -> INT
+Rule 35    tipo -> SET
+Rule 36    tipo -> BOOL
+Rule 37    listainstruc -> instruccion
+Rule 38    listainstruc -> listainstruc SEMICOLON instruccion
+Rule 39    empty -> <empty>
+Rule 40    expresion -> NUMBER
+Rule 41    expresion -> TRUE
+Rule 42    expresion -> FALSE
+Rule 43    expresion -> ID
+Rule 44    expresion -> OPENPAREN expresion CLOSEPAREN
+Rule 45    expresion -> expresion PLUS expresion
+Rule 46    expresion -> expresion MINUS expresion
+Rule 47    expresion -> expresion TIMES expresion
+Rule 48    expresion -> expresion DIVIDE expresion
+Rule 49    expresion -> expresion MOD expresion
+Rule 50    expresion -> MINUS expresion
+Rule 51    expresion -> NOT expresion
+Rule 52    expresion -> MAXSET expresion
+Rule 53    expresion -> MINSET expresion
+Rule 54    expresion -> NSET expresion
+Rule 55    expresion -> set
+Rule 56    expresion -> expresion INTERSECTION expresion
+Rule 57    expresion -> expresion DIF expresion
+Rule 58    expresion -> expresion UNION expresion
+Rule 59    expresion -> expresion PLUSSET expresion
+Rule 60    expresion -> expresion MINUSSET expresion
+Rule 61    expresion -> expresion TIMESSET expresion
+Rule 62    expresion -> expresion DIVIDESET expresion
+Rule 63    expresion -> expresion MODSET expresion
+Rule 64    expresion -> expresion COMPARE expresion
+Rule 65    expresion -> expresion AT expresion
+Rule 66    expresion -> expresion AND expresion
+Rule 67    expresion -> expresion OR expresion
+Rule 68    expresion -> expresion NOT expresion
+Rule 69    expresion -> expresion LESSEQUALS expresion
+Rule 70    expresion -> expresion GREATEREQUALS expresion
+Rule 71    expresion -> expresion NOTEQUALS expresion
+Rule 72    expresion -> expresion LESS expresion
+Rule 73    expresion -> expresion GREATER expresion
+Rule 74    set -> OPENCURLY numeros CLOSECURLY
+Rule 75    numeros -> expresion sig
+Rule 76    sig -> COMMA expresion sig
+Rule 77    sig -> empty

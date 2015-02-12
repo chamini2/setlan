@@ -1,0 +1,31 @@
+Program
+    Block Start
+        Repeat
+            Assign
+                Variable
+                        f
+                Value
+                    Or
+                        Variable
+                            e
+                        Contains
+                            Plus
+                                Variable
+                                    a
+                                Variable
+                                    b
+                            Union
+                                Variable
+                                    c
+                                Variable
+                                    d
+        While
+            Condition
+                LessThan
+                    Len
+                        Variable
+                            f
+                    Int
+                        100
+        End Repeat
+    Block End

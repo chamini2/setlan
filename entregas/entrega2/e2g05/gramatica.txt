@@ -1,0 +1,118 @@
+'''programa : tokprogram opencurly bloque closecurly
+				| tokprogram instruccion
+				| tokprogram opencurly closecurly'''
+
+'''comentario : comment
+				  | comentario comment'''
+
+'''bloque : tokusing declaracion tokin instruccion'''
+
+'''idd : id'''
+
+'''num : number'''
+
+'''str : string'''
+
+'''declaracion : declaracion tipo idd semicolon
+				| declaracion tipo idd assignment expresion semicolon'''
+
+'''asignacion : idd assignment expresion semicolon
+				  | idd assignment expresion'''
+
+'''bool : toktrue
+			| tokfalse'''
+
+'''set : tokset'''
+
+'''expresion : toknot expresion'''
+
+'''expresion : minus expresion
+			 	 | maxset expresion
+				 | minset expresion
+				 | lenset expresion'''
+
+
+'''expresion : idd
+				 | num
+				 | bool
+				 | set'''
+
+
+'''tipo : tokint
+			| tokset
+			| tokbool'''
+
+
+'''expresion     : expresion plus expresion
+					 | expresion minus expresion
+					 | expresion multip expresion
+					 | expresion div expresion
+					 | expresion modset expresion
+					 | expresion mod expresion
+					 | expresion union expresion
+					 | expresion different expresion
+					 | expresion intersection expresion
+					 | expresion sumset expresion
+					 | expresion minusset expresion
+					 | expresion multipset expresion
+					 | expresion divset expresion
+					 | expresion tokor expresion
+					 | expresion tokand expresion
+					 | expresion less expresion
+					 | expresion equalsless expresion
+					 | expresion greater expresion
+					 | expresion equalsgreater expresion
+					 | expresion equals expresion
+					 | expresion distinto expresion
+					 | expresion arroba expresion'''
+
+'''expresion : leftparen expresion rightparen'''
+
+'''lectura : tokscan idd semicolon'''
+
+'''escritura : tokprint argCadena semicolon 
+				 | tokprint argCadena'''
+
+'''escritura : tokprintln argCadena semicolon
+				 | tokprintln argCadena'''
+
+'''argCadena : argCadena comma caracteres'''
+
+'''argCadena : caracteres'''
+
+'''caracteres : str
+				  | expresion'''
+
+'''instruccion : instruccion instr_base'''
+
+'''instruccion : instr_base'''
+
+'''instr_base : asignacion
+				  | lectura
+				  | escritura
+				  | condicional
+				  | for
+				  | while
+				  | bloque
+				  | repeat'''
+
+'''condicional : tokif expresion instruccion 
+	               | tokif expresion instruccion tokelse instruccion 
+	               | tokelse instruccion
+	               | tokif expresion opencurly instruccion closecurly semicolon
+	               | tokelse opencurly instruccion closecurly'''
+
+''' direccion : tokmin
+				  | tokmax'''
+
+'''for : tokfor idd direccion expresion tokdo instruccion semicolon
+		   | tokfor idd direccion expresion tokdo instruccion '''
+
+'''while : tokwhile expresion tokdo  opencurly instruccion closecurly semicolon
+	         | tokwhile expresion semicolon
+	         | tokwhile expresion tokdo instruccion'''
+
+'''repeat : tokrepeat instruccion while'''
+	
+
+	

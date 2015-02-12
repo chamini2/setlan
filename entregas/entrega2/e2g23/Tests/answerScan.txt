@@ -1,0 +1,25 @@
+Program
+    Block Start
+        Using
+            int
+                Variable
+                    a
+            int
+                Variable
+                    c
+            bool
+                Variable
+                    b
+        In
+        Scan
+            Variable
+                a
+        Scan
+            Variable
+                b
+        Print
+            Variable
+                b
+            Variable
+                a
+    Block End

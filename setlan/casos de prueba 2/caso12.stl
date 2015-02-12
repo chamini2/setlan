@@ -1,0 +1,38 @@
+# Precedencia 3
+
+program {
+	using bool b; in
+	b = 7 < 5 or 9 >= 8 and 2 <= 3 or not b;
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             bool b
+#         IN
+#         ASSIGN
+#             variable
+#                 b
+#             value
+#                 OR or
+#                     OR or
+#                         LESS <
+#                             int
+#                                 7
+#                             int
+#                                 5
+#                         AND and
+#                             GREATEREQ >=
+#                                 int
+#                                     9
+#                                int
+#                                     8
+#                             LESSEQ <=
+#                                 int
+#                                     2
+#                                 int
+#                                     3
+#                     NOT not
+#                         variable
+#                             b
+#     BLOCK_END

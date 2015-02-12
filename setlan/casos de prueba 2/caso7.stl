@@ -1,37 +1,47 @@
-# Asociatividad 1
+# Precedencia 1
 
 program {
 	using bool n; in
-	n = {0,1,2} == 2 <+> {1,2,0,2}; 
+	n = {0,1,2} == 2 <+> {1,2,0,2} ++ {1,2,3,4}; 
 }
 
 # PROGRAM
-#     BLOCK
+#     BLOCK
 #         USING
-#             bool n
-#         IN
+#             bool n
+#         IN
 #         ASSIGN
-#             variable
-#                 n
-#             value
+#             variable
+#                 n
+#             value
 #                 EQUAL ==
-#                     set
+#                     set
 #                         int
-#                             0
+#                             0
 #                         int
-#                             1
-#                         int
-#                             2
-#                     SETPLUS <+>
+#                            1
 #                         int
 #                             2
+#                     UNION ++
+#                         SETPLUS <+>
+#                             int
+#                                 2
+#                             set
+#                                 int
+#                                     1
+#                                 int
+#                                     2
+#                                 int
+#                                     0
+#                                 int
+#                                     2
 #                         set
 #                             int
-#                                 1
-#                             int
-#                                 2
-#                             int
-#                                 0
+#                                 1
 #                             int
 #                                 2
+#                             int
+#                                 3
+#                             int
+#                                 4
 #     BLOCK_END

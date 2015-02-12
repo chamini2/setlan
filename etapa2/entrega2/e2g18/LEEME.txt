@@ -1,0 +1,23 @@
+									#___________EQUIPO 18___________#
+									#								#
+									#  Emmanuel De Aguiar  10-10179 #	
+									#  Daniel Pelayo	   10-10539 #
+									#								#
+									#		 SetLan-Entrega 2       #
+									#_______________________________#
+
+- Decisiones de implementacion
+	Para el implemento de este interpretador y traductor se decidio usar el lenguaje Python por
+	el dominio que tenemos con este lenguaje
+- Estado actual del proyecto
+	El proyecto actualmente se encuentra en la segunda fase (PARSER), que se enfoca en el 
+diseño de la gramática libre de contexto del lenguaje y la implementación de un reconocedor para ella.
+- Problemas presentes
+	Actualmente no nos encontramos con ningun problema en el desarrollo de esta segunda etapa.
+- Cualquier comentario respecto al proyecto que consideren necesario
+	Es necesario comentar la resolución de errores o faltas presentes en la primera entrega. Se modifico 
+el lexer para que restringiera la representación de numeros a enteros de 32 bits. Ademas se elimina 
+el TokenThen,TokenDef,TokenReturn, ya que se vio que ‘then’ no era una palabra reservada del lenguaje a desarrollar y que
+el lenguaje SetLan no posee funciones.
+
+________________________________________________________________________________________________________________

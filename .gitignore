@@ -1,6 +1,6 @@
 .DS_Store
-setlan/parser.out
-setlan/parsetab.py
+parser.out
+parsetab.py
 *.out
 # Byte-compiled / optimized / DLL files
 __pycache__/

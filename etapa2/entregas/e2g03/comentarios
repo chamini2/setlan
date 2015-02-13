@@ -2,7 +2,7 @@
 - instrucción vacía
 - 8 shift/reduce
 - precedencias mal
-- el parser "explota" por un None
+- el parser "explota" por un None           -0.5
 - usan `;` como separador, no terminador    -0.15
 - imprimen direcciones de memoria
 - no colocan paréntesis en if ()

@@ -1,0 +1,3 @@
+- string no reconoce caracter especial `\n`
+- tienen token `:` y `->`, ya no forman parte del lenguaje
+- considerar overflow/underflow de los enteros leídos

@@ -1,6 +1,8 @@
 .DS_Store
-setlan/parser.out
-setlan/parsetab.py
+parser.out
+parsetab.py
+.cabal-sandbox
+cabal.sandbox.config
 *.out
 # Byte-compiled / optimized / DLL files
 __pycache__/

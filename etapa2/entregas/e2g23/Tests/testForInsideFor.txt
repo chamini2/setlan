@@ -1,0 +1,22 @@
+program {
+    using
+        int n;
+        bool x,y,z;
+    in
+
+    a = {2,3,4,5} ++ {2,3,1,4,8};
+
+    for i min d ++ c do{
+
+        c = c + i * 2;
+        for k min d ++ c do
+            c = c + k + i * 2;
+
+        for j min d ++ c do{
+            c = c + j * k * 5;
+            m = i + j;
+        };
+    }
+    
+
+}

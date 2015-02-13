@@ -1,0 +1,5 @@
+program {
+    repeat
+        f = e or a + b @ c ++ d
+    while ($? f < 100);
+}

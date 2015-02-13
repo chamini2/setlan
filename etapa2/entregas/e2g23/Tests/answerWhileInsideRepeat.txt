@@ -1,0 +1,198 @@
+Program
+    Block Start
+        While
+            Condition
+                LessThanEq
+                    Variable
+                        count
+                    Variable
+                        n
+            Do
+                Block Start
+                    Println
+                        String
+                            "fib("
+                        Variable
+                            count
+                        String
+                            ") = "
+                        Variable
+                            low
+                    Assign
+                        Variable
+                                count
+                        Value
+                            Plus
+                                Variable
+                                    count
+                                Int
+                                    1
+                    Repeat
+                        Block Start
+                            Assign
+                                Variable
+                                        f
+                                Value
+                                    Or
+                                        Variable
+                                            e
+                                        Contains
+                                            Plus
+                                                Variable
+                                                    a
+                                                Variable
+                                                    b
+                                            Union
+                                                Variable
+                                                    c
+                                                Variable
+                                                    d
+                            Repeat
+                                Assign
+                                    Variable
+                                            f
+                                    Value
+                                        Or
+                                            Variable
+                                                e
+                                            Contains
+                                                Plus
+                                                    Variable
+                                                        a
+                                                    Variable
+                                                        b
+                                                Union
+                                                    Variable
+                                                        c
+                                                    Variable
+                                                        d
+                            While
+                                Condition
+                                    Not
+                                        Variable
+                                            f
+                            Do
+                                Assign
+                                    Variable
+                                            e
+                                    Value
+                                        Or
+                                            LessThan
+                                                Variable
+                                                    a
+                                                Variable
+                                                    b
+                                            Variable
+                                                f
+                            End Repeat
+                        Block End
+                    While
+                        Condition
+                            LessThan
+                                Len
+                                    Variable
+                                        f
+                                Int
+                                    100
+                    End Repeat
+                Block End
+
+            End While
+        Repeat
+            Block Start
+                Assign
+                    Variable
+                            f
+                    Value
+                        Or
+                            Variable
+                                e
+                            Contains
+                                Plus
+                                    Variable
+                                        a
+                                    Variable
+                                        b
+                                Union
+                                    Variable
+                                        c
+                                    Variable
+                                        d
+                While
+                    Condition
+                        LessThan
+                            Variable
+                                a
+                            Variable
+                                f
+                    Do
+                        Block Start
+                            Assign
+                                Variable
+                                        a
+                                Value
+                                    Plus
+                                        Variable
+                                            b
+                                        Variable
+                                            a
+                            Assign
+                                Variable
+                                        f
+                                Value
+                                    Minus
+                                        Variable
+                                            f
+                                        Int
+                                            1
+                        Block End
+
+                    End While
+            Block End
+        While
+            Condition
+                Not
+                    Variable
+                        f
+        Do
+            Block Start
+                Assign
+                    Variable
+                            e
+                    Value
+                        Or
+                            LessThan
+                                Variable
+                                    a
+                                Variable
+                                    b
+                            Variable
+                                f
+                For
+                    Variable
+                        i
+                    Direction
+                        min
+                    In
+                        Union
+                            Variable
+                                d
+                            Variable
+                                c
+                    Do
+                        Assign
+                            Variable
+                                    c
+                            Value
+                                Plus
+                                    Plus
+                                        Variable
+                                            c
+                                        Int
+                                            2
+                                    Variable
+                                        i
+                End For
+            Block End
+        End Repeat
+    Block End

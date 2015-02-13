@@ -1,0 +1,5 @@
+"uno", "dos"
+
+# token STRING        value ("uno") at line 1, column 1
+# token COMMA         value (,) at line 1, column 6
+# token STRING        value ("dos") at line 1, column 8

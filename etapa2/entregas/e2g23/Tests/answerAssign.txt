@@ -1,0 +1,24 @@
+Program
+    Block Start
+        Assign
+            Variable
+                    a
+            Value
+                Int
+                    12
+        Assign
+            Variable
+                    b
+            Value
+                Int
+                    15
+        Assign
+            Variable
+                    c
+            Value
+                Plus
+                    Variable
+                        a
+                    Variable
+                        b
+    Block End

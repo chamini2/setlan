@@ -1,0 +1,33 @@
+##########################################
+# CI3715 Traductores e Interpretadores   #
+# Entrega 2. Grupo 6                     #
+# Maria Victoria Jorge 11-10495          #
+# Enrique Iglesias 11-10477              # 
+##########################################
+
+Implementación:
+	Para esta segunda entrega se diseñó la gramática libre de contexto para el lenguaje
+	Setlan y se implementó un reconocedor para ella. Además, se incluyó la creación del
+	Árbol Sintáctico Abstracto (AST) y su posterior impresión de forma legible por la salida
+	estándar. Para esta entrega se utilizó nuevamente el lenguaje Python (Versión 2.7) y la 
+	herramienta PLY (Versión 3.4) tanto para el desarrollo del lexer (primera entrega) como
+	para el parser.
+
+	La gramática se encuentra en el archivo gramatica.txt . Tanto el lexer como el parser
+	se encuentran en el archivo ejecutable setlan. 
+
+	Para la creación del AST debimos agregar las clases necesarias para cada elemento según
+	lo que habíamos definido en nuestra gramática.
+	Para imprimir el AST agregamos un método llamado toString a cada clase para asi generar
+	los strings con las tabulaciones y la información correcta mientras se recorre el árbol
+	generado.
+
+Aclaratorias:
+	-> Como no estaban definidas explícitamente las asociatividades de los operadores en la
+	especificación de Setlan, las hicimos según lo que pensábamos correcto.
+	-> Si hay errores lexicógraficos los imprime todos y no continúa al analizador sintáctico
+	puesto que el programa leído ya es incorrecto.
+	-> Si hay errores sintácticos, solo detecta el primero, lo imprime por salida estándar y
+	culmina el programa.
+	-> En caso que no existan errores lexicogŕaficos ni sintácticos, imprime por salida estándar
+	el AST generado.

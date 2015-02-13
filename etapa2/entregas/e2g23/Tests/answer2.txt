@@ -1,0 +1,3 @@
+TokenID: a (Linea 1, Columna 1)
+TokenAssign (Linea 1, Columna 3)
+TokenString: "Soy string ;D" (Linea 1, Columna 5)

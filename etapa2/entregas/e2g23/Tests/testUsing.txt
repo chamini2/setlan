@@ -1,0 +1,6 @@
+program {
+    using 
+        int a,b,c;
+    in
+    print a;
+}

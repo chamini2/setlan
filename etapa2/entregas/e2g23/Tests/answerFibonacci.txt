@@ -1,0 +1,125 @@
+Program
+    Block Start
+        Using
+            int
+                Variable
+                    n
+        In
+        Print
+            String
+                "input: "
+        Scan
+            Variable
+                n
+        If
+            Condition
+                LessThan
+                    Variable
+                        n
+                    Int
+                        0
+            Statement True
+                Println
+                    String
+                        "no negative fibonaccis"
+            Statement False
+                If
+                    Condition
+                        Equals
+                            Variable
+                                n
+                            Int
+                                0
+                    Statement True
+                        Println
+                            String
+                                "fib(0) = 1"
+                    Statement False
+                        Block Start
+                            Using
+                                int
+                                    Variable
+                                        low
+                                int
+                                    Variable
+                                        high
+                                int
+                                    Variable
+                                        count
+                                int
+                                    Variable
+                                        tmp
+                            In
+                            Assign
+                                Variable
+                                        count
+                                Value
+                                    Int
+                                        0
+                            Assign
+                                Variable
+                                        low
+                                Value
+                                    Int
+                                        0
+                            Assign
+                                Variable
+                                        high
+                                Value
+                                    Int
+                                        1
+                            While
+                                Condition
+                                    LessThanEq
+                                        Variable
+                                            count
+                                        Variable
+                                            n
+                                Do
+                                    Block Start
+                                        Assign
+                                            Variable
+                                                    tmp
+                                            Value
+                                                Plus
+                                                    Variable
+                                                        low
+                                                    Variable
+                                                        high
+                                        Assign
+                                            Variable
+                                                    low
+                                            Value
+                                                Variable
+                                                    high
+                                        Assign
+                                            Variable
+                                                    high
+                                            Value
+                                                Variable
+                                                    tmp
+                                        Println
+                                            String
+                                                "fib("
+                                            Variable
+                                                count
+                                            String
+                                                ") = "
+                                            Variable
+                                                low
+                                        Assign
+                                            Variable
+                                                    count
+                                            Value
+                                                Plus
+                                                    Variable
+                                                        count
+                                                    Int
+                                                        1
+                                    Block End
+
+                                End While
+                        Block End
+                End If
+        End If
+    Block End

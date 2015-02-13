@@ -1,0 +1,10 @@
+program {
+    using 
+        bool p,   q        ;
+        int e,f, g;
+        int a,b,c;
+        set S,Q;
+    in
+    print p == q, S, a == p;
+    println Q, "hola"
+}

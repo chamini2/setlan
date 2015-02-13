@@ -1,0 +1,51 @@
+# Bloques
+
+program {
+	println "Soy un bloque nivel 0";
+
+	{
+		println "Soy un bloque nivel 1";
+
+		{
+			println "Soy un bloque nivel 2";
+		};
+	};
+
+	{
+		println "Soy otro bloque nivel 1";
+	};
+}
+
+# PROGRAM
+#     BLOCK
+#         PRINT
+#             elements
+#                 string
+#                     "Soy un bloque nivel 0"
+#                 string
+#                     "\n"
+#         BLOCK
+#             PRINT
+#                 elements
+#                     string
+#                        "Soy un bloque nivel 1"
+#                     string
+#                         "\n"
+#             BLOCK
+#                 PRINT
+#                     elements
+#                         string
+#                             "Soy un bloque nivel 2"
+#                         string
+#                             "\n"
+#             BLOCK_END
+#         BLOCK_END
+#         BLOCK
+#             PRINT
+#                 elements
+#                     string
+#                         "Soy otro bloque nivel 1"
+#                     string
+#                         "\n"
+#         BLOCK_END
+#     BLOCK_END

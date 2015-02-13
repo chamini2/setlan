@@ -1,0 +1,330 @@
+caso1.stl
+
+token PROGRAM		value (program) at line 1, column 1
+token LCURLY		value ({) at line 1, column 9
+token PRINT		value (print) at line 2, column 2
+token STRING		value ("") at line 2, column 8
+token SEMICOLON		value (;) at line 2, column 10
+token RCURLY		value (}) at line 3, column 1
+
+
+caso10.stl
+
+token PROGRAM		value (program) at line 1, column 1
+token LCURLY		value ({) at line 1, column 9
+token USING		value (using) at line 2, column 2
+token SET		value (set) at line 3, column 3
+token IDENTIFIER	value (x) at line 3, column 7
+token COMMA		value (,) at line 3, column 8
+token IDENTIFIER	value (y) at line 3, column 10
+token COMMA		value (,) at line 3, column 11
+token IDENTIFIER	value (z) at line 3, column 13
+token SEMICOLON		value (;) at line 3, column 14
+token IN		value (in) at line 4, column 2
+token IDENTIFIER	value (x) at line 5, column 3
+token ASSIGN		value (=) at line 5, column 5
+token LCURLY		value ({) at line 5, column 7
+token INTEGER		value (1) at line 5, column 8
+token COMMA		value (,) at line 5, column 9
+token INTEGER		value (2) at line 5, column 10
+token RCURLY		value (}) at line 5, column 11
+token SETPLUS		value (<+>) at line 5, column 13
+token INTEGER		value (2) at line 5, column 17
+token SEMICOLON		value (;) at line 5, column 18
+token IDENTIFIER	value (y) at line 6, column 3
+token ASSIGN		value (=) at line 6, column 5
+token INTEGER		value (2) at line 6, column 7
+token SETTIMES		value (<*>) at line 6, column 9
+token LCURLY		value ({) at line 6, column 13
+token INTEGER		value (2) at line 6, column 14
+token COMMA		value (,) at line 6, column 15
+token INTEGER		value (4) at line 6, column 16
+token RCURLY		value (}) at line 6, column 17
+token SEMICOLON		value (;) at line 6, column 18
+token IDENTIFIER	value (z) at line 7, column 3
+token ASSIGN		value (=) at line 7, column 5
+token INTEGER		value (2) at line 7, column 7
+token SETMINUS		value (<->) at line 7, column 9
+token LCURLY		value ({) at line 7, column 13
+token INTEGER		value (3) at line 7, column 14
+token COMMA		value (,) at line 7, column 15
+token INTEGER		value (6) at line 7, column 16
+token RCURLY		value (}) at line 7, column 17
+token SEMICOLON		value (;) at line 7, column 18
+token IDENTIFIER	value (x) at line 9, column 3
+token ASSIGN		value (=) at line 9, column 5
+token IDENTIFIER	value (x) at line 9, column 7
+token SETDIV		value (</>) at line 9, column 9
+token INTEGER		value (2) at line 9, column 13
+token SEMICOLON		value (;) at line 9, column 14
+token IDENTIFIER	value (y) at line 10, column 3
+token ASSIGN		value (=) at line 10, column 5
+token IDENTIFIER	value (z) at line 10, column 7
+token SETMOD		value (<%>) at line 10, column 9
+token INTEGER		value (2) at line 10, column 13
+token SEMICOLON		value (;) at line 10, column 14
+token IDENTIFIER	value (y) at line 12, column 3
+token ASSIGN		value (=) at line 12, column 5
+token IDENTIFIER	value (x) at line 12, column 7
+token UNION		value (++) at line 12, column 9
+token IDENTIFIER	value (y) at line 12, column 12
+token SEMICOLON		value (;) at line 12, column 13
+token IDENTIFIER	value (x) at line 13, column 3
+token ASSIGN		value (=) at line 13, column 5
+token IDENTIFIER	value (x) at line 13, column 7
+token INTERSECTION	value (><) at line 13, column 9
+token IDENTIFIER	value (z) at line 13, column 12
+token SEMICOLON		value (;) at line 13, column 13
+token IDENTIFIER	value (z) at line 14, column 3
+token ASSIGN		value (=) at line 14, column 5
+token IDENTIFIER	value (x) at line 14, column 7
+token DIVIDE		value (/) at line 14, column 9
+token IDENTIFIER	value (y) at line 14, column 11
+token SEMICOLON		value (;) at line 14, column 12
+token RCURLY		value (}) at line 15, column 1
+
+
+caso11.stl
+
+token PROGRAM		value (program) at line 1, column 1
+token LCURLY		value ({) at line 1, column 9
+token USING		value (using) at line 2, column 5
+token INT		value (int) at line 2, column 11
+token IDENTIFIER	value (x) at line 2, column 15
+token SEMICOLON		value (;) at line 2, column 16
+token IN		value (in) at line 2, column 18
+token REPEAT		value (repeat) at line 4, column 5
+token SCAN		value (scan) at line 5, column 9
+token IDENTIFIER	value (x) at line 5, column 14
+token WHILE		value (while) at line 6, column 5
+token LPAREN		value (() at line 6, column 11
+token IDENTIFIER	value (x) at line 6, column 12
+token GREATERTHAN	value (>) at line 6, column 14
+token INTEGER		value (0) at line 6, column 16
+token RPAREN		value ()) at line 6, column 17
+token DO		value (do) at line 6, column 19
+token PRINT		value (print) at line 7, column 9
+token IDENTIFIER	value (x) at line 7, column 15
+token SEMICOLON		value (;) at line 8, column 5
+token SCAN		value (scan) at line 10, column 5
+token IDENTIFIER	value (x) at line 10, column 10
+token SEMICOLON		value (;) at line 10, column 11
+token WHILE		value (while) at line 11, column 5
+token LPAREN		value (() at line 11, column 11
+token IDENTIFIER	value (x) at line 11, column 12
+token GREATERTHAN	value (>) at line 11, column 14
+token INTEGER		value (0) at line 11, column 16
+token RPAREN		value ()) at line 11, column 17
+token DO		value (do) at line 11, column 19
+token LCURLY		value ({) at line 11, column 22
+token PRINT		value (print) at line 12, column 9
+token IDENTIFIER	value (x) at line 12, column 15
+token SEMICOLON		value (;) at line 12, column 16
+token SCAN		value (scan) at line 13, column 9
+token IDENTIFIER	value (x) at line 13, column 14
+token SEMICOLON		value (;) at line 13, column 15
+token RCURLY		value (}) at line 14, column 5
+token SEMICOLON		value (;) at line 14, column 6
+token SCAN		value (scan) at line 16, column 5
+token IDENTIFIER	value (x) at line 16, column 10
+token SEMICOLON		value (;) at line 16, column 11
+token REPEAT		value (repeat) at line 17, column 5
+token LCURLY		value ({) at line 17, column 12
+token PRINT		value (print) at line 18, column 9
+token IDENTIFIER	value (x) at line 18, column 15
+token SEMICOLON		value (;) at line 18, column 16
+token SCAN		value (scan) at line 19, column 9
+token IDENTIFIER	value (x) at line 19, column 14
+token SEMICOLON		value (;) at line 19, column 15
+token RCURLY		value (}) at line 20, column 5
+token WHILE		value (while) at line 20, column 7
+token LPAREN		value (() at line 20, column 13
+token IDENTIFIER	value (x) at line 20, column 14
+token GREATERTHAN	value (>) at line 20, column 16
+token INTEGER		value (0) at line 20, column 18
+token RPAREN		value ()) at line 20, column 19
+token SEMICOLON		value (;) at line 20, column 20
+token FOR		value (for) at line 22, column 5
+token IDENTIFIER	value (i) at line 22, column 9
+token IDENTIFIER	value (min) at line 22, column 11
+token LCURLY		value ({) at line 22, column 15
+token INTEGER		value (7) at line 22, column 16
+token COMMA		value (,) at line 22, column 17
+token INTEGER		value (5) at line 22, column 19
+token COMMA		value (,) at line 22, column 20
+token INTEGER		value (8) at line 22, column 22
+token COMMA		value (,) at line 22, column 23
+token INTEGER		value (3) at line 22, column 25
+token COMMA		value (,) at line 22, column 26
+token INTEGER		value (9) at line 22, column 28
+token COMMA		value (,) at line 22, column 29
+token INTEGER		value (6) at line 22, column 31
+token COMMA		value (,) at line 22, column 32
+token INTEGER		value (4) at line 22, column 34
+token COMMA		value (,) at line 22, column 35
+token INTEGER		value (2) at line 22, column 37
+token COMMA		value (,) at line 22, column 38
+token INTEGER		value (1) at line 22, column 40
+token COMMA		value (,) at line 22, column 41
+token INTEGER		value (0) at line 22, column 43
+token RCURLY		value (}) at line 22, column 44
+token DO		value (do) at line 22, column 46
+token LCURLY		value ({) at line 22, column 49
+token USING		value (using) at line 23, column 9
+token BOOL		value (bool) at line 24, column 13
+token IDENTIFIER	value (i) at line 24, column 18
+token SEMICOLON		value (;) at line 24, column 19
+token IN		value (in) at line 25, column 9
+token PRINT		value (print) at line 26, column 9
+token IDENTIFIER	value (i) at line 26, column 15
+token COMMA		value (,) at line 26, column 16
+token STRING		value (" ") at line 26, column 18
+token SEMICOLON		value (;) at line 26, column 21
+token IDENTIFIER	value (i) at line 27, column 9
+token ASSIGN		value (=) at line 27, column 11
+token FALSE		value (false) at line 27, column 13
+token SEMICOLON		value (;) at line 27, column 18
+token RCURLY		value (}) at line 28, column 5
+token SEMICOLON		value (;) at line 28, column 6
+token RCURLY		value (}) at line 29, column 1
+
+
+caso12.stl
+
+token STRING		value ("un string con \n, \\, \"") at line 1, column 1
+token COMMA		value (,) at line 1, column 27
+token IDENTIFIER	value (dos) at line 1, column 29
+token IDENTIFIER	value (identificadores) at line 1, column 33
+token COMMA		value (,) at line 1, column 48
+token STRING		value ("segundo string") at line 1, column 50
+
+
+caso13.stl
+
+token STRING		value ("uno") at line 1, column 1
+token COMMA		value (,) at line 1, column 6
+token STRING		value ("dos") at line 1, column 8
+
+
+caso14.stl
+
+token MINSET		value (<?) at line 1, column 1
+token MAXSET		value (>?) at line 1, column 4
+token CARDINALITY	value ($?) at line 1, column 7
+
+
+caso2.stl
+Error: Se encontro un caracter inesperado "." en la Linea 4, Columna 28.
+Error: Se encontro un caracter inesperado "." en la Linea 7, Columna 32.
+
+caso3.stl
+
+token PROGRAM		value (program) at line 1, column 1
+token LCURLY		value ({) at line 1, column 9
+token PRINTLN		value (println) at line 3, column 2
+token STRING		value ("Hola me llamo Setlan") at line 3, column 10
+token SEMICOLON		value (;) at line 3, column 32
+token RCURLY		value (}) at line 5, column 1
+
+
+caso4.stl
+
+token PROGRAM		value (program) at line 1, column 1
+token LCURLY		value ({) at line 1, column 9
+token PRINTLN		value (println) at line 3, column 2
+token STRING		value ("Hola me llamo ") at line 3, column 10
+token IDENTIFIER	value (Setlan) at line 3, column 26
+token STRING		value ("") at line 3, column 32
+token SEMICOLON		value (;) at line 3, column 34
+token RCURLY		value (}) at line 5, column 1
+
+
+caso5.stl
+Error: Se encontro un caracter inesperado """ en la Linea 3, Columna 10.
+
+caso6.stl
+Error: Se encontro un caracter inesperado """ en la Linea 3, Columna 10.
+Error: Se encontro un caracter inesperado """ en la Linea 4, Columna 26.
+
+caso7.stl
+
+token PROGRAM		value (program) at line 1, column 1
+token LCURLY		value ({) at line 1, column 9
+token USING		value (using) at line 2, column 2
+token INT		value (int) at line 3, column 3
+token IDENTIFIER	value (x) at line 3, column 7
+token COMMA		value (,) at line 3, column 8
+token IDENTIFIER	value (y) at line 3, column 10
+token COMMA		value (,) at line 3, column 11
+token IDENTIFIER	value (z) at line 3, column 13
+token SEMICOLON		value (;) at line 3, column 14
+token BOOL		value (bool) at line 4, column 3
+token IDENTIFIER	value (a) at line 4, column 8
+token COMMA		value (,) at line 4, column 9
+token IDENTIFIER	value (b) at line 4, column 11
+token COMMA		value (,) at line 4, column 12
+token IDENTIFIER	value (c) at line 4, column 14
+token SEMICOLON		value (;) at line 4, column 15
+token SET		value (set) at line 5, column 3
+token IDENTIFIER	value (s) at line 5, column 7
+token SEMICOLON		value (;) at line 5, column 8
+token IN		value (in) at line 6, column 2
+token SCAN		value (scan) at line 7, column 3
+token IDENTIFIER	value (x) at line 7, column 8
+token SEMICOLON		value (;) at line 7, column 9
+token SCAN		value (scan) at line 8, column 3
+token IDENTIFIER	value (y) at line 8, column 8
+token SEMICOLON		value (;) at line 8, column 9
+token SCAN		value (scan) at line 9, column 3
+token IDENTIFIER	value (z) at line 9, column 8
+token SEMICOLON		value (;) at line 9, column 9
+token PRINT		value (print) at line 10, column 3
+token IDENTIFIER	value (x) at line 10, column 9
+token TIMES		value (*) at line 10, column 10
+token LPAREN		value (() at line 10, column 12
+token IDENTIFIER	value (y) at line 10, column 13
+token PLUS		value (+) at line 10, column 15
+token IDENTIFIER	value (z) at line 10, column 17
+token RPAREN		value ()) at line 10, column 18
+token SEMICOLON		value (;) at line 10, column 19
+token IDENTIFIER	value (a) at line 11, column 3
+token ASSIGN		value (=) at line 11, column 5
+token TRUE		value (true) at line 11, column 7
+token IF		value (if) at line 13, column 3
+token IDENTIFIER	value (a) at line 13, column 6
+token LCURLY		value ({) at line 13, column 8
+token PRINTLN		value (println) at line 14, column 4
+token STRING		value ("Wingardium Leviosa!\n") at line 14, column 12
+token SEMICOLON		value (;) at line 14, column 35
+token IDENTIFIER	value (b) at line 15, column 4
+token ASSIGN		value (=) at line 15, column 6
+token FALSE		value (false) at line 15, column 8
+token SEMICOLON		value (;) at line 15, column 13
+token RCURLY		value (}) at line 16, column 3
+token ELSE		value (else) at line 16, column 5
+token LCURLY		value ({) at line 16, column 10
+token PRINTLN		value (println) at line 17, column 4
+token STRING		value ("Alohomora!\n") at line 17, column 12
+token IDENTIFIER	value (b) at line 18, column 4
+token ASSIGN		value (=) at line 18, column 6
+token TRUE		value (true) at line 18, column 8
+token SEMICOLON		value (;) at line 18, column 12
+token RCURLY		value (}) at line 19, column 3
+token IDENTIFIER	value (c) at line 21, column 3
+token ASSIGN		value (=) at line 21, column 5
+token NOT		value (not) at line 21, column 7
+token LPAREN		value (() at line 21, column 10
+token IDENTIFIER	value (a) at line 21, column 11
+token AND		value (and) at line 21, column 13
+token IDENTIFIER	value (b) at line 21, column 17
+token RPAREN		value ()) at line 21, column 18
+token SEMICOLON		value (;) at line 21, column 19
+token RCURLY		value (}) at line 23, column 1
+
+
+caso8.stl
+Error: Se encontro un caracter inesperado "." en la Linea 15, Columna 10.
+
+caso9.stl
+Error: Se encontro un caracter inesperado "!" en la Linea 3, Columna 8.
+

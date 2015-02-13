@@ -1,0 +1,14 @@
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 33.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 34.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 35.
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 36.
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 37.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 38.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 39.
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 40.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 41.
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 42.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 43.
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 44.
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 45.
+Error: Se encontro un caracter inesperado "&" en la Linea 4, Columna 46.

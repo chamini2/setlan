@@ -1,0 +1,30 @@
+program {
+    using
+        int n;
+    in
+
+    print "input: ";
+    scan n;
+
+    if (n < 0)
+        println "no negative fibonaccis"
+    else if (n == 0)
+        println "fib(0) = 1"
+    else {
+        using
+            int low, high, count, tmp;
+        in
+
+        count = 0;
+        low = 0;
+        high = 1;
+        while (count <= n) do {
+            tmp = low + high;
+            low = high;
+            high = tmp;
+            println "fib(", count, ") = ", low;
+            count = count + 1;
+        };
+    }
+    ; # del `if` exterior
+}

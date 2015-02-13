@@ -1,0 +1,25 @@
+Program
+    Block Start
+        For
+            Variable
+                i
+            Direction
+                min
+            In
+                Union
+                    Variable
+                        d
+                    Variable
+                        c
+            Do
+                Assign
+                    Variable
+                            c
+                    Value
+                        Plus
+                            Variable
+                                c
+                            Variable
+                                i
+        End For
+    Block End

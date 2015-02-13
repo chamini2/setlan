@@ -1,0 +1,35 @@
+#!/usr/bin/python
+#encoding: utf-8
+
+#############################################################################
+## 							   Proyecto traductores e Interpretadores  							   ##
+##															    SETLAN												  		   ##
+#############################################################################
+#																																						#
+#														---(Primera Entrega)---									 				#
+#Integrantes:																																#
+#		Nelson Saturno 09-10797																		 							#
+#		Neylin Belisario 09-10093																	 							#
+#												 																										#
+#############################################################################
+
+
+import sys
+import lexer
+import parser
+
+def main():
+
+	if (len(sys.argv) > 1):
+		te = lexer.lexicografico(sys.argv[1])
+		if te:
+			te[0].lexer.lineno = 0
+		parser.AnalizadorParser(sys.argv[1])
+	else:
+		print "Verifique que la sintaxis introducida es correcta."
+		print ".\\setlan.py <nombre del archivo>\n"
+
+
+if __name__ == "__main__":
+	main()
+

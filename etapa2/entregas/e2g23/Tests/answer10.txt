@@ -1,0 +1,3 @@
+Error: Se encontro un caracter inesperado "$" en la Linea 4, Columna 13.
+Error: Se encontro un caracter inesperado "~" en la Linea 7, Columna 14.
+Error: Se encontro un caracter inesperado "&" en la Linea 8, Columna 11.

@@ -1,0 +1,4 @@
+program {
+    for i max d ++ c do
+        c = c + i;
+}

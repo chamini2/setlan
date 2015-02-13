@@ -1,0 +1,4 @@
+- Poco explicativa la impresión ("línea X, columna Y")
+- Poco explicativo el error
+- Regex de String mal, no acepta los carácteres escapados (`\"`, `\\`, `\n`)
+- Considerar overflow/underflow de los enteros leídos

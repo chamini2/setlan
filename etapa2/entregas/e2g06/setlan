@@ -1,0 +1,717 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+##########################################
+# CI3715 Traductores e Interpretadores   #
+# Entrega 2. Grupo 6                     #
+# Maria Victoria Jorge 11-10495          #
+# Enrique Iglesias 11-10477              # 
+##########################################
+
+import ply.lex as lex
+import sys
+import ply.yacc as yacc
+
+# Palabras reservadas del lenguaje
+reserved = {
+    # Lenguaje
+    'program' : 'Program',
+    'using' : 'Using',
+    'in' : 'In',
+
+    # Condicionales
+    'if' : 'IF',
+    'else' : 'ELSE',
+
+    # Ciclos
+    'for' : 'FOR',
+    'min' : 'MIN',
+    'max' : 'MAX',
+    'repeat' : 'REPEAT',
+    'while' : 'WHILE',
+    'do' : 'DO',
+
+    # E/S
+    'scan' : 'Scan',
+    'print' : 'Print',
+    'println' : 'Println',
+
+    # Tipos
+    'int' : 'Int',
+    'bool' : 'Boolean',
+    'set' : 'Set',
+
+    # Operadores Logicos
+    'and' : 'And',
+    'or' : 'Or',
+    'not' : 'Not',
+
+    # Valores Booleanos
+    'true' : 'True',
+    'false' : 'False'
+}
+
+# Tokens que se pueden reconocer
+tokens = [
+    # Identificadores
+    'ID',
+
+    # Operadores de mapeo
+    'PlusMap',
+    'MinusMap',
+    'TimesMap',
+    'DivideMap',
+    'ModuleMap',
+
+    # Cadena de caracteres
+    'String',
+
+    # Operadores de conjuntos
+    'Union',
+    'Intersection',
+    'Diference',
+    'MinSet',
+    'MaxSet',
+    'Size',
+    'At',
+
+    # Operadores relacionales
+    'Less',
+    'Greater',
+    'GreaterEqual',
+    'LessEqual',
+    'Equals',
+    'NotEqual',
+
+    # Lenguaje
+    'Number',
+    'Comma',
+    'Assign',
+    'Semicolon',
+    'OpenCurly',
+    'CloseCurly',
+    'Rparen',
+    'Lparen',
+
+    # Operadores de enteros
+    'Plus',
+    'Minus',
+    'Times',
+    'Divide',
+    'Module'
+] + list(reserved.values())
+
+
+def t_ID(t):
+    r'[_A-Za-z]([_A-Za-z0-9])*'
+    t.type = reserved.get(t.value,'ID')
+    return t
+
+t_PlusMap = r'<\+>'
+t_MinusMap = r'<->'
+t_TimesMap = r'<\*>'
+t_DivideMap = r'</>'
+t_ModuleMap = r'<%>'
+
+def t_String(t):
+    r'"([^"\\\n]|\\"|\\\\|\\n)*"'
+    t.value = t.value[1:-1]
+    return t
+
+t_Union = r'\+\+'
+t_Intersection = r'><'
+t_Diference = r'\\'
+t_MaxSet = r'>\?'
+t_MinSet = r'<\?'
+t_Size = r'\$\?'
+t_At = r'@'
+t_Less = r'>'
+t_Greater = r'<'
+t_GreaterEqual = r'>='
+t_LessEqual = r'<='
+t_Equals = r'=='
+t_NotEqual = r'/='
+
+# Retorna el valor de un numero usando el tipo int de Python
+def t_Number(t):
+    r'\d+'
+    t.value = int(t.value)    
+    return t
+
+t_Comma = r','
+t_Assign = r'='
+t_Semicolon = r';'
+t_OpenCurly = r'\{'
+t_CloseCurly = r'\}'
+t_Lparen = r'\('
+t_Rparen  = r'\)'
+t_Plus    = r'\+'
+t_Minus   = r'-'
+t_Times   = r'\*'
+t_Divide  = r'/'
+t_Module = r'%'
+
+
+# Funcion para realizar un seguimiento de los numeros de linea. El unico caracter
+# valido para el salto de linea es '\n'
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+    
+# Ignora tabs, espacios y comentarios (estilo Python)
+t_ignore  = ' \t'
+t_ignore_comments  = r'\#.*'
+
+# Permite encontrar el numero de columna de la linea actual
+def find_column(input,token):
+    last_cr = input.rfind('\n',0,token.lexpos)
+    if last_cr < 0:
+        last_cr = -1
+    column = token.lexpos - last_cr
+    return column
+        
+# Manejo de errores en caso de encontrar un caracter invalido
+def t_error(t):
+    error.append(t)
+    t.lexer.skip(1)
+
+class Program:
+    def __init__(self,inst):
+        self.inst = inst
+
+    def toString(self,tabs):
+        return 'PROGRAM\n' + self.inst.toString(2)
+
+class Bloque:
+    def __init__(self,dec,exp):
+        self.exp = exp
+        self.dec = dec
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'BLOCK_BEGIN\n'
+        if (self.dec!=None):
+            string += self.dec.toString(tabs + 2) 
+        if (self.exp!=None):
+            string += self.exp.toString(tabs + 2)
+        string += ' '*tabs + 'BLOCK_END\n'
+        return string
+
+class Declarar:
+    def __init__(self,lista):
+        self.lista = lista
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'USING\n'
+        string += self.lista.toString(tabs + 2) 
+        string += ' '*tabs + 'IN\n'
+        return string
+
+
+class Condicional:
+    def __init__(self, cond, inst, inst2):
+        self.cond = cond
+        self.inst = inst
+        self.inst2 = inst2
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'IF\n'
+        string += ' '*(tabs + 2) + 'condition\n'
+        string += self.cond.toString(tabs + 4) 
+        string += ' '*(tabs + 2) + 'THEN\n'
+        string += self.inst.toString(tabs + 4) 
+        if (self.inst2 != None):
+            string += ' '*(tabs + 2) + 'ELSE\n'
+            string += self.inst2.toString(tabs + 4) 
+        return string
+
+class Asignacion:
+    def __init__(self,var,valor):
+        self.var = var
+        self.valor = valor
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'ASSIGN\n'
+        string += self.var.toString(tabs + 2) 
+        string += ' '*(tabs + 2) + 'value\n'
+        string += self.valor.toString(tabs + 4) 
+        return string
+
+class For:
+    def __init__(self, id1, direc, exp, inst):
+        self.id1 = id1
+        self.direc = direc
+        self.exp = exp
+        self.inst = inst
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'FOR\n'
+        string += self.id1.toString(tabs + 2) 
+        string += ' '*(tabs + 2) + 'direction\n'
+        string += ' '*(tabs + 4) + self.direc.lower() +'\n'
+        string += ' '*(tabs + 2) + 'IN\n'
+        string += self.exp.toString(tabs + 4) 
+        string += ' '*(tabs + 2) + 'DO\n'
+        string += self.inst.toString(tabs + 4)
+        return string
+
+class While:
+    def __init__(self,exp,inst):
+        self.exp = exp
+        self.inst = inst
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'WHILE\n'
+        string += ' '*(tabs + 2) + 'condition\n'
+        string += self.exp.toString(tabs + 4) 
+        string += ' '*tabs + 'DO\n' 
+        string += self.inst.toString(tabs + 2)
+        return string
+
+class EntradaSalida:
+    def __init__(self,flag,exp):
+        self.flag = flag
+        self.exp = exp
+
+    def toString(self,tabs):
+        string = ' '*tabs + self.flag.upper() + '\n'
+        if (self.flag =='scan'):
+            string += self.exp.toString(tabs + 2)
+        else:
+            string += ' '*(tabs + 2) + 'elements\n'
+            string += self.exp.toString(tabs + 4) 
+            if (self.flag =='println'):
+                string += ' '*(tabs + 4) + 'string\n'
+                string += ' '*(tabs + 6) + '"\\n"' + '\n'
+        return string
+
+class Opbin:
+    def __init__(self,izq,op,der):
+        self.izq = izq
+        self.op = op
+        self.der = der
+
+    def toString(self,tabs):
+        operadores = {
+            '+'     : 'PLUS',
+            '-'     : 'MINUS',
+            '*'     : 'TIMES',
+            '/'     : 'DIVIDE',
+            '%'     : 'MODULE',
+            '++'    : 'UNION',
+            '><'    : 'INTERSECTION',
+            '\\'    : 'DIFERENCE',
+            '<+>'   : 'PLUS_MAP',
+            '<->'   : 'MINUS_MAP',
+            '<*>'   : 'TIMES_MAP',
+            '</>'   : 'DIVIDE_MAP',
+            '<%>'   : 'MODULE_MAP',
+            '<'     : 'LESS',
+            '<='    : 'LESS_EQUAL',
+            '>'     : 'GREATER',
+            '>='    : 'GREATER_EQUAL',
+            '=='    : 'EQUALS',
+            '/='    : 'NOT_EQUAL',
+            '@'     : 'AT',
+            'or'    : 'Or',
+            'and'   : 'And'
+        }
+        string = ' '*tabs + operadores[self.op] +' ' + self.op + '\n'
+        if (isinstance(self.izq,Simple)):
+            if (self.izq.tipo=='id'):
+                string += ' '*(tabs + 2) + 'variable\n'
+                string += ' '*(tabs + 4) + self.izq.valor + '\n'
+            else:
+                string += self.izq.toString(tabs + 2) 
+        else:
+            string += self.izq.toString(tabs + 2) 
+
+        if (isinstance(self.der,Simple)):
+            if (self.der.tipo=='id'):
+                string += ' '*(tabs + 2) + 'variable\n'
+                string += ' '*(tabs + 4) + self.der.valor + '\n'
+            else:
+                string += self.der.toString(tabs + 2) 
+        else:
+            string += self.der.toString(tabs + 2) 
+        return string
+
+class Simple:
+    def __init__(self,tipo,valor):
+        self.tipo = tipo
+        self.valor = valor
+
+    def toString(self,tabs):
+        if (self.tipo=='id'):
+            string = ' '*tabs + 'variable' + '\n'
+            string += ' '*(tabs + 2) + str(self.valor) + '\n'
+        elif (self.tipo=='set'):
+            string = ' '*tabs + self.tipo + '\n'
+            string += self.valor.toString(tabs + 2)
+        else:    
+            string = ' '*tabs + self.tipo + '\n'
+            string += ' '*(tabs + 2) + str(self.valor) + '\n'
+        return string
+
+class Repeat:
+    def __init__(self,inst1,exp,inst2):
+        self.inst1 = inst1
+        self.exp = exp
+        self.inst2 = inst2
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'REPEAT\n'
+        string += self.inst1.toString(tabs + 2) 
+        string += ' '*tabs + 'WHILE\n'
+        string += ' '*(tabs + 2) + 'condition\n'
+        string += self.exp.toString(tabs + 4) 
+        if (self.inst2!=None):
+            string += ' '*tabs + 'DO\n'
+            string += self.inst2.toString(tabs + 2)
+        return string
+        
+
+class Uniop:
+    def __init__(self,op,val):
+        self.val = val
+        self.op = op
+
+    def toString(self,tabs):
+        operadores = {
+            '-'     : 'UMINUS',
+            '<?'    : 'MIN_SET',
+            '>?'    : 'MAX_SET',
+            '$?'    : 'SIZE',
+            'not'   : 'Not'
+        }
+        string = ' '*tabs + operadores[self.op] + '\n'
+        string += self.val.toString(tabs + 2) 
+        return string
+
+
+class CadenaString:
+    def __init__(self,string):
+        self.string = string
+
+    def toString(self,tabs):
+        string = ' '*tabs + 'string\n'
+        string += ' '*(tabs + 2) + '"' + self.string + '"' + '\n'
+        return string
+
+class ListaInstruccion:
+    def __init__(self,inst1,inst2):
+        self.inst1 = inst1
+        self.inst2 = inst2
+
+    def toString(self,tabs):
+        string = self.inst1.toString(tabs)
+        if (self.inst2!=None):
+            string += self.inst2.toString(tabs)
+        return string
+
+class ListaDeclaracion:
+    def __init__(self, tipo, idList, decList):
+        self.tipo = tipo
+        self.idList = idList
+        self.decList = decList
+
+    def toString(self,tabs):
+        string = ' '*tabs + self.tipo + '\n'
+        string += self.idList.toString(tabs + 2)
+        if (self.decList!=None):
+            string += self.decList.toString(tabs)
+        return string
+
+class ListaID:
+    def __init__(self,idList,id1):
+        self.idList = idList
+        self.id1 = id1
+
+    def toString(self,tabs):
+        string = ''
+        if (self.idList!=None):
+            string += self.idList.toString(tabs)
+        string += self.id1.toString(tabs)
+        return string
+
+class ListaNumero:
+    def __init__(self,numList,num):
+        self.numList = numList
+        self.num = num
+
+    def toString(self,tabs):
+        string = ''
+        if (self.numList!=None):
+            string += self.numList.toString(tabs)
+        string += self.num.toString(tabs)
+        return string
+
+class ListaImpresion:
+    def __init__(self,listExp,exp):
+        self.listExp = listExp
+        self.exp = exp
+
+    def toString(self,tabs):
+        string = ''
+        if (self.listExp!=None):
+            string += self.listExp.toString(tabs)
+        string += self.exp.toString(tabs)
+        return string
+
+
+# Reglas de precedencia para el parser        
+precedence = (
+    ('right','ELSE'),
+    ('left', 'And'),    
+    ('left', 'Or'),    
+    ('right', 'Not'),    
+    ('right', 'UMINUS', 'MinSet', 'MaxSet', 'Size'),
+    ('left', 'TimesMap','DivideMap','ModuleMap'),
+    ('left','PlusMap','MinusMap'),
+    ('left','Intersection'),
+    ('left','Union','Diference'),
+    ('left','Times','Divide','Module'),
+    ('left', 'Plus', 'Minus'),
+    ('nonassoc','Greater','GreaterEqual', 'Less','LessEqual'),
+    ('left','Equals','NotEqual'),
+    ('nonassoc','At')
+    )
+
+# Primera regla a evaluar. Los programas de Setlan siempre empiezan
+# con la palabra reservada 'program'
+def p_program(p):
+    '''PROGRAM : Program INST'''
+    p[0] = Program(p[2])
+
+# Regla para definir los tipos permitidos por Setlan
+def p_tipos(p):
+    ''' TIPOS   : Int 
+                | Set 
+                | Boolean '''
+    p[0] = p[1]
+
+# Regla para crear una lista de expresiones y/o strings
+# separados por comas. Esto se utilizará para los print y println
+def p_enumList(p): 
+    '''ENUM_LIST    : String
+                    | EXP
+                    | ENUM_LIST Comma EXP
+                    | ENUM_LIST Comma String'''
+    if (len(p)==2):
+        if (isinstance(p[1],str)):
+            p[0] = CadenaString(p[1])
+        else:
+            p[0] = p[1]
+    else:
+        if (isinstance(p[3],str)):
+            p[0] = ListaImpresion(p[1],CadenaString(p[3]))
+        else:
+            p[0] = ListaImpresion(p[1],p[3])
+
+# Regla para la declaración de variables. Siempre empieza con la 
+# palabra reservada 'using', luego tiene una lista de declaraciones
+# y finaliza con la palabra reservada 'in'
+def p_declarar(p):
+    '''DECLARAR : Using DEC_LIST In'''
+    p[0] = Declarar(p[2])
+
+# Regla para la palabra vacía
+def p_epsilon(p):
+    ''' EPSILON : '''
+    pass
+
+# Regla usada para la declaración de variables. Tendrá siempre 
+# una palabra reservada que indica el tipo de la(s) variable(s)
+# declarada(s), seguido de una lista de identificadores, luego un
+# punto y coma. En caso de ser varias declaraciones termina con una
+# nueva lista.
+def p_decList(p):
+    '''DEC_LIST   : TIPOS ID_LIST Semicolon DEC_LIST
+                  | TIPOS ID_LIST Semicolon '''
+    if (len(p)==4):
+        p[0] = ListaDeclaracion(p[1],p[2],None)
+    else:
+        p[0] = ListaDeclaracion(p[1],p[2],p[4])
+
+# Regla para las listas de instrucciones.
+def p_instList(p):
+    '''INST_LIST    : INST Semicolon INST_LIST
+                    | EPSILON '''
+    if (len(p)==4):
+        p[0] = ListaInstruccion(p[1],p[3])
+    elif (len(p)==2):
+        pass
+
+# Regla que permite listar identificadores de variables separados por
+# comas. Esto se usa para poder realizar la declaración de variables.
+def p_idList(p):
+    '''ID_LIST    : ID_LIST Comma ID 
+                    | ID '''
+    if (len(p)==2):
+        p[0] = ListaID(None,Simple('id',p[1]))
+    else:
+        p[0] = ListaID(p[1],Simple('id',p[3]))
+
+# Regla para las expresiones. Aquí se incluyen los números, identificadores,
+# constantes booleanas, conjuntos y todos los operadores de Setlan.
+def p_exp(p):
+    '''EXP  : Number
+            | ID
+            | OpenCurly NUMBER_LIST CloseCurly
+            | Lparen EXP Rparen
+            | Minus EXP %prec UMINUS
+            | EXP Plus EXP
+            | EXP Minus EXP
+            | EXP Times EXP
+            | EXP Divide EXP
+            | EXP Module EXP
+            | EXP PlusMap EXP
+            | EXP MinusMap EXP
+            | EXP TimesMap EXP
+            | EXP DivideMap EXP
+            | EXP ModuleMap EXP
+            | EXP Union EXP
+            | EXP Intersection EXP
+            | EXP Diference EXP
+            | MaxSet EXP
+            | MinSet EXP
+            | Size EXP
+            | True
+            | False 
+            | EXP And EXP
+            | EXP Or EXP
+            | Not EXP
+            | EXP Equals EXP
+            | EXP Greater EXP
+            | EXP GreaterEqual EXP
+            | EXP Less EXP
+            | EXP LessEqual EXP
+            | EXP NotEqual EXP
+            | EXP At EXP '''
+
+    if (len(p)==2):
+        if (isinstance(p[1],int)):
+            tipo = 'int'
+        elif (p[1]=='true') or (p[1]=='false'):
+            tipo = 'bool'
+        else:
+            tipo = 'id'
+        p[0] = Simple(tipo,p[1])
+
+    elif (len(p)==3):
+        p[0] = Uniop(p[1],p[2])
+
+    else:
+        if (p[1]=='('):
+            p[0] = p[2]
+        elif (p[1]=='{'):
+            p[0] = Simple('set',p[2])
+        else:
+            p[0] = Opbin(p[1],p[2],p[3])
+
+# Regla para definir las instrucciones permitidas por Setlan.
+def p_inst(p):
+    '''INST : ID Assign EXP
+            | OpenCurly DECLARAR INST_LIST CloseCurly
+            | OpenCurly INST_LIST CloseCurly
+            | Scan ID
+            | Print ENUM_LIST
+            | Println ENUM_LIST
+            | IF Lparen EXP Rparen INST ELSE INST
+            | IF Lparen EXP Rparen INST
+            | FOR ID DIRECCION EXP DO INST
+            | REPEAT INST WHILE EXP
+            | REPEAT INST WHILE EXP DO INST
+            | WHILE EXP DO INST'''
+    if (len(p)==3):
+        if (p[1]=='scan'):
+            p[0] = EntradaSalida(p[1],Simple('id',p[2]))
+        else:
+            p[0] = EntradaSalida(p[1],p[2])
+
+    elif (len(p)==4):
+        if (p[1]=='{'):
+            p[0] = Bloque(None,p[2])
+        else:
+            p[0] = Asignacion(Simple('id',p[1]),p[3])
+
+    elif (len(p)==5):
+        if (p[1]=='{'):
+            p[0] = Bloque(p[2],p[3])
+        elif (p[1]=='repeat'):
+            p[0] = Repeat(p[2],p[4],None)
+        else:
+            p[0] = While(p[2],p[4])
+
+    elif (len(p)==6):
+        p[0] = Condicional(p[3],p[5],None)
+
+    elif (len(p)==7):
+        if (p[1]=='for'):
+            p[0] = For(Simple('int',p[2]),p[3],p[4],p[6])
+        else:
+            p[0] = Repeat(p[2],p[4],p[6])
+    else:
+        p[0] = Condicional(p[3],p[5],p[7])
+
+# Regla para las direcciones de los ciclos for. 
+def p_direccion(p):
+    ''' DIRECCION : MIN
+                  | MAX '''
+    p[0] = p[1]
+
+# Regla para poder generar una lista de números o identificadores de variables
+# enteras separadas por comas para la creación de conjuntos.
+def p_numberList(p):
+    '''NUMBER_LIST  : NUMBER_LIST Comma EXP 
+                    | EXP'''
+    if (len(p)==2):
+        p[0] = p[1]
+    else:
+        p[0] = ListaNumero(p[1],p[3])
+
+# Regla para poder encontrar los errores sintácticos.
+def p_error(p):
+    global parser_error
+    if (p is not None):
+        msg = "Error de sintaxis. Se encontró token " + str(p.value) + " en la linea "
+        msg += str(p.lineno) + ", columna " + str(find_column(p.lexer.lexdata,p))
+    else:
+        msg = "Error de sintaxis al final del archivo"
+    print msg
+    parser_error = True
+
+if __name__ == '__main__':
+
+    # Variable global donde se almacenan los errores del lexer en caso de existir
+    global error
+    # Variable global donde se almacenan el primer error del parser en caso de existir
+    global parser_error
+    parser_error = False
+    error = []
+    tokList = []
+    lexer = lex.lex()
+
+    if (len(sys.argv) != 2):
+        print "Error con los argumentos de entrada"
+        sys.exit(1)
+
+    myfile = open(sys.argv[1], "r")
+    data = myfile.read()
+    lexer.input(data)
+    
+    while True:
+        tok = lexer.token()
+        if not tok: break
+        tokList.append(tok)
+
+    if (len(error) != 0):
+        for aux in error :
+            print 'Error: Se encontro un caracter inesperado ' + str(aux.value[0]),
+            print ' en la Linea ' + str(aux.lineno) +' ,Columna ',
+            print str(find_column(lexer.lexdata,aux))
+    else:
+        parser = yacc.yacc()
+        out = parser.parse(data)
+        if not(parser_error):
+            print out.toString(0)
+    myfile.close()

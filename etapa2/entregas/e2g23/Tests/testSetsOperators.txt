@@ -1,0 +1,22 @@
+program {
+    using
+        int n;
+    in
+
+    a = {2,3,4,5} ++ {2,3,1,4,8};
+
+    println 2 @ a;
+    println a;   
+    
+    println >? {4,1,2};
+    println <? {4,1,2};
+    println $? {4,1,2}; 
+
+    if (>? a == 4)
+        println "Funciona el operador unario";
+
+    println >? a;
+    println <? a;
+    println $? a;
+
+}

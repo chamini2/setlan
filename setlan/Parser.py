@@ -253,7 +253,7 @@ precedence = (
     # int - set
     ("left", 'SPLUS', 'SMINUS'),
     ("left", 'STIMES', 'SDIVIDE', 'SMODULO'),
-    # int
+    # unary
     ("right", 'NEGATE', 'SMAX', 'SMIN', 'SSIZE'),
 )
 

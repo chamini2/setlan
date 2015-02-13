@@ -1,0 +1,18 @@
+- AST tiene detalles de impresión
+- Errores deberían mostar el caracter leído, 
+no su token de representación dentro inteprpretador
+- Falta paréntesis en if ()
+- Falta paréntesis en while ()
+
+
+- Revisando el código (7)
+    + Gramática correcta (2.5/3.0)
+    + Que no haya ningún conflicto shift/reduce o reduce/reduce, revisar que no estén usando algún "flag" para ocultarlos (0.5/0.5)
+    + Precedencias correctas (1.5/1.5)
+    + Revisar que todas las clases del AST necesarias existan (2.0/2.0, -0.15 por cada clase faltante)
+
+- Con casos de prueba (4)
+    + Construcción de AST (2.0)
+    + Impresión de AST (1.75/2.0, si lo imprimen sin indentación y eso, -0.5)
+
+Si ven que muchos casos de prueba no funcionan, arreglan la gramática, y por cada modificación que hicieron, -0.15.

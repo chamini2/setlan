@@ -10,7 +10,8 @@ program {
    j = 1;
    k = 2;
 
-   s = {i,j,k,j+k,(i*j)-j+j+2*k,i/j-i+(j+k)+j+2*k};
+   s = {};
+   s = {i,j,k,j+k,i/k*2};
 
    println "Fumanacci", s;
 }
@@ -46,6 +47,11 @@ program {
 #                 s
 #             value
 #                 set
+#         ASSIGN
+#             variable
+#                 s
+#             value
+#                 set
 #                     variable
 #                         i
 #                     variable
@@ -57,46 +63,14 @@ program {
 #                             j
 #                         variable
 #                             k
-#                     PLUS +
-#                         PLUS +
-#                             MINUS -
-#                                 TIMES *
-#                                     variable
-#                                         i
-#                                     variable
-#                                         j
-#                                 variable
-#                                     j
+#                     TIMES *
+#                         DIVIDE /
 #                             variable
-#                                 j
-#                         TIMES *
-#                             int
-#                                 2
+#                                 i
 #                             variable
 #                                 k
-#                     PLUS +
-#                         PLUS +
-#                             PLUS +
-#                                 MINUS -
-#                                     DIVIDE /
-#                                         variable
-#                                             i
-#                                         variable
-#                                             j
-#                                     variable
-#                                         i
-#                                 PLUS +
-#                                     variable
-#                                         j
-#                                     variable
-#                                         k
-#                             variable
-#                                 j
-#                         TIMES *
-#                             int
-#                                 2
-#                             variable
-#                                 k
+#                         int
+#                             2
 #         PRINT
 #             elements
 #                 string

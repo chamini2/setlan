@@ -1,0 +1,108 @@
+# Caso con definicion de conjuntos con operaciones internas.
+# Este caso debe de correr.
+program {
+   using
+       int i,j,k;
+       set s;
+   in
+
+   i = 1;
+   j = 1;
+   k = 2;
+
+   s = {i,j,k,j+k,(i*j)-j+j+2*k,i/j-i+(j+k)+j+2*k};
+
+   println "Fumanacci", s;
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             int i
+#             int j
+#             int k
+#             set s
+#         IN
+#         ASSIGN
+#             variable
+#                 i
+#             value
+#                 int
+#                     1
+#         ASSIGN
+#             variable
+#                 j
+#             value
+#                 int
+#                     1
+#         ASSIGN
+#             variable
+#                 k
+#             value
+#                 int
+#                     2
+#         ASSIGN
+#             variable
+#                 s
+#             value
+#                 set
+#                     variable
+#                         i
+#                     variable
+#                         j
+#                     variable
+#                         k
+#                     PLUS +
+#                         variable
+#                             j
+#                         variable
+#                             k
+#                     PLUS +
+#                         PLUS +
+#                             MINUS -
+#                                 TIMES *
+#                                     variable
+#                                         i
+#                                     variable
+#                                         j
+#                                 variable
+#                                     j
+#                             variable
+#                                 j
+#                         TIMES *
+#                             int
+#                                 2
+#                             variable
+#                                 k
+#                     PLUS +
+#                         PLUS +
+#                             PLUS +
+#                                 MINUS -
+#                                     DIVIDE /
+#                                         variable
+#                                             i
+#                                         variable
+#                                             j
+#                                     variable
+#                                         i
+#                                 PLUS +
+#                                     variable
+#                                         j
+#                                     variable
+#                                         k
+#                             variable
+#                                 j
+#                         TIMES *
+#                             int
+#                                 2
+#                             variable
+#                                 k
+#         PRINT
+#             elements
+#                 string
+#                     "Fumanacci"
+#                 variable
+#                     s
+#                 string
+#                     "\n"
+#     BLOCK_END

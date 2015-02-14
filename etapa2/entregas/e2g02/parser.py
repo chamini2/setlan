@@ -63,12 +63,12 @@ def p_statement_print(symbol):
 
 # Multiples declaraciones en un bloque separadas por ';'
 def p_statement_statement_list(symbol):
-    """statement_list : statement
-                      | statement_list TokenSemicolon statement """
-    if len(symbol) == 2:
+    """statement_list : statement TokenSemicolon
+                      | statement_list statement TokenSemicolon """
+    if len(symbol) == 3:
         symbol[0] = [symbol[1]]
     else:
-        symbol[0] = symbol[1] + [symbol[3]]
+        symbol[0] = symbol[1] + [symbol[2]]
 
 
 ############## Declarar Variables #############

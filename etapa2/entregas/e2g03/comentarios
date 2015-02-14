@@ -1,0 +1,29 @@
+- setlan.py                                 -0.25
+- instrucción vacía
+- 8 shift/reduce
+- precedencias mal
+- el parser "explota" por un None           -0.5
+- usan `;` como separador, no terminador    -0.15
+- imprimen direcciones de memoria
+- no colocan paréntesis en if ()
+- no colocan paréntesis en while ()
+- reportan errores de lexer mal             -0.5
+- indentado irregular en impresión de AST
+- no muestran información de la expresión de una asignación
+- reporte de error con línea incorrecta     -0.15
+- español e inglés en impresiones
+
+- No funciona para: 5, 7, 13
+
+
+- Revisando el código (7)
+    + Gramática correcta (2.25/3.0)
+    + Que no haya ningún conflicto shift/reduce o reduce/reduce, revisar que no estén usando algún "flag" para ocultarlos (0/0.5)
+    + Precedencias correctas (1/1.5)
+    + Revisar que todas las clases del AST necesarias existan (2/2.0, -0.15 por cada clase faltante)
+
+- Con casos de prueba (4)
+    + Construcción de AST (2/2.0)
+    + Impresión de AST (1/2.0, si lo imprimen sin indentación y eso, -0.5)
+
+Si ven que muchos casos de prueba no funcionan, arreglan la gramática, y por cada modificación que hicieron, -0.15.

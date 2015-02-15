@@ -201,6 +201,21 @@ Salida correspondiente:
 Error en línea 6, columna 5: Instrucción 'if' espera expresiones de tipo 'bool', no de tipo 'int'.
 Error en línea 7, columna 18: Operando '+' no sirve con operadores de tipo 'set' y 'int'.
 ```
+Adicionalmente, para esta etapa de desarrollo su programa principal
+debe ser capaz de imprimir además de la tabla de símbolos del
+código: La lista de _tokens_ encontrados y el AST de la estructura
+del código en `Setlan`. Para ello el usuario que ejecute el
+interpretador colocará los siguientes `flags` para determinar
+**qué** imprimir:
+
++ `-t`: Imprime la lista de _tokens_.
++ `-a`: Imprime el AST asociado a la estructura del programa.
++ `-s`: Imprime la tabla de símbolos.
+
+Note que se puede imprimir más de una de las especificaciones
+de cada `flag`, por lo que introducir `-t -s` imprime por salida
+estándar _tanto la lista de tokens encontrados como la tabla de símbolos_,
+por ejemplo.
 
 ## Implementación
 

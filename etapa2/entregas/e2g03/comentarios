@@ -5,6 +5,7 @@
 - el parser "explota" por un None           -0.5
 - usan `;` como separador, no terminador    -0.15
 - imprimen direcciones de memoria
+- no acepta conjuntos vacíos
 - no colocan paréntesis en if ()
 - no colocan paréntesis en while ()
 - reportan errores de lexer mal             -0.5
@@ -17,7 +18,7 @@
 
 
 - Revisando el código (7)
-    + Gramática correcta (2.25/3.0)
+    + Gramática correcta (2/3.0)
     + Que no haya ningún conflicto shift/reduce o reduce/reduce, revisar que no estén usando algún "flag" para ocultarlos (0/0.5)
     + Precedencias correctas (1/1.5)
     + Revisar que todas las clases del AST necesarias existan (2/2.0, -0.15 por cada clase faltante)

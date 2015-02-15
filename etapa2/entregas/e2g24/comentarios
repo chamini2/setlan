@@ -1,10 +1,11 @@
+- no acepta conjuntos vacíos
 - no agarran errores de lexer bien      -0.5
 - impresión de repeat while do incorrecta
 - no imprimen using .. in
 - precedencias mal
 
 - Revisando el código (7)
-    + Gramática correcta (3/3.0)
+    + Gramática correcta (2.75/3.0)
     + Que no haya ningún conflicto shift/reduce o reduce/reduce, revisar que no estén usando algún "flag" para ocultarlos (0.5/0.5)
     + Precedencias correctas (1/1.5)
     + Revisar que todas las clases del AST necesarias existan (2/2.0, -0.15 por cada clase faltante)

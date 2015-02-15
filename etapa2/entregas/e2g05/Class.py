@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # Modulo con  todas las clases que se usaran en el Parser.py
 
 import sys

@@ -1,4 +1,7 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
+#setlan.py
+# Oriana Graterol 10-11248
+# Samuel Rodriguez 09-10728
 
 import sys
 import Lexer
@@ -6,17 +9,17 @@ import Parser
 
 def main():
 
-	# Construimos el Lexer 
-	if (len(sys.argv) > 1):
-		Lexer.scanner(sys.argv[1],False)
-		Parser.analizador_sintactico(sys.argv[1])
-	else:
-		print "Verifique que la sintaxis introducida es correcta."
-		print "./setlan <nombre del archivo>\n"
+    # Construimos el Lexer 
+    if (len(sys.argv) > 1):
+        Lexer.scanner(sys.argv[1],False)
+        Parser.analizador_sintactico(sys.argv[1])
+    else:
+        print "Verifique que la sintaxis introducida es correcta."
+        print "./setlan <nombre del archivo>\n"
 
 
 if __name__ == "__main__":
-	main()
+    main()
 
 
 # END setlan.py

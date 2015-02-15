@@ -91,7 +91,10 @@ Expresion   ->   TokenNumero
 	            | Expresion TokenDesigual Expresion
 	            | Expresion TokenContencion Expresion
 
-
+/* Esta regla se esta utilizando para crear conjuntos, por que no mejor crear
+ * una regla para los conjuntos y luego se nombrara en las reglas de
+ * 'expresion'.
+ */
 elementos  ->  TokenNumero
                | elementos TokenComa TokenNumero
 

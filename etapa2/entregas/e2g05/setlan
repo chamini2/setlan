@@ -1,9 +1,4 @@
 ﻿#!/usr/bin/env python
-#setlan.py
-# Oriana Graterol 10-11248
-# Samuel Rodriguez 09-10728
-
-
 
 import sys
 import Lexer

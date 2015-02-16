@@ -2,7 +2,6 @@
 h1 {text-align: center}
 h2 {margin-bottom: 15px;}
 table { min-width: 33%; margin-left: 33%; }
-code { /*background: rgba(190,190,50,0.4)*/ }
 </style>
 
 ####Universidad Simón Bolívar
@@ -201,6 +200,8 @@ Salida correspondiente:
 Error en línea 6, columna 5: Instrucción 'if' espera expresiones de tipo 'bool', no de tipo 'int'.
 Error en línea 7, columna 18: Operando '+' no sirve con operadores de tipo 'set' y 'int'.
 ```
+## Flags
+
 Adicionalmente, para esta etapa de desarrollo su programa principal
 debe ser capaz de imprimir además de la tabla de símbolos del
 código: La lista de _tokens_ encontrados y el AST de la estructura
@@ -214,8 +215,7 @@ interpretador colocará los siguientes `flags` para determinar
 
 Note que se puede imprimir más de una de las especificaciones
 de cada `flag`, por lo que introducir `-t -s` imprime por salida
-estándar _tanto la lista de tokens encontrados como la tabla de símbolos_,
-por ejemplo.
+estándar _tanto la lista de tokens encontrados como la tabla de símbolos_.
 
 ## Implementación
 

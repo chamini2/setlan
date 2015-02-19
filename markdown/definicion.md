@@ -65,13 +65,13 @@ Ejemplo válido:
 
     {
         <declaración de variables> 
+        <instrucción 0>;
         <instrucción 1>;
-        <instrucción 2>;
         ...
         <instrucción n>;
     }
 
-El bloque es una instrucción que consiste de una sección de declaración de variables, la cual es opcional, y una secuencia de instrucciones finalizadas por `;`.
+El bloque es una instrucción que consiste de una sección de declaración de variables, la cual es opcional, y una secuencia de instrucciones finalizadas por `;`. La secuencia de instrucciones dentro de un bloque puede estar compuesta por `0` (cero) o más instrucciones.
 
 La sintaxis de la declaración de variables es:
 

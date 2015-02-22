@@ -1,0 +1,6 @@
+program {
+    using set i; in
+
+    for i min {1,2,3,4} do
+    
+}

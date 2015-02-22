@@ -7,7 +7,9 @@ Matteo Ferrando, 09-10285
 """
 
 import ply.yacc as yacc
-from Lexer import tokens, lexer_error, find_column, lexer
+
+import Errors
+from Lexer import tokens, find_column, lexer
 from AST import *
 
 
@@ -68,13 +70,13 @@ def p_statement_block(symbol):
     if len(symbol) == 4:
         pos = from_to_span(symbol, 1, 3)
         statements = symbol[2]
-        sym_table = None # whatevs
+        declarations = None # whatevs
     else:
         pos = from_to_span(symbol, 1, 6)
         statements = symbol[5]
-        sym_table = symbol[3]
+        declarations = symbol[3]
 
-    symbol[0] = Block(pos, statements, sym_table)
+    symbol[0] = Block(pos, statements, declarations)
 
 
 # A grammar rule to create multiple declarations in a block statement
@@ -89,7 +91,7 @@ def p_statement_declare_list(symbol):
 # A grammar rule to create a declaration in a list of declarations
 def p_statement_declaration(symbol):
     """declaration : data_type declare_comma_list SEMICOLON"""
-    symbol[0] = map(lambda var: (symbol[1], var),symbol[2])
+    symbol[0] = map(lambda var: (symbol[1], var), symbol[2])
 
 # A grammar rule to create multiple variables in a declaration
 def p_statement_declare_comma_list(symbol):
@@ -418,14 +420,13 @@ def p_error(symbol):
         text = lexer.lexdata
         message = "ERROR: unexpected token '%s' at line %d, column %d"
         data = (symbol.value, symbol.lineno, find_column(text, symbol.lexpos))
-        parser_error.append(message % data)
+        Errors.parser_error.append(message % data)
     else:
-        parser_error.append("ERROR: Syntax error at EOF")
+        Errors.parser_error.append("ERROR: Syntax error at EOF")
 
 
 # Build the parser
 parser = yacc.yacc(start='program')
-parser_error = []
 
 
 # The file (stored in a Python String) goes through the
@@ -436,9 +437,6 @@ def parsing(data, debug=0):
 
     if parser.error:
         ast = None
-
-    # if ast:
-    #     ast.check()
 
     return ast
 
@@ -469,13 +467,13 @@ def main(argv=None):
 
     ast = parsing(file_string, debug)
 
-    if lexer_error:
+    if Errors.lexer_error:
         ast = None
-        for error in lexer_error:
+        for error in Errors.lexer_error:
             print error
-    elif parser_error:
+    elif Errors.parser_error:
         ast = None
-        for error in parser_error:
+        for error in Errors.parser_error:
             print error
     else:
         print ast

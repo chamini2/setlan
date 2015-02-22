@@ -8,6 +8,9 @@ Matteo Ferrando, 09-10285
 
 import ply.lex as lex
 
+import Errors
+
+
 # Reserverd words of the language
 words = [
     # Language
@@ -202,7 +205,7 @@ def t_error(token):
     text = token.lexer.lexdata
     message = "ERROR: unexpected character '%s' at line %d, column %d"
     data = token.value[0], token.lineno, find_column(text, token.lexer.lexpos)
-    lexer_error.append(message % data)
+    Errors.lexer_error.append(message % data)
     token.lexer.skip(1)
 
 
@@ -211,12 +214,11 @@ def error_NUMBER(token):
     text = token.lexer.lexdata
     message = "ERROR: overflow for int '%s' at line %d, column %d"
     data = token.value, token.lineno, find_column(text, token.lexer.lexpos)
-    lexer_error.append(message % data)
+    Errors.lexer_error.append(message % data)
 
 
 # Build the lexer
 lexer = lex.lex()
-lexer_error = []
 
 ###############################################################################
 
@@ -234,15 +236,15 @@ def lexing(file_string, debug=0):
         tokens_list.append(tok)
 
     # If no "Unexpected character" or "Overflow" was found
-    if not lexer_error:
+    if not Errors.lexer_error:
         return tokens_list
     else:
         # Print all the errors
-        for error in lexer_error:
+        for error in Errors.lexer_error:
             print error
 
         # Empty list to indicate error
-        return []
+        return None
 
 
 # Only to be called if this is the main module

@@ -119,7 +119,7 @@ program {
     } else {
        using bool i; in
        ...
-    }
+    };
 }
 ```
 
@@ -169,7 +169,7 @@ program {
 			bool b;
 		in
 		...
-	}
+	};
 }
 ```
 

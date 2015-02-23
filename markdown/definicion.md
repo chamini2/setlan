@@ -237,7 +237,7 @@ Ejemplo válido que hace evidente el último párrafo:
         s = {2, 3, 1};
         for i min s do {
             println i;
-            s = s + {i * 2}; # unión de conjuntos
+            s = s ++ {i * 2}; # unión de conjuntos
         };
 
         print s;

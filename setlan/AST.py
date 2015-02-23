@@ -13,7 +13,26 @@ import re
 import Errors
 from SymbolTable import SymbolTable
 
+###############################################################################
+
 scope_stack = deque()
+
+def lookup_stack(name, lexspan):
+    table_info = None
+    for scope in scope_stack:
+        if scope.contains(name):
+            table_info = scope.lookup(name)
+            break
+
+    if table_info is None:
+        message = "ERROR: variable '%s' referenced at line %d, column %d is not defined"
+        lin, col = lexspan[0]
+        data = name, lin, col
+        Errors.static_error.append(message % data)
+
+    return table_info
+
+###############################################################################
 
 def indent(n):
     return n * '    '
@@ -31,7 +50,7 @@ class Program(object):
         return "PROGRAM" + self.statement.pretty_string(1)
 
     def check(self):
-        pass
+        self.statement.check()
 
     def execute(self):
         pass
@@ -43,21 +62,13 @@ class Program(object):
 # in the .check() method, statements return booleans values
 class Statement(object): pass
 
-
-# def error_invalid_expression(exp_type, place, place_string, should):
-#     if exp_type != should and exp_type is not None:
-#         message = "ERROR: expression of type '%s' in %s "
-#         message += "(must be '%s') from line %d, column %d"
-#         message += " to line %d, column %d"
-#         s_lin, s_col = place.lexspan[0]
-#         e_lin, e_col = place.lexspan[1]
-#         data = exp_type, place_string, should, s_lin, s_col, e_lin, e_col
-#         static_error.append(message % data)
-#         return False
-#     elif exp_type is None:
-#         return False
-#     else:
-#         return True
+def error_expression_type(exp_type, got_type, lexspan):
+    if got_type != Type.ErrorT:
+        message = "ERROR: expecting expression of type '%s' and got "
+        message += " type '%s' at line %d, column %d"
+        lin, col = lexspan[0]
+        data = exp_type, got_type, lin, col
+        Errors.static_error.append(message % data)
 
 ###############################################################################
 
@@ -68,7 +79,6 @@ class Assign(Statement):
         self.lexspan = lexspan
         self.variable = variable
         self.expression = expression
-        # self.sym_table = None
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "ASSIGN"
@@ -78,7 +88,27 @@ class Assign(Statement):
         return string
 
     def check(self):
-        pass
+        exp_type = self.expression.check()
+        table_info = lookup_stack(self.variable.name, self.variable.lexspan)
+
+        if table_info:
+            var_type = table_info.type
+            if var_type == Type.IteratorT:
+                message = "ERROR: assigning value to not modifiable variable "
+                message += "'%s' at line %d, column %d"
+                lin, col = self.lexspan[0]
+                data = table_info.name, lin, col
+                Errors.static_error.append(message % data)
+
+                var_type = Type.IntT
+
+            if Type.ErrorT != exp_type != var_type:
+                message = "ERROR: assigning expression of type '%s' to variable "
+                message += "'%s' of type '%s' at line %d, column %d"
+                lin, col = self.lexspan[0]
+                data = exp_type, table_info.name, table_info.type, lin, col
+                Errors.static_error.append(message % data)
+
 
 ###############################################################################
 
@@ -89,10 +119,9 @@ class Block(Statement):
         self.lexspan = lexspan
         self.statements = statements
         self.sym_table = SymbolTable()
-        if declarations:
-            for dt, var in declarations:
-                new_dt = Type.type_from_string(dt)
-                self.sym_table.insert(new_dt, var, default_value(new_dt))
+        for dt, var in declarations:
+            new_dt = Type.type_from_string(dt)
+            self.sym_table.insert(new_dt, var, Type.default_value(new_dt))
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "BLOCK"
@@ -101,7 +130,7 @@ class Block(Statement):
             string += "\n" + indent(level + 1) + "USING"
 
             for sym in self.sym_table:
-                string += "\n" + indent(level + 2) + Type.string_from_type(sym.type)
+                string += "\n" + indent(level + 2) + str(sym.type)
                 string += " " + str(sym.name)
 
             string += "\n" + indent(level + 1) + "IN"
@@ -114,6 +143,9 @@ class Block(Statement):
 
     def check(self):
         scope_stack.appendleft(self.sym_table)
+        for stat in self.statements:
+            stat.check()
+        scope_stack.popleft()
 
 ###############################################################################
 
@@ -123,7 +155,6 @@ class Scan(Statement):
     def __init__(self, lexspan, variable):
         self.lexspan = lexspan
         self.variable = variable
-        # self.sym_table = None
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "SCAN"
@@ -131,7 +162,13 @@ class Scan(Statement):
         return string
 
     def check(self):
-        pass
+        table_info = lookup_stack(self.variable.name, self.variable.lexspan)
+        if table_info and table_info.type not in [Type.IntT, Type.BoolT]:
+            message = "ERROR: scanning variable '%s' of type '%s' at"
+            message += " line %d, column %d"
+            lin, col = self.lexspan[0]
+            data = table_info.name, table_info.type, lin, col
+            Errors.static_error.append(message % data)
 
 ###############################################################################
 
@@ -141,7 +178,6 @@ class Print(Statement):
     def __init__(self, lexspan, elements):
         self.lexspan = lexspan
         self.elements = elements
-        # self.sym_table = None
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "PRINT"
@@ -153,7 +189,8 @@ class Print(Statement):
         return string
 
     def check(self):
-        pass
+        for elm in self.elements:
+            elm.check()
 
 ###############################################################################
 
@@ -165,7 +202,6 @@ class If(Statement):
         self.condition = condition
         self.then_st = then_st
         self.else_st = else_st
-        # self.sym_table = None
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "IF"
@@ -183,7 +219,14 @@ class If(Statement):
         return string
 
     def check(self):
-        pass
+        condition_type = self.condition.check()
+
+        if condition_type != Type.BoolT:
+            error_expression_type(Type.BoolT, condition_type, self.condition.lexspan)
+
+        self.then_st.check()
+        if self.else_st:
+            self.else_st.check()
 
 ###############################################################################
 
@@ -192,17 +235,18 @@ class For(Statement):
     """For statement, works with sets"""
     def __init__(self, lexspan, variable, direction, in_set, statement):
         self.lexspan = lexspan
-        self.variable = variable
         self.direction = Direction.direction_from_string(direction)
         self.in_set = in_set
         self.statement = statement
-        # self.sym_table = None
+
+        self.sym_table = SymbolTable()
+        self.sym_table.insert(Type.IteratorT, variable, Type.default_value(Type.IntT))
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + "FOR"
         string += self.variable.pretty_string(level + 1)
         string += "\n" + indent(level + 1) + "direction"
-        string += "\n" + indent(level + 2) + Direction.string_from_direction(self.direction)
+        string += "\n" + indent(level + 2) + str(self.direction)
         string += "\n" + indent(level + 1) + "IN"
         string += self.in_set.pretty_string(level + 1)
         string += "\n" + indent(level + 1) + "DO"
@@ -211,7 +255,15 @@ class For(Statement):
         return string
 
     def check(self):
-        pass
+        in_type = self.in_set.check()
+
+        if in_type != Type.SetT:
+            error_expression_type(Type.SetT, in_type, self.in_set.lexspan)
+
+        scope_stack.appendleft(self.sym_table)
+        self.statement.check()
+        scope_stack.popleft()
+
 
 ###############################################################################
 
@@ -223,7 +275,6 @@ class While(Statement):
         self.repeat_st = repeat_st
         self.condition = condition
         self.do_st = do_st
-        # self.sym_table = None
 
     def pretty_string(self, level):
         string = ""
@@ -242,7 +293,92 @@ class While(Statement):
         return string
 
     def check(self):
-        pass
+        if self.repeat_st:
+            self.repeat_st.check()
+
+        condition_type = self.condition.check()
+        if condition_type != Type.BoolT:
+            error_expression_type(Type.BoolT, condition_type, self.condition.lexspan)
+
+        if self.do_st:
+            self.do_st.check()
+
+###############################################################################
+
+
+class Enum(object):
+    def __init__(self, cl, value, string):
+        self.cl = cl
+        self.value = value
+        self.string = string
+
+    def __eq__(self, other):
+        return self.cl == other.cl and self.value == other.value
+    
+    def __ne__(self, other):
+        return self.value != other.value
+
+    def __str__(self):
+        return self.string
+
+# For inheritance
+class Direction(object):
+    MinD = Enum("Direction", 1, "min")
+    MaxD = Enum("Direction", 2, "max")
+
+    def pretty_string(self, level, num):
+        return "\n" + indent(level) + str(num)
+
+    @staticmethod
+    def direction_from_string(string):
+        if string == "min":
+            return Direction.MinD
+        if string == "max":
+            return Direction.MaxD
+
+# For inheritance
+# just for checking the type of an exprssion.
+class Type(object):
+    IntT      = Enum("Type", 1, "int")
+    IteratorT = Enum("Type", 2, "int")
+    SetT      = Enum("Type", 3, "set")
+    BoolT     = Enum("Type", 4, "bool")
+    StringT   = Enum("Type", 5, "string")
+    VariableT = Enum("Type", 6, "variable")
+    BinaryT   = Enum("Type", 7, "binary")
+    UnaryT    = Enum("Type", 8, "unary")
+    ErrorT    = Enum("Type", 9, "error")
+
+    def pretty_string(self, level, dt):
+        return "\n" + indent(level) + str(dt)
+
+    @staticmethod
+    def type_from_string(string):
+        if string == "int":
+            return Type.IntT      
+        if string == "set":
+            return Type.SetT      
+        if string == "bool":
+            return Type.BoolT     
+        if string == "string":
+            return Type.StringT   
+        if string == "variable":
+            return Type.VariableT 
+        if string == "binary":
+            return Type.BinaryT   
+        if string == "unary":
+            return Type.UnaryT    
+        if string == "error":
+            return Type.ErrorT    
+
+    @staticmethod
+    def default_value(data_type):
+        if data_type == Type.IntT:
+            return 0
+        if data_type == Type.BoolT:
+            return False
+        if data_type == Type.SetT:
+            return []
 
 ###############################################################################
 
@@ -250,80 +386,6 @@ class While(Statement):
 # For inheritance
 # in the .check() method, expressions return the data type or None
 class Expression(object): pass
-
-# For inheritance
-class Direction(object):
-    MinD, MaxD = range(2)
-
-    def pretty_string(self, level, num):
-        return "\n" + indent(level) + string_from_direction(num)
-
-    @staticmethod
-    def direction_from_string(str):
-        if str == "min":
-            return Direction.MinD
-        if str == "max":
-            return Direction.MaxD
-
-    @staticmethod
-    def string_from_direction(num):
-        if num == Direction.MinD:
-            return "min"
-        if num == Direction.MaxD:
-            return "max"
-
-def default_value(data_type):
-    if data_type == Type.IntT:
-        return 0
-    if data_type == Type.BoolT:
-        return False
-    if data_type == Type.SetT:
-        return []
-
-# For inheritance
-# just for checking the type of an exprssion.
-class Type(object):
-    IntT, SetT, BoolT, StringT, VariableT, BinaryT, UnaryT = range(7)
-
-    def pretty_string(self, level, num):
-        return "\n" + indent(level) + type_from_string(num)
-
-    @staticmethod
-    def string_from_type(num):
-        if num == Type.IntT:
-            return "int"
-        if num == Type.SetT:
-            return "set"
-        if num == Type.BoolT:
-            return "bool"
-        if num == Type.StringT:
-            return "string"
-        if num == Type.VariableT:
-            return "variable"
-        if num == Type.BinaryT:
-            return "binary"
-        if num == Type.UnaryT:
-            return "unary"
-
-    @staticmethod
-    def type_from_string(str):
-        if str.lower() == "int":
-            return Type.IntT
-        if str.lower() == "set":
-            return Type.SetT
-        if str.lower() == "bool":
-            return Type.BoolT
-        if str.lower() == "string":
-            return Type.StringT
-        if str.lower() == "variable":
-            return Type.VariableT
-        if str.lower() == "binary":
-            return Type.BinaryT
-        if str.lower() == "unary":
-            return Type.UnaryT
-
-    # def pretty_string(self, level):
-    #     return "\n" + indent(level) + self.__class__.__name__[:-5].lower()
 
 ###############################################################################
 
@@ -343,7 +405,6 @@ class Variable(Literal):
         self.type = Type.VariableT
         self.lexspan = lexspan
         self.name = name
-        self.sym_table = None
 
     def pretty_string(self, level):
         string = "\n" + indent(level) + self.__class__.__name__.lower()
@@ -351,19 +412,11 @@ class Variable(Literal):
         return string
 
     def check(self):
-        table_info = None
-        for scope in scope_stack:
-            if scope.contains(self.name):
-                table_info = scope.lookup(self.name)
-                break
-
-        if table_info is None:
-            message = "ERROR: variable '%s' referenced in line %d, column %d is not defined"
-            lin, col = self.lexspan[0]
-            data = self.name, lin, col
-            Errors.static_error.append(message % data)
-        else:
+        table_info = lookup_stack(self.name, self.lexspan)
+        if table_info:
             return table_info.type
+        else:
+            return Type.ErrorT
 
     def __eq__(self, other):
         return self.name == other.name
@@ -463,9 +516,6 @@ class String(Literal):
     def __str__(self):
         return self.value
 
-    def check(self):
-        return self.type
-
     def evaluate(self):
         return self.value
 
@@ -500,13 +550,14 @@ def error_unsuported_binary(lexspan, operator, left, right):
 
 class Binary(Expression):
     """Binary expressions"""
-    def __init__(self, lexspan, operator, left, right):
+    def __init__(self, lexspan, operator, left, right, operand_types, return_type):
         self.type = Type.BinaryT
         self.lexspan = lexspan
         self.operator = operator # for printing
         self.left = left
         self.right = right
-        self.sym_table = None
+        self.operand_types = operand_types
+        self.return_type = return_type
 
     def __str__(self):
         string = '(' + str(self.left) + str(self.operator) 
@@ -520,13 +571,34 @@ class Binary(Expression):
         string += self.right.pretty_string(level + 1)
         return string
 
+    def check(self):
+        left_type = self.left.check()
+        right_type = self.right.check()
+
+        if left_type == Type.IteratorT:
+            left_type = Type.IntT
+
+        if right_type == Type.IteratorT:
+            right_type = Type.IntT
+
+        if Type.ErrorT not in (left_type, right_type) not in self.operand_types:
+            message = "ERROR: operator '%s' used incorrectly with with types '%s' and '%s'"
+            message += " at line %d, column %d"
+            lin, col = self.lexspan[0]
+            data = self.operator, left_type, right_type, lin, col
+            Errors.static_error.append(message % data)
+
+        return self.return_type
+
 ###############################################################################
 
 
 class Plus(Binary):
     """Binary expressions with a '+'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "+", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.IntT
+        Binary.__init__(self, lexspan, "+", left, right, operand_types, return_type)
 
 #######################################
 
@@ -534,7 +606,9 @@ class Plus(Binary):
 class Minus(Binary):
     """Binary expressions with a '-'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "-", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.IntT
+        Binary.__init__(self, lexspan, "-", left, right, operand_types, return_type)
 
 #######################################
 
@@ -542,7 +616,9 @@ class Minus(Binary):
 class Times(Binary):
     """Binary expressions with a '*'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "*", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.IntT
+        Binary.__init__(self, lexspan, "*", left, right, operand_types, return_type)
 
 #######################################
 
@@ -550,7 +626,9 @@ class Times(Binary):
 class Divide(Binary):
     """Binary expressions with a '/'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "/", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.IntT
+        Binary.__init__(self, lexspan, "/", left, right, operand_types, return_type)
 
 #######################################
 
@@ -558,22 +636,28 @@ class Divide(Binary):
 class Modulo(Binary):
     """Binary expressions with a '%'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "%", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.IntT
+        Binary.__init__(self, lexspan, "%", left, right, operand_types, return_type)
 
 #######################################
 
 class Union(Binary):
     """Binary expressions with a '++'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "++", left, right)
+        operand_types = [(Type.SetT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "++", left, right, operand_types, return_type)
 
 #######################################
 
 
 class Difference(Binary):
-    """Binary expressions with a '\\'"""
+    """Binary expressions with a '\'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "\\", left, right)
+        operand_types = [(Type.SetT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "\\", left, right, operand_types, return_type)
 
 #######################################
 
@@ -581,14 +665,18 @@ class Difference(Binary):
 class Intersection(Binary):
     """Binary expressions with a '><'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "><", left, right)
+        operand_types = [(Type.SetT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "><", left, right, operand_types, return_type)
 
 #######################################
 
 class SetPlus(Binary):
     """Binary expressions with a '<+>'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "<+>", left, right)
+        operand_types = [(Type.IntT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "<+>", left, right, operand_types, return_type)
 
 #######################################
 
@@ -596,7 +684,9 @@ class SetPlus(Binary):
 class SetMinus(Binary):
     """Binary expressions with a '<->'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "<->", left, right)
+        operand_types = [(Type.IntT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "<->", left, right, operand_types, return_type)
 
 #######################################
 
@@ -604,7 +694,9 @@ class SetMinus(Binary):
 class SetTimes(Binary):
     """Binary expressions with a '<*>'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "<*>", left, right)
+        operand_types = [(Type.IntT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "<*>", left, right, operand_types, return_type)
 
 #######################################
 
@@ -612,7 +704,9 @@ class SetTimes(Binary):
 class SetDivide(Binary):
     """Binary expressions with a '</>'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "</>", left, right)
+        operand_types = [(Type.IntT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "</>", left, right, operand_types, return_type)
 
 #######################################
 
@@ -620,14 +714,18 @@ class SetDivide(Binary):
 class SetModulo(Binary):
     """Binary expressions with a '<%>'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "<%>", left, right)
+        operand_types = [(Type.IntT, Type.SetT)]
+        return_type = Type.SetT
+        Binary.__init__(self, lexspan, "<%>", left, right, operand_types, return_type)
 
 #######################################
 
 class Or(Binary):
     """Binary expressions with a 'or'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "or", left, right)
+        operand_types = [(Type.BoolT, Type.BoolT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "or", left, right, operand_types, return_type)
 
 #######################################
 
@@ -635,7 +733,9 @@ class Or(Binary):
 class And(Binary):
     """Binary expressions with a 'and'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "and", left, right)
+        operand_types = [(Type.BoolT, Type.BoolT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "and", left, right, operand_types, return_type)
 
 #######################################
 
@@ -643,7 +743,9 @@ class And(Binary):
 class Less(Binary):
     """Binary expressions with a '<'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "<", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "<", left, right, operand_types, return_type)
 
 #######################################
 
@@ -651,7 +753,9 @@ class Less(Binary):
 class LessEq(Binary):
     """Binary expressions with a '<='"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "<=", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "<=", left, right, operand_types, return_type)
 
 #######################################
 
@@ -659,7 +763,9 @@ class LessEq(Binary):
 class Greater(Binary):
     """Binary expressions with a '>'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, ">", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, ">", left, right, operand_types, return_type)
 
 #######################################
 
@@ -667,7 +773,9 @@ class Greater(Binary):
 class GreaterEq(Binary):
     """Binary expressions with a '>='"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, ">=", left, right)
+        operand_types = [(Type.IntT, Type.IntT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, ">=", left, right, operand_types, return_type)
 
 #######################################
 
@@ -675,7 +783,11 @@ class GreaterEq(Binary):
 class Equal(Binary):
     """Binary expressions with a '=='"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "==", left, right)
+        operand_types = [(Type.IntT, Type.IntT),
+                         (Type.BoolT, Type.BoolT), 
+                         (Type.SetT, Type.SetT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "==", left, right, operand_types, return_type)
 
 #######################################
 
@@ -683,7 +795,11 @@ class Equal(Binary):
 class Unequal(Binary):
     """Binary expressions with a '/='"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "/=", left, right)
+        operand_types = [(Type.IntT, Type.IntT),
+                         (Type.BoolT, Type.BoolT), 
+                         (Type.SetT, Type.SetT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "/=", left, right, operand_types, return_type)
 
 #######################################
 
@@ -691,28 +807,22 @@ class Unequal(Binary):
 class Contains(Binary):
     """Binary expressions with a '@'"""
     def __init__(self, lexspan, left, right):
-        Binary.__init__(self, lexspan, "@", left, right)
+        operand_types = [(Type.IntT, Type.SetT)]
+        return_type = Type.BoolT
+        Binary.__init__(self, lexspan, "@", left, right, operand_types, return_type)
 
 ###############################################################################
 
 
-def error_unsuported_unary(lexspan, operator, operand):
-    message = "ERROR: unsupported operator '%s' for type: '%s' "
-    message += "from line %d, column %d to line %d, column %d"
-    s_lin, s_col = lexspan[0]
-    e_lin, e_col = lexspan[1]
-    data = str(operator), str(operand), s_lin, s_col, e_lin, e_col
-    static_error.append(message % data)
-
-
 class Unary(Expression):
     """Unary expressions"""
-    def __init__(self, lexspan, operator, operand):
+    def __init__(self, lexspan, operator, operand, operand_type, return_type):
         self.type = Type.UnaryT
         self.lexspan = lexspan
         self.operator = operator # for printing
         self.operand = operand
-        self.sym_table = None
+        self.operand_type = operand_type
+        self.return_type = return_type
 
     def __str__(self):
         string = '(' + str(self.operator) + ' ' + str(self.operand) + ')'
@@ -724,13 +834,30 @@ class Unary(Expression):
         string += self.operand.pretty_string(level + 1)
         return string
 
+    def check(self):
+        exp_type = self.operand.check()
+
+        if exp_type == Type.IteratorT:
+            exp_type = Type.IntT
+
+        if Type.ErrorT != exp_type != self.operand_type:
+            message = "ERROR: operator '%s' used incorrectly with with type '%s'"
+            message += " at line %d, column %d"
+            lin, col = self.lexspan[0]
+            data = self.operator, exp_type, lin, col
+            Errors.static_error.append(message % data)
+
+        return self.return_type
+
 ###############################################################################
 
 
 class Negate(Unary):
     """Unary expressions with a '-'"""
     def __init__(self, lexspan, operand):
-        Unary.__init__(self, lexspan, "-", operand)
+        operand_type = Type.IntT
+        return_type = Type.IntT
+        Unary.__init__(self, lexspan, "-", operand, operand_type, return_type)
 
 #######################################
 
@@ -738,7 +865,9 @@ class Negate(Unary):
 class Not(Unary):
     """Unary expressions with a 'not'"""
     def __init__(self, lexspan, operand):
-        Unary.__init__(self, lexspan, "not", operand)
+        operand_type = Type.BoolT
+        return_type = Type.BoolT
+        Unary.__init__(self, lexspan, "not", operand, operand_type, return_type)
 
 #######################################
 
@@ -746,7 +875,9 @@ class Not(Unary):
 class Max(Unary):
     """Unary expressions with a '>?'"""
     def __init__(self, lexspan, operand):
-        Unary.__init__(self, lexspan, ">?", operand)
+        operand_type = Type.SetT
+        return_type = Type.IntT
+        Unary.__init__(self, lexspan, ">?", operand, operand_type, return_type)
 
 #######################################
 
@@ -754,7 +885,9 @@ class Max(Unary):
 class Min(Unary):
     """Unary expressions with a '<?'"""
     def __init__(self, lexspan, operand):
-        Unary.__init__(self, lexspan, "<?", operand)
+        operand_type = Type.SetT
+        return_type = Type.IntT
+        Unary.__init__(self, lexspan, "<?", operand, operand_type, return_type)
 
 #######################################
 
@@ -762,4 +895,6 @@ class Min(Unary):
 class Size(Unary):
     """Unary expressions with a '$?'"""
     def __init__(self, lexspan, operand):
-        Unary.__init__(self, lexspan, "$?", operand)
+        operand_type = Type.SetT
+        return_type = Type.IntT
+        Unary.__init__(self, lexspan, "$?", operand, operand_type, return_type)

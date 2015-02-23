@@ -70,7 +70,7 @@ def p_statement_block(symbol):
     if len(symbol) == 4:
         pos = from_to_span(symbol, 1, 3)
         statements = symbol[2]
-        declarations = None # whatevs
+        declarations = [] # whatevs
     else:
         pos = from_to_span(symbol, 1, 6)
         statements = symbol[5]

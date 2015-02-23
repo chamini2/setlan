@@ -11,7 +11,7 @@ import Errors
 class Symbol(object):
     """A symbol that goes inside the symbol table"""
     def __init__(self, data_type, var, value):
-        self.name = var.value
+        self.name = var.name
         self.type = data_type
         self.value = value
         self.lexspan = var.lexspan

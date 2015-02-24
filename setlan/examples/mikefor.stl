@@ -1,0 +1,12 @@
+program {
+	for i min {1,2,3} do {
+		i = i + 1;
+		print i;
+	};
+
+	for i min {1,2,3} do {
+		using int i; in
+		i = i + 1; # esto siempre será 0 + 1
+		print i;
+	};
+}

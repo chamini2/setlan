@@ -582,7 +582,7 @@ class Binary(Expression):
             right_type = Type.IntT
 
         if Type.ErrorT not in (left_type, right_type) not in self.operand_types:
-            message = "ERROR: operator '%s' used incorrectly with with types '%s' and '%s'"
+            message = "ERROR: operator '%s' used incorrectly with types '%s' and '%s'"
             message += " at line %d, column %d"
             lin, col = self.lexspan[0]
             data = self.operator, left_type, right_type, lin, col

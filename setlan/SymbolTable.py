@@ -6,7 +6,37 @@ Symbol Table for Setlan
 Matteo Ferrando, 09-10285
 """
 
+from collections import deque
+
 import Errors
+
+
+###############################################################################
+
+scope_stack = deque()
+
+def lookup_stack(name, lexspan):
+    table_info = None
+    for scope in scope_stack:
+        if scope.contains(name):
+            table_info = scope.lookup(name)
+            break
+
+    if table_info is None:
+        message = "ERROR: variable '%s' referenced at line %d, column %d is not defined"
+        lin, col = lexspan[0]
+        data = name, lin, col
+        Errors.static_error.append(message % data)
+
+    return table_info
+
+def update_stack(name, value):
+    for scope in scope_stack:
+        if scope.contains(name):
+            break
+    scope.update(name, value)
+
+###############################################################################
 
 class Symbol(object):
     """A symbol that goes inside the symbol table"""
@@ -16,7 +46,7 @@ class Symbol(object):
         self.value = value
         self.lexspan = var.lexspan
 
-class SymbolTable(object):
+class Scope(object):
     """A symbol table representation"""
     def __init__(self):
         self.scope = {}

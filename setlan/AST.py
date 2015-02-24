@@ -11,32 +11,28 @@ from collections import deque
 import re
 
 import Errors
-from SymbolTable import SymbolTable
+from SymbolTable import scope_stack, Scope, lookup_stack, update_stack
 
 ###############################################################################
+# Errors
 
-scope_stack = deque()
-
-def lookup_stack(name, lexspan):
-    table_info = None
-    for scope in scope_stack:
-        if scope.contains(name):
-            table_info = scope.lookup(name)
-            break
-
-    if table_info is None:
-        message = "ERROR: variable '%s' referenced at line %d, column %d is not defined"
+def error_expression_type(exp_type, got_type, lexspan):
+    if got_type != Type.ErrorT:
+        message = "ERROR: expecting expression of type '%s' and got"
+        message += " type '%s' at line %d, column %d"
         lin, col = lexspan[0]
-        data = name, lin, col
+        data = exp_type, got_type, lin, col
         Errors.static_error.append(message % data)
 
-    return table_info
-
-def update_stack(name, value):
-    for scope in scope_stack:
-        if scope.contains(name):
-            break
-    scope.update(name, value)
+# how = overflow
+# how = division by zero
+# how = max/min empty set
+def error_dynamic(how, lexspan):
+    message = "ERROR: " + how + " in operation at line %d, column %d"
+    lin, col = lexspan[0]
+    data = lin, col
+    print '\n\n', message % data
+    exit()
 
 ###############################################################################
 
@@ -67,14 +63,6 @@ class Program(object):
 # For inheritance
 # in the .check() method, statements return booleans values
 class Statement(object): pass
-
-def error_expression_type(exp_type, got_type, lexspan):
-    if got_type != Type.ErrorT:
-        message = "ERROR: expecting expression of type '%s' and got"
-        message += " type '%s' at line %d, column %d"
-        lin, col = lexspan[0]
-        data = exp_type, got_type, lin, col
-        Errors.static_error.append(message % data)
 
 ###############################################################################
 
@@ -127,7 +115,7 @@ class Block(Statement):
     def __init__(self, lexspan, statements, declarations):
         self.lexspan = lexspan
         self.statements = statements
-        self.sym_table = SymbolTable()
+        self.sym_table = Scope()
         for dt, var in declarations:
             new_dt = Type.type_from_string(dt)
             self.sym_table.insert(new_dt, var, Type.default_value(new_dt))
@@ -322,7 +310,7 @@ class For(Statement):
         self.statement = statement
 
         self.variable = variable
-        self.sym_table = SymbolTable()
+        self.sym_table = Scope()
         self.sym_table.insert(Type.IteratorT, variable, Type.default_value(Type.IntT))
 
     def pretty_string(self, level):
@@ -616,17 +604,6 @@ class String(Literal):
 
 ###############################################################################
 
-
-# how = overflow
-# how = division by zero
-# how = max/min empty set
-def error_dynamic(how, lexspan):
-    message = "ERROR: " + how + " in operation at line %d, column %d"
-    lin, col = lexspan[0]
-    data = lin, col
-    print '\n\n', message % data
-    exit()
-
 class Binary(Expression):
     """Binary expressions"""
     def __init__(self, lexspan, operator, operation, left, right, operand_types, return_type):
@@ -674,7 +651,10 @@ class Binary(Expression):
         left_value = self.left.evaluate()
         right_value = self.right.evaluate()
 
-        if isinstance(self, Divide) and right_value == 0:
+        if (isinstance(self, Divide) or isinstance(self, Modulo)) and right_value == 0:
+            error_dynamic("division by zero", self.lexspan)
+
+        if (isinstance(self, SetDivide) or isinstance(self, SetModulo)) and 0 in right_value:
             error_dynamic("division by zero", self.lexspan)
 
         value = self.operation(left_value, right_value)

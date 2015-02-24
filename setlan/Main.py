@@ -57,7 +57,7 @@ def main(argv=None):
 
     else:
         print ast
-        ast.execute()
+        # ast.execute()
 
     return ast
 

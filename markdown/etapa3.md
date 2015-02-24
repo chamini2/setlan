@@ -188,7 +188,7 @@ program {
     in
     i = 10;
     if (i + 2)
-        for k in {1,2,3} + 1 do
+        for k min {1,2,3} + 1 do
             print k
     ;
 }

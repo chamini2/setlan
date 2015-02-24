@@ -1,0 +1,46 @@
+program {
+	using int b; in
+	b = 3 + 5;
+
+	{
+		using bool b; in
+		while (b) do {
+			println "Hola Mundo";
+		};
+	};
+	
+}
+
+# PROGRAM
+#     BLOCK
+#         USING
+#             int b
+#         IN
+#         ASSIGN
+#             variable
+#                 b
+#             value
+#                 PLUS +
+#                     int
+#                         3
+#                     int
+#                         5
+#         BLOCK
+#             USING
+#                 bool b
+#             IN
+#             WHILE
+#                 condition
+#                     variable
+#                         b
+#             DO
+#                 BLOCK
+#                     PRINT
+#                         elements
+#                             string
+#                                 "Hola Mundo"
+#                             string
+#                                 "\n"
+#                 BLOCK_END
+#         BLOCK_END
+#    BLOCK_END

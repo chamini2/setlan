@@ -225,11 +225,11 @@ lexer = lex.lex()
 
 # The file (stored in a Python String)
 # goes through the lexer and returns the list of tokens
-def lexing(file_string, debug=0):
+def lexing(file_str, debug=0):
 
     tokens_list = []
 
-    lexer.input(file_string)
+    lexer.input(file_str)
 
     # Pass entire file through lexer
     for tok in lexer:
@@ -246,38 +246,14 @@ def lexing(file_string, debug=0):
         # Empty list to indicate error
         return None
 
-
-# Only to be called if this is the main module
-def main(argv=None):
-    import sys      # argv, exit
-
-    if argv is None:
-        argv = sys.argv
-
-    if len(argv) == 1:
-        print "ERROR: No input file"
-        return
-    elif len(argv) > 3:
-        print "ERROR: Invalid number of arguments"
-        return
-
-    if len(argv) == 3:
-        debug = argv[2]
-    else:
-        debug = 0
-
-    # Opens and reads the file to interpret
-    file_string = open(argv[1], 'r').read()
-
-    # Passes the file as a string to the Lexer
-    tokens_list = lexing(file_string, debug)
-
+def str_tokens(file_str, tokens_list):
+    string = ""
     for tok in tokens_list:
-        print 'token', tok.type, '            '[:-(len(tok.type))],
-        print 'value (' + str(tok.value) + ')',
-        print 'at line', str(tok.lineno) + ',',
-        print 'column', find_column(file_string, tok.lexpos)
-
+        string += 'token ' + tok.type + '            '[:-(len(tok.type))]
+        string += 'value (' + str(tok.value) + ') '
+        string += 'at line ' + str(tok.lineno) + ', '
+        string += 'column ' + str(find_column(file_str, tok.lexpos)) + "\n"
+    return string
 
 # If this is the module running
 if __name__ == "__main__":

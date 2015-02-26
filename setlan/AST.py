@@ -49,7 +49,10 @@ class Program(object):
         self.statement = statement
 
     def __str__(self):
-        return "PROGRAM" + self.statement.pretty_string(1)
+        return "PROGRAM" + self.statement.pretty_str(1)
+
+    def table_str(self):
+        return "Symbol Table\n" + self.statement.table_str(1)
 
     def check(self):
         self.statement.check()
@@ -62,7 +65,10 @@ class Program(object):
 
 # For inheritance
 # in the .check() method, statements return booleans values
-class Statement(object): pass
+class Statement(object):
+
+    def table_str(self, level):
+        return ""
 
 ###############################################################################
 
@@ -74,11 +80,11 @@ class Assign(Statement):
         self.variable = variable
         self.expression = expression
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + "ASSIGN"
-        string += self.variable.pretty_string(level + 1)
+        string += self.variable.pretty_str(level + 1)
         string += "\n" + indent(level + 1) + "value"
-        string += self.expression.pretty_string(level + 2)
+        string += self.expression.pretty_str(level + 2)
         return string
 
     def check(self):
@@ -120,7 +126,7 @@ class Block(Statement):
             new_dt = Type.type_from_string(dt)
             self.sym_table.insert(new_dt, var, Type.default_value(new_dt))
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + "BLOCK"
 
         if self.sym_table:
@@ -133,9 +139,23 @@ class Block(Statement):
             string += "\n" + indent(level + 1) + "IN"
 
         for stat in self.statements:
-            string += stat.pretty_string(level + 1)
+            string += stat.pretty_str(level + 1)
 
         string += "\n" + indent(level) + "BLOCK_END"
+        return string
+
+    def table_str(self, level):
+        string = ""
+
+        if self.sym_table:
+            string += "\n" + indent(level) + "SCOPE"
+
+            for sym in self.sym_table:
+                string += "\n" + indent(level + 1) + str(sym)
+
+        for stat in self.statements:
+            string += stat.table_str(level + 1)
+
         return string
 
     def check(self):
@@ -159,9 +179,9 @@ class Scan(Statement):
         self.lexspan = lexspan
         self.variable = variable
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + "SCAN"
-        string += self.variable.pretty_string(level + 1)
+        string += self.variable.pretty_str(level + 1)
         return string
 
     def check(self):
@@ -220,12 +240,12 @@ class Print(Statement):
         self.lexspan = lexspan
         self.elements = elements
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + "PRINT"
         string += "\n" + indent(level + 1) + "elements"
 
         for elm in self.elements:
-            string += elm.pretty_string(level + 2)
+            string += elm.pretty_str(level + 2)
 
         return string
 
@@ -251,10 +271,14 @@ class Print(Statement):
                 # intersperse
                 elm_value = sum([[x, ", "] for x in elm_value],[])[:-1]
 
-                stdout.write("{ ")
-                for e in elm_value:
-                    stdout.write( str(e) )
-                stdout.write(" }")
+                if elm_value:
+                    stdout.write("{ ")
+                    for e in elm_value:
+                        stdout.write( str(e) )
+                    stdout.write(" }")
+                else:
+                    stdout.write("{}")
+
 
 ###############################################################################
 
@@ -267,20 +291,28 @@ class If(Statement):
         self.then_st = then_st
         self.else_st = else_st
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + "IF"
 
         string += "\n" + indent(level + 1) + "condition"
-        string += self.condition.pretty_string(level + 2)
+        string += self.condition.pretty_str(level + 2)
 
         string += "\n" + indent(level + 1) + "THEN"
-        string += self.then_st.pretty_string(level + 2)
+        string += self.then_st.pretty_str(level + 2)
 
         if self.else_st:
             string += "\n" + indent(level + 1) + "ELSE"
-            string += self.else_st.pretty_string(level + 2)
+            string += self.else_st.pretty_str(level + 2)
 
         return string
+
+    def table_str(self, level):
+        string = self.then_st.table_str(level)
+        if self.else_st:
+            string += self.else_st.table_str(level)
+
+        return string
+
 
     def check(self):
         condition_type = self.condition.check()
@@ -313,15 +345,25 @@ class For(Statement):
         self.sym_table = Scope()
         self.sym_table.insert(Type.IteratorT, variable, Type.default_value(Type.IntT))
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + "FOR"
-        string += self.variable.pretty_string(level + 1)
+        string += self.variable.pretty_str(level + 1)
         string += "\n" + indent(level + 1) + "direction"
         string += "\n" + indent(level + 2) + str(self.direction)
         string += "\n" + indent(level + 1) + "IN"
-        string += self.in_set.pretty_string(level + 1)
+        string += self.in_set.pretty_str(level + 1)
         string += "\n" + indent(level + 1) + "DO"
-        string += self.statement.pretty_string(level + 2)
+        string += self.statement.pretty_str(level + 2)
+
+        return string
+
+    def table_str(self, level):
+        string = "\n" + indent(level) + "SCOPE"
+
+        for sym in self.sym_table:
+            string += "\n" + indent(level + 1) + str(sym)
+
+        string += self.statement.table_str(level + 1)
 
         return string
 
@@ -360,19 +402,29 @@ class While(Statement):
         self.condition = condition
         self.do_st = do_st
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = ""
         if self.repeat_st:
             string += "\n" + indent(level) + "REPEAT"
-            string += self.repeat_st.pretty_string(level + 1)
+            string += self.repeat_st.pretty_str(level + 1)
 
         string += "\n" + indent(level) + "WHILE"
         string += "\n" + indent(level + 1) + "condition"
-        string += self.condition.pretty_string(level + 2)
+        string += self.condition.pretty_str(level + 2)
 
         if self.do_st:
             string += "\n" + indent(level) + "DO"
-            string += self.do_st.pretty_string(level + 1)
+            string += self.do_st.pretty_str(level + 1)
+
+        return string
+
+    def table_str(self, level):
+        string = ""
+
+        if self.repeat_st:
+            string += self.repeat_st.table_str(level)
+        if self.do_st:
+            string += self.do_st.table_str(level)
 
         return string
 
@@ -419,7 +471,7 @@ class Direction(object):
     MinD = Enum("Direction", 1, "min")
     MaxD = Enum("Direction", 2, "max")
 
-    def pretty_string(self, level, num):
+    def pretty_str(self, level, num):
         return "\n" + indent(level) + str(num)
 
     @staticmethod
@@ -442,7 +494,7 @@ class Type(object):
     UnaryT    = Enum("Type", 8, "unary")
     ErrorT    = Enum("Type", 9, "error")
 
-    def pretty_string(self, level, dt):
+    def pretty_str(self, level, dt):
         return "\n" + indent(level) + str(dt)
 
     @staticmethod
@@ -492,7 +544,7 @@ class Literal(Expression):
     def evaluate(self):
         return self.value
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + self.__class__.__name__.lower()
         string += "\n" + indent(level + 1) + str(self)
         return string
@@ -570,10 +622,10 @@ class Set(Literal):
         self.lexspan = lexspan
         self.value = value
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + self.__class__.__name__.lower()
         for elm in self.value:
-            string += elm.pretty_string(level + 1)
+            string += elm.pretty_str(level + 1)
         return string
 
     def check(self):
@@ -621,11 +673,11 @@ class Binary(Expression):
         string += '  ' + str(self.right) + ')'
         return string
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + self.__class__.__name__.upper() 
         string += " " + self.operator
-        string += self.left.pretty_string(level + 1)
-        string += self.right.pretty_string(level + 1)
+        string += self.left.pretty_str(level + 1)
+        string += self.right.pretty_str(level + 1)
         return string
 
     def check(self):
@@ -925,10 +977,10 @@ class Unary(Expression):
         string = '(' + str(self.operator) + ' ' + str(self.operand) + ')'
         return string
 
-    def pretty_string(self, level):
+    def pretty_str(self, level):
         string = "\n" + indent(level) + self.__class__.__name__.upper() 
         string += " " + str(self.operator)
-        string += self.operand.pretty_string(level + 1)
+        string += self.operand.pretty_str(level + 1)
         return string
 
     def check(self):

@@ -46,6 +46,9 @@ class Symbol(object):
         self.value = value
         self.lexspan = var.lexspan
 
+    def __str__(self):
+        return "'" + self.name + "': (" + str(self.type) + ", " + str(self.lexspan[0]) + ")"
+
 class Scope(object):
     """A symbol table representation"""
     def __init__(self):

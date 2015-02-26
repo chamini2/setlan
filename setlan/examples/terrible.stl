@@ -11,7 +11,6 @@ program {
         i = 10;
         print i;
         i = i + 1;
-        i = 10;
     };
 
     if (i @ b and >? b)
@@ -29,13 +28,12 @@ program {
 # ERROR: variable 'a' of type 'set' at line 2, column 22 has already been defined with type 'int' at line 2, column 15
 # ERROR: variable 'b' of type 'bool' at line 2, column 33 has already been defined with type 'set' at line 2, column 25
 # ERROR: scanning variable 'a' of type 'set' at line 4, column 23
-# ERROR: operator '+' used incorrectly with with types 'set' and 'int' at line 6, column 14
-# ERROR: expecting expression of type 'set' and got  type 'int' at line 10, column 15
+# ERROR: operator '+' used incorrectly with types 'set' and 'int' at line 6, column 14
+# ERROR: expecting expression of type 'set' and got type 'int' at line 10, column 15
 # ERROR: assigning value to not modifiable variable 'i' at line 11, column 9
 # ERROR: assigning value to not modifiable variable 'i' at line 13, column 9
-# ERROR: assigning value to not modifiable variable 'i' at line 14, column 9
-# ERROR: variable 'i' referenced at line 17, column 9 is not defined
-# ERROR: operator 'and' used incorrectly with with types 'bool' and 'int' at line 17, column 9
-# ERROR: operator '+' used incorrectly with with types 'bool' and 'int' at line 24, column 14
-# ERROR: expecting expression of type 'bool' and got  type 'int' at line 24, column 14
-# ERROR: variable 'i' referenced at line 25, column 14 is not defined
+# ERROR: variable 'i' referenced at line 16, column 9 is not defined
+# ERROR: operator 'and' used incorrectly with types 'bool' and 'int' at line 16, column 9
+# ERROR: operator '+' used incorrectly with types 'bool' and 'int' at line 23, column 14
+# ERROR: expecting expression of type 'bool' and got type 'int' at line 23, column 14
+# ERROR: variable 'i' referenced at line 24, column 14 is not defined

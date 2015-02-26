@@ -7,35 +7,25 @@ Matteo Ferrando, 09-10285
 """
 
 import Errors
+import Lexer
 import Parser
 
 from signal import signal, SIGINT
-from sys import exit
+from sys import exit, stdin
 
+import argparse
 
-def main(argv=None):
-    import sys      # argv
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('file', nargs='?', type=argparse.FileType('r'), default=stdin)
+    parser.add_argument('-t', help="tokens list",  action="store_true")
+    parser.add_argument('-a', help="AST",          action="store_true")
+    parser.add_argument('-s', help="symbol table", action="store_true")
+    args = parser.parse_args()
 
-    if argv is None:
-        argv = sys.argv
-
-
-    if len(argv) == 1:
-        in_file = sys.stdin
-    elif len(argv) == 2:
-        in_file = open(argv[1], 'r')
-    elif len(argv) > 2:
-        print "ERROR: Invalid number of arguments"
-        return
-
-    try:
-        # Opens and reads file to interpret
-        file_string = in_file.read()
-    except IOError:
-        print "ERROR: Must give an input file"
-        return
-
-    ast = Parser.parsing(file_string)
+    # reads the file to interpret
+    file_str = args.file.read()
+    ast = Parser.parsing(file_str)
 
     if ast:
         ast.check()
@@ -56,19 +46,19 @@ def main(argv=None):
             print error
 
     else:
-        print ast
+        if args.t:
+            tokens = Lexer.lexing(file_str)
+            print Lexer.str_tokens(file_str, tokens)
+
+        if args.a:
+            print ast
+
+        if args.s:
+            print ast.table_str()
+
         ast.execute()
 
     return ast
-
-
-    # Handle keyboard interrupts "better"
-    def keyboard_interrupt(signal, frame):
-        print "\nKeyboard Interrupt"
-        exit()
-
-    signal(SIGINT, keyboard_interrupt)
-
 
 if __name__ == "__main__":
     main()

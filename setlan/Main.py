@@ -54,5 +54,3 @@ else:
         print ast.table_str()
 
     ast.execute()
-
-return ast

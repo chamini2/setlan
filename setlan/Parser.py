@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 """
 Parser for Setlan
 Matteo Ferrando, 09-10285
@@ -439,48 +436,3 @@ def parsing(data, debug=0):
         ast = None
 
     return ast
-
-###############################################################################
-
-
-# Only to be called if this is the main module
-def main(argv=None):
-    import sys      # argv, exit
-
-    if argv is None:
-        argv = sys.argv
-
-    if len(argv) == 1:
-        print "ERROR: No input file"
-        return
-    elif len(argv) > 3:
-        print "ERROR: Invalid number of arguments"
-        return
-
-    if len(argv) == 3:
-        debug = eval(argv[2])
-    else:
-        debug = 0
-
-    # Opens file to interpret
-    file_string = open(argv[1], 'r').read()
-
-    ast = parsing(file_string, debug)
-
-    if Errors.lexer_error:
-        ast = None
-        for error in Errors.lexer_error:
-            print error
-    elif Errors.parser_error:
-        ast = None
-        for error in Errors.parser_error:
-            print error
-    else:
-        print ast
-
-    return ast
-
-
-# If this is the module running
-if __name__ == "__main__":
-    main()

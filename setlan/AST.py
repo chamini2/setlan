@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 """
 Abstract Syntax Tree for Setlan
 Matteo Ferrando, 09-10285
@@ -24,9 +21,6 @@ def error_expression_type(exp_type, got_type, lexspan):
         data = exp_type, got_type, lin, col
         Errors.static_error.append(message % data)
 
-# how = overflow
-# how = division by zero
-# how = max/min empty set
 def error_dynamic(how, lexspan):
     message = "ERROR: " + how + " in operation at line %d, column %d"
     lin, col = lexspan[0]

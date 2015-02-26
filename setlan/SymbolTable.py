@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 """
 Symbol Table for Setlan
 Matteo Ferrando, 09-10285

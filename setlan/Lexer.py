@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-
 """
 Lexer for Setlan
 Matteo Ferrando, 09-10285
@@ -254,7 +251,3 @@ def str_tokens(file_str, tokens_list):
         string += 'at line ' + str(tok.lineno) + ', '
         string += 'column ' + str(find_column(file_str, tok.lexpos)) + "\n"
     return string
-
-# If this is the module running
-if __name__ == "__main__":
-    main()

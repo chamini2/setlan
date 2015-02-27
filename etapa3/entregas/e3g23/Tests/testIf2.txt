@@ -1,0 +1,10 @@
+program {
+    if (a > b) 
+        println "If working!";
+    if (a < b) 
+        println "If working 2!";
+    if (a == b) 
+        println "If working 3! ";
+    if (a /= b) 
+        println "If working 4!";
+}

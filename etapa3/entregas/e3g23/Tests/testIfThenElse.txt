@@ -1,0 +1,4 @@
+program {
+    if (a > b) println "If working!"
+    else print "Else working!";
+}

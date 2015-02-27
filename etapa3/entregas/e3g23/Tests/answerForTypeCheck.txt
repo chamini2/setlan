@@ -1,0 +1,7 @@
+Error: Incompatible types for operator Plus: 'int' and 'set', in line 6, column 17.
+Error: Incompatible type for statement For: 'int', in line 6, column 17.
+Error: Incompatible types for operator Union: 'int' and 'set', in line 9, column 17.
+Error: Incompatible types for operator PlusSet: 'bool' and 'set', in line 27, column 20.
+Error: Incompatible type for statement For: 'bool', in line 30, column 20.
+Error: Incompatible type for statement For: 'int', in line 33, column 15.
+Error: Incompatible type for statement For: 'bool', in line 36, column 17.

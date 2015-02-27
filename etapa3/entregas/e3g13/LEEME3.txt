@@ -1,0 +1,64 @@
+Leeme.txt
+Entrega 3 25-02-2015
+
+Grupo 13
+Manuel Gonzalez 11-10390
+Jonathan Ng 11-10199
+ 
+Decisiones de diseño
+
+     En la entrega pasada, se realizo el analizador lexicografico para el
+interprete de setlan y que funciono correctamente. Para esta entrega se corrigieron 
+algunos errores menores que surgieron en esta entrega. 
+
+     Para la segunda etapa se pidio implementar el analizador sintactico para 
+SetLan. Se redacto una gramatica libre de contexto en notacion BNF como lo 
+sugiere PLY. Esta gramatica fue transcrita al parser de PLY siguiendo el formato 
+y recomendaciones de la documentacion. Cabe destacar que dicha gramatica fue editada
+y mejorada en varias ocasiones para poder satisfacer todos los requerimientos 
+del lenguaje.
+
+     Para la tercera etapa del proyecto se llevo a cabo la construccion de la tabla de simbolos 
+para el chequeo de variables redeclaradas, su alcance y asi como tambien un chequeo de tipos para 
+todas las expresiones del lenguaje SetLan. Se utilizo una estructura similar a un arbol
+de contexto. Para cada variable declarada en sus respectivo bloque se almacenan los contextos "padre" 
+asociadas a la variables que tengan el mismo nombre. Esto se hizo para buscar variables con un
+mismo nombre pero con un alcance superior.
+
+	Para facilitar a cabo dichas tareas se implementaron las diferentes funciones:
+	insert() : inserta una variable en la tabla de simbolos
+	delete() : eliminar un elemento de la tabla de simbolos
+	update() : actualizar el valor de un elemento de la tabla
+	contains(): indica si una variable se encuentra en la tabla de simbolos
+	lookup() : busca en el conjunto de tabla de simbolos variables de un mismo nombre pero de alcance superior
+
+Estado Actual del Proyecto
+
+     Actualmente el proyecto obtiene los resultados esperados. Solamente 
+existen leves diferencias en cuanto al orden de impresion en caso de algun error.
+En caso de surgir algun error de tipos, se imprime en primer lugar todos aquellos errores
+relacionadas con variables redecladas y no declaradas. Luego de esto se imprime por 
+orden los diferentes errores de tipos encontrados.
+
+     Cabe destacar ciertas diferencias leves en cuanto a la salida de errores
+mostrada por los preparadores como ejemplo en comparacion al nuestro.
+
+Ej; if(true + 3){}
+	Salida Ejemplo : Error columna 8 'if' espera expresiones de tipo bool, se obtuvo 'int'
+	Salida Actual  : Error columna 5 'if' espera expresiones de tipo 'bool'
+	
+     En dicho caso en la salida de Ejemplo se asume que la expresion (true + 3) 
+es de tipo 'int'. En cambio para este proyecto, dicha expresion tiene un tipo 
+indefinido, por lo que no se imprime el tipo de la expresion sino unicamente lo
+que se espera. En caso de obtener una expresion valida, ej: (4+5) si se 
+imprime el tipo señalado ('int').
+
+Comentarios
+
+     Fue resuelto el problema de ejecutar el proyecto en plataforma Linux. 
+Ahora es posible ejecutar $> ./setlan <nombreArchivo> [-t][-a][-s]. 
+
+Flags:
+	-t Imprime la lista de tokens del analizador lexicografico
+	-a Imprime la estructura del Arbol de Sintaxis Abstracto
+	-s Imprime las reglas de alcance de las variables, asi como sus tipos y valores

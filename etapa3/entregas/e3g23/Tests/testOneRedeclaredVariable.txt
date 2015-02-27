@@ -1,0 +1,8 @@
+program {
+    using
+        int a, b;
+        set q,w,e,r,t,y,u;
+        int a;
+    in
+    a = 1;
+}

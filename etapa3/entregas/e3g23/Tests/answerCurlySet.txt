@@ -1,0 +1,31 @@
+Program
+    Block Start
+        Using
+            set
+                Variable
+                    S
+            int
+                Variable
+                    a
+            int
+                Variable
+                    b
+            int
+                Variable
+                    c
+        In
+        Assign
+            Variable
+                    S
+            Value
+                Set
+                    Variable
+                        b
+                    Int
+                        4
+                    Variable
+                        a
+        Println
+            Variable
+                S
+    Block End

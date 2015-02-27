@@ -1,0 +1,13 @@
+program {
+    using
+        set x, y;
+        int a, b;
+    in
+    scan a;
+    scan b;
+    
+    x = {7 * 2, (b + 100 * 200) / 15};
+    x = {a, b, a + b, a - b, a * b, a / b, a % b};
+    y = {a, b, b + a, b - a, b * a, b / a, b % a};
+
+}

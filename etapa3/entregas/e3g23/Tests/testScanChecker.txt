@@ -1,0 +1,11 @@
+program{
+    using
+        int a, b;
+        bool c;
+        set s;
+    in
+        scan a;
+        scan b;
+        scan c;
+        scan s;
+}

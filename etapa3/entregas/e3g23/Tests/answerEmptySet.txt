@@ -1,0 +1,13 @@
+Program
+    Block Start
+        Using
+            set
+                Variable
+                    n
+        In
+        Assign
+            Variable
+                    n
+            Value
+                Set
+       Block End

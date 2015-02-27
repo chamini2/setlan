@@ -1,0 +1,38 @@
+Program
+    Block Start
+        Using
+            bool
+                Variable
+                    n
+        In
+        Assign
+            Variable
+                    n
+            Value
+                Equals
+                    Set
+                        Int
+                            0
+                        Variable
+                            1
+                        Int
+                            2
+                    Union
+                        PlusSet
+                            Int
+                                2
+                            Set
+                                Int
+                                    0
+                                Variable
+                                    2
+                        Set
+                            Int
+                                1
+                            Int
+                                2
+                            Int
+                                3
+                            Int
+                                4
+    Block End

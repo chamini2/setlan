@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+############################
+#  Proyecto I - CI3725     #
+#  Grupo 2                 #
+#  Luis Colorado 09-11086  #
+#  Nicolas Manan 06-39883  #
+############################
+
+import parser
+import argparse
+
+def main(argv=None):
+    import sys      # argv, exit
+
+    if argv is None:
+        argv = sys.argv
+
+    if len(argv) == 1:
+        print "ERROR: No se encuentra el archivo"
+        return
+    elif len(argv) > 2:
+        print "ERROR: Numero invalido de argumentos"
+        return
+
+    try:
+        # Opens and reads file to interpret
+        file_string = open(argv[1], 'r').read()
+    except IOError:
+        print "ERROR: Must give an input file"
+        return
+
+    ast = parser.parsing(file_string)
+
+    # Check for Overflow or Unexpected character errors
+    if parser.lexer_error:
+        for error in parser.lexer_error:
+            print error
+
+    elif parser.parser_error:
+        for error in parser.parser_error:
+            print error
+    elif parser.static_error:
+        for error in parser.static_error:
+            print error
+    else:
+        print ast
+
+    return ast
+
+
+if __name__ == "__main__":
+
+    # input.stl no es reconocido como un argumento valido
+    # y si hago action='store_true' el input.stl queda por fuera y no
+    # se como acceder a el
+
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('-h', '--hep', action='store_true')
+    # parser.add_argument('-a', 'printAST', action='store_true')
+    # parser.add_argument('-s', '--symTable', action='store_true')
+    # parser.add_argument('-t', '--listToken', action='store_true')
+    # args = parser.parse_args()
+
+    main()

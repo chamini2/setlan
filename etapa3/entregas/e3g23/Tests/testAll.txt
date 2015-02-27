@@ -1,0 +1,44 @@
+program {
+    using
+      int  a, b; # inicializan en 0
+      set  c, d; # inicializan en false
+      bool e, f; # inicializan en {}
+    in
+
+    a = 10;
+    scan b;
+    c = {1,2,3};
+    d = {2,3,4};
+    e = true;
+    scan f;
+
+    print "first: ", b, ", ";
+    println "second: ", f;
+
+    if (b @ c)
+        for i min d ++ c do
+            c = c + i * 2
+    else if (b @ c) {
+        println "improbable";
+    };
+
+    repeat
+        f = e or a + b @ c ++ d
+    while (not f) do
+        e = a < b or f
+    ;
+
+    a = 0;
+    if (b < 0)
+        b = -b
+    ;
+
+    println a + b, ", ", a - b, ", ", a * b, ", ", a / b, ", ", a % b, ", ", -a;
+    println c ++ d, ", ", c >< d, ", ", c \ d, ", ", >? c, ", ", <? c, ", ", $? c;
+    println a <+> c, ", ", c <-> a, ", ", a <*> c, ", ", c </> a, ", ", c <%> a, ", ", a @ c;
+    println e or f, ", ", e and f, ", ", not e;
+    println a < b, a <= b, a > b, a >= b;
+    println a == b, a /= b;
+    println c == d, c /= d;
+    print e == f, e /= f;
+}

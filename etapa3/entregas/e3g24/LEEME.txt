@@ -1,0 +1,21 @@
+CI3725 - Etapa 1 - Tabla de simbolos
+Integrantes:
+Fabio, Castro, 10-10132
+Antonio, Scaramazza 11-10957
+
+Tabla de simbolos de Setlan
+
+Usamos la herramienta YACC de PLY (Python Lex Yacc).
+
+
+Ya implementado el lexer para la verificacion lexicografica, y el parser para comprobar la sintaxis de las declaraciones, procedemos a crear la tabla de simbolos para reconocer la variables en el alcance de un bloque y verificar el uso correcto de tipos.
+
+En este punto, se puede especificar que informacion se desea obtener por salida estandar mediante el uso de los siguientes flags:
+	
+	-a: imprime el arbol sintactico abstracto.
+
+	-s: imprime la tabla de simbolos con las variables al alcance de cada bloque
+
+	-t: imprime los tokens devueltos por el lexer. 
+
+Para este entrega se cumplen los requerimientos exigidos, y no se encontraron errores en los casos de prueba empleados.	

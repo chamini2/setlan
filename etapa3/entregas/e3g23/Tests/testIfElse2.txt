@@ -1,0 +1,15 @@
+program {
+    if (a > b) println "If working!"
+    else print "Else working!";
+    
+    if(a /= b) println "If 2 working!"
+    else print "Else 2 working!"; 
+
+    if(a /= b){
+        if (a < b) println "If 3.1 working!";
+        if (a > b) println "If 3.2 working!";
+        if (a == b) println "If 3.3 working Char &$ \" work? ";
+    }
+    else print "Else 2 working!"; 
+   
+}

@@ -1,0 +1,31 @@
+program {
+    using 
+        int a,b,c;
+        bool m;
+        set x,y;
+    in
+    a = b + c;
+    b = s/g % h + i - j * k;
+    x = l <+> a;
+    y = a <-> y;
+    y = b <*> y;
+    y = b <%> y;
+    y = b </> y;
+    
+    m = a < b;
+    m = 1 <= 1;
+    m = 2 > a;
+    m = a >= 5;
+    m = (b == a) or (a == b);
+    m = (c /= 6) and (c == 6);
+    m = 1 @ y;
+    m = a @ x;
+    
+    x = 1 ++ c;
+    x = y \ x;
+    x = x >< y;
+    
+    a = o;
+    q = a;
+    q = o;
+}

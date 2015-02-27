@@ -1,0 +1,5 @@
+TokenPlusSet (Linea 1, Columna 1)
+TokenMinusSet (Linea 2, Columna 1)
+TokenTimesSet (Linea 3, Columna 1)
+TokenDivSet (Linea 4, Columna 1)
+TokenModSet (Linea 5, Columna 2)

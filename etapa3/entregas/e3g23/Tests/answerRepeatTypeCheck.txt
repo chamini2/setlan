@@ -1,0 +1,15 @@
+Error: Incompatible type for statement Repeat: 'int', in line 13, column 17.
+Error: Incompatible types for operator Union: 'int' and 'int', in line 17, column 17.
+Error: Incompatible type for statement Repeat: 'set', in line 17, column 17.
+Error: Variable count not defined in this scope, in line 26, column 12.
+Error: Variable n not defined in this scope, in line 26, column 21.
+Error: Incompatible types for operator LessThanEq: 'None' and 'None', in line 26, column 18.
+Error: Variable f not defined in this scope, in line 31, column 24.
+Error: Incompatible types for operator Not: 'None', in line 31, column 20.
+Error: Variable f not defined in this scope, in line 34, column 21.
+Error: Incompatible types for operator Len: 'None', in line 34, column 18.
+Error: Variable a not defined in this scope, in line 39, column 16.
+Error: Variable f not defined in this scope, in line 39, column 20.
+Error: Incompatible types for operator LessThan: 'None' and 'None', in line 39, column 18.
+Error: Variable f not defined in this scope, in line 42, column 18.
+Error: Incompatible types for operator Not: 'None', in line 42, column 14.

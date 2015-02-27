@@ -1,0 +1,12 @@
+program falsefalse {
+    def a(b):
+        return "a,b";
+        
+    if (x < 0)
+        print "less";
+    else if (x > 0)
+	   println "greater";
+    else if (x /= 0)
+        print "not in this world";
+# Colon no es : y semicolon los ;? Preguntar despues
+}

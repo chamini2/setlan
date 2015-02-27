@@ -1,0 +1,121 @@
+Ene-Mar 2015
+Proyecto I  
+Entrega 3 ci-3725
+Integrantes:
+    Jesus Sanchez 10-10898
+    Jose Barrientos 10-10800 
+
+									LEEME 
+##----------------------------------------------------------------------------##
+Este proyecto consiste en la implementación de una tabla de símbolos asociada
+a los bloques dentro del lenguaje setlan. Esta tabla facilita la realización 
+de las verificaciones estáticas correspondientes.
+
+Observaciones generales:
+
+Se trabaja en base al código de la entrega 2, corrigiendo los errores reportados
+por el equipo de preparadores (Michael Woo) manteniendo la impresión del 
+AST incluyendo además la impresión de las tablas de símbolos y scopes en los lugares 
+correspondientes.
+
+Se creó un nuevo módulo llamado SymTable.py donde tenemos dos clases:
+
+    -Atributos: esta clase permite crear objetos que contendrán una tupla, 
+    tipo-valor. 
+    Además de tener métodos set, get, y esVacio, posee su correspondiente
+    toString(__str__ en python) que permitirá la impresión adecuada de la
+    tabla. 
+
+    -SymTable: esta clase permite crear una tabla (implementado como un 
+    diccionario en python).
+
+Para la implementación de la tabla se utilizó la clase SymTable, Se creó una
+tabla global en la cual se guardarán los elementos necesarios (tanto 
+claves-atributos, como clave-tabla) ya que cada vez que se vea un bloque se 
+creará una tabla temporal, la cual se guardará en la tabla principal(global) 
+con la clave: '1' y valor: la tabla temporal, de forma recursiva. Luego de 
+guardar esta tabla temporal se procederá a guardar las variables correspon -
+dientes con la declaración, también de manera recursiva. Después se harán las
+verificaciones estáticas correspondientes, a medida que se avanza en el 
+recorrido del código. Tomando en cuenta que cada vez que se termine de recorrer
+un bloque entero la tabla asociada al mismo se eliminará.
+
+
+Para la verificaciones, en cuanto a:
+
+    -Utilización de variables redeclaradas:
+
+    Para identificar la ocurrencia de este tipo de errores, se verificó que 
+    cada vez que se declara una variable se revise si ésta ya se encuentra
+    dentro de la tabla de símbolos asociada a este bloque (tabla mas interna).
+    Si ya se encontraba, se guarda un mensaje de error para ser señalado al 
+    terminar el recorrido del código.
+
+    -Utilización de variables no declaradas:
+
+    Para cualquier variable conseguida fuera de la declaración, se verificó si 
+    ésta se encuentra dentro de la tabla en general (sin importar su bloque) 
+    para ver si fue previamente declarada; de no haber sido declarada, se 
+    almacena un mensaje de error indicando la falla al finalizar el recorrido.
+
+    -Intento de uso de la variable de una iteracion determinada:
+
+    Para lograr verificar esto, fue necesario crear "tablas de 
+    simbolos" asociadas a los FOR, que funcionan análogamente a las tablas
+    de simbolos asociadas a los BLOQUES, es decir, cada vez que se tiene un
+    FOR se crea una tabla temporal que se guardará, recursivamente y con clave
+    '2', dentro de la tabla inicial (global) y su funcionamiento es exactamente 
+    igual a las tablas asociadas a los bloques.
+    
+    Luego de tener estas tablas, se verifica cuando hay una asignación (dentro
+    del cuerpo de alguna iteración) si a la    variable a la que se le quiere 
+    asignar yace en la tabla de simbolos para los FOR y, de ser así, se guardará 
+    un mensaje de error que se mostrará al terminar de recorrer el código.
+
+    -Errores de tipo:
+    Este tipo de verificación se lleva a cabo en cada segmento donde se tenga 
+    una expresión sin importar su tipo: asignaciones, condiciones de IF y WHILE, 
+    guardias de FORy expresiones a ser escritas con PRINT y PRINTLN.
+    Esta verificación se logra aprovechando la recursividad
+    formulada en el proyecto anterior, donde una expresión compleja como "x+2*5-10"
+    se evalúa dividiendo la expresión en otras que pueden evaluarse con mayor 
+    facilidad. 
+
+    Las expresiones siempre se dividen hasta llegar a los átomos, pues entonces
+    se evaluarán para obtener su tipo y poder verificar que las operaciones se 
+    realizan con los tipos de datos correctos (en el caso de variables se verifica 
+    con la tabla de símblos). Si una expresión recibe un tipo de dato sobre el que
+    no se puede realizar la operación indicada, se devuelve un tipo "unknow";
+    al igual que estos casos, si se obtiene de una expresión un tipo de dato que
+    no coincide con el tipo que se necesita para realizar una instrucción
+    (ejemplo: una expresión booleana es obligatoria para el IF) se almacena un
+    mensaje de error que se imprimirá al terminar el recorrido del código.
+
+-------------------------------------------------------------------------------
+Estado del proyecto:
+Tomando como base los resultados obtenidos sobre la ejecución de los casos de
+prueba propios y los elaborados por los preparadores del curso se puede decir 
+que el proyecto se encuentra en estado perfectamente funcional.
+-------------------------------------------------------------------------------
+Para ejecutar el programa se escribe por consola:
+
+> chmod u+x ./setlan (para asignar permisos de ejecución, puede no ser necesario
+                      en ciertos equipos)
+> ./setlan arhivo.stl -accion
+
+donde:
+    * setlan es el programa principal.
+    * archivo.stl es un código de lenguaje setlan a ser leído por el programa.
+    * accion se refiere al tipo de ejecución que se solicita; las cuales pueden
+      ser:
+		-a Para Obtener el AST.
+		-t Para Obtener Lista de Tokens.
+		-s Para obtener Tabla de Símbolos.
+      
+	  Pueden introducirse tantas acciones como se deseen, siempre y cuando se
+      solicite al menos una.
+
+NOTA IMPORTANTE: Por la forma en la cual decidimos la implementación del proyecto,
+el despliegue del AST y de la tabla de símbolos se muestran *juntos* tras la invocación
+de la acción vinculada a cada uno.
+##----------------------------------------------------------------------------##

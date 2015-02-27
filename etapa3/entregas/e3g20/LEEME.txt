@@ -1,0 +1,178 @@
+Jose Daniel Duran Toro
+Carnet: 10-10222
+
+Estado: Completo 100%
+Problemas presentes: diferencias en el reporte de errores (formato nunca especificado)
+
+Existen diferencias al momento de reportar los errores con el ejemplo terrible.stl, yo me base en los
+ejemplos del enunciado, que reportan diferente, por ejemplo un operador + que recibe por la derecha un 
+int e izquierda un set, reportada el lugar del error el lugar donde esta el +, y si una parte de 
+una expresion es invalida, evalua toda la expresion como invalida, pero el programa solo valida el codigo
+si es correcto como el programa de ustedes, un programa que no les pase a ustedes no pasara en el mio tampoco
+
+Se repararon todos los errores de entregas pasadas incluyendo la gramatica
+
+Nueva gramatica (fuente parse.out):
+
+S' -> program
+program -> TokenProgram instruccion
+instruccion -> bloque
+instruccion -> asignacion
+instruccion -> if
+instruccion -> ciclo
+instruccion -> imprimir
+instruccion -> read
+instrucciones -> instruccion TokenSemicolon
+instrucciones -> instrucciones instruccion TokenSemicolon
+asignacion -> TokenID TokenAsing expression
+ID -> TokenID
+variables -> ID
+variables -> variables TokenComma ID
+declaracion -> TokenInt variables
+declaracion -> TokenSet variables
+declaracion -> TokenBool variables
+declaraciones -> declaracion TokenSemicolon
+declaraciones -> declaraciones declaracion TokenSemicolon
+bloque -> TokenOpenCurly TokenCloseCurly
+bloque -> TokenOpenCurly instrucciones TokenCloseCurly
+bloque -> TokenOpenCurly TokenUsing TokenIn instrucciones TokenCloseCurly
+bloque -> TokenOpenCurly TokenUsing declaraciones TokenIn instrucciones TokenCloseCurly
+read -> TokenScan ID
+printargs -> TokenString
+printargs -> printargs TokenComma TokenString
+printargs -> expression
+printargs -> printargs TokenComma expression
+imprimir -> TokenPrint printargs
+imprimir -> TokenPrintln printargs
+if -> TokenIf TokenOpenParent expression TokenCloseParent instruccion TokenElse instruccion
+if -> TokenIf TokenOpenParent expression TokenCloseParent instruccion
+ciclo -> TokenRepeat instruccion TokenWhile TokenOpenParent expression TokenCloseParent TokenDo instruccion
+ciclo -> TokenRepeat instruccion TokenWhile TokenOpenParent expression TokenCloseParent
+ciclo -> TokenWhile TokenOpenParent expression TokenCloseParent TokenDo instruccion
+ciclo -> TokenFor TokenID TokenMin expression TokenDo instruccion
+ciclo -> TokenFor TokenID TokenMax expression TokenDo instruccion
+expression3 -> TokenNot expression
+boolexpression -> TokenTrue
+boolexpression -> TokenFalse
+expression -> expression TokenOr expression
+expression -> expression TokenAnd expression
+expression -> expression TokenIgualQue expression
+expression -> expression TokenNoIgual expression
+expression -> expression TokenSetContains expression
+expression -> expression TokenMenorQue expression
+expression -> expression TokenMayorQue expression
+expression -> expression TokenMenorIgual expression
+expression -> expression TokenMayorIgual expression
+expression -> boolexpression
+numeros -> expression
+numeros -> numeros TokenComma expression
+setexpression -> TokenOpenCurly TokenCloseCurly
+setexpression -> TokenOpenCurly numeros TokenCloseCurly
+expression -> expression TokenSetSuma expression
+expression -> expression TokenSetResta expression
+expression -> expression TokenSetMult expression
+expression -> expression TokenSetEnterDiv expression
+expression -> expression TokenSetResto expression
+expression -> expression TokenUnion expression
+expression -> expression TokenDif expression
+expression -> expression TokenIntersec expression
+expression -> setexpression
+expression3 -> TokenResta expression
+expressionParen -> TokenOpenParent expression TokenCloseParent
+expressionID -> TokenID
+expression3 -> TokenNumber
+expression3 -> TokenSetMin expression
+expression3 -> TokenSetMax expression
+expression3 -> TokenSetSize expression
+expression -> expression TokenSuma expression
+expression -> expression TokenResta expression
+expression -> expression TokenMult expression
+expression -> expression TokenEnterDiv expression
+expression -> expression TokenResto expression
+expression -> expression3
+expression -> expressionParen
+expression -> expressionID
+
+Terminals, with rules where they appear
+
+TokenAnd             : 41
+TokenAsing           : 10
+TokenBool            : 16
+TokenCloseCurly      : 19 20 21 22 52 53
+TokenCloseParent     : 30 31 32 33 34 64
+TokenComentario      : 
+TokenComma           : 13 25 27 51
+TokenDif             : 60
+TokenDo              : 32 34 35 36
+TokenElse            : 30
+TokenEnterDiv        : 73
+TokenFalse           : 39
+TokenFor             : 35 36
+TokenID              : 10 11 35 36 65
+TokenIf              : 30 31
+TokenIgualQue        : 42
+TokenIn              : 21 22
+TokenInt             : 14
+TokenIntersec        : 61
+TokenMax             : 36
+TokenMayorIgual      : 48
+TokenMayorQue        : 46
+TokenMenorIgual      : 47
+TokenMenorQue        : 45
+TokenMin             : 35
+TokenMult            : 72
+TokenNoIgual         : 43
+TokenNot             : 37
+TokenNumber          : 66
+TokenOpenCurly       : 19 20 21 22 52 53
+TokenOpenParent      : 30 31 32 33 34 64
+TokenOr              : 40
+TokenPrint           : 28
+TokenPrintln         : 29
+TokenProgram         : 1
+TokenRepeat          : 32 33
+TokenResta           : 63 71
+TokenResto           : 74
+TokenScan            : 23
+TokenSemicolon       : 8 9 17 18
+TokenSet             : 15
+TokenSetContains     : 44
+TokenSetEnterDiv     : 57
+TokenSetMax          : 68
+TokenSetMin          : 67
+TokenSetMult         : 56
+TokenSetResta        : 55
+TokenSetResto        : 58
+TokenSetSize         : 69
+TokenSetSuma         : 54
+TokenString          : 24 25
+TokenSuma            : 70
+TokenTrue            : 38
+TokenUnion           : 59
+TokenUsing           : 21 22
+TokenWhile           : 32 33 34
+error                : 
+
+Nonterminals, with rules where they appear
+
+ID                   : 12 13 23
+asignacion           : 3
+bloque               : 2
+boolexpression       : 49
+ciclo                : 5
+declaracion          : 17 18
+declaraciones        : 18 22
+expression           : 10 26 27 30 31 32 33 34 35 36 37 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48 48 50 51 54 54 55 55 56 56 57 57 58 58 59 59 60 60 61 61 63 64 67 68 69 70 70 71 71 72 72 73 73 74 74
+expression3          : 75
+expressionID         : 77
+expressionParen      : 76
+if                   : 4
+imprimir             : 6
+instruccion          : 1 8 9 30 30 31 32 32 33 34 35 36
+instrucciones        : 9 20 21 22
+numeros              : 51 53
+printargs            : 25 27 28 29
+program              : 0
+read                 : 7
+setexpression        : 62
+variables            : 13 14 15 16

@@ -1,0 +1,42 @@
+program{
+    using
+        int i;
+        set s;
+    in
+    for i min i + s do {
+        print i;
+    };
+    for i min i ++ s do {
+        print i;
+    };
+    for i min i <+> s do {
+        print i;
+    };
+    for i min s ++ s do {
+        print i;
+    };
+    for i min i <+> {} do {
+        print i;
+    };
+    for i min i <+> {1} do {
+        print i;
+    };
+    for i min 5 <+> s do {
+        print i;
+    };
+    for i min true <+> s do {
+        print i;
+    };
+    for i min true and true do {
+        print i;
+    };
+    for i min >? s do {
+        print i;
+    };
+    for i min 1 @ {1,2-3,4} do {
+        print i;
+    };
+    for i min {} ++ {0} do {
+        print i;
+    };
+}

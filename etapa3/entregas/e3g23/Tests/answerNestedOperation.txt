@@ -1,0 +1,38 @@
+Program
+    Block Start
+        Using
+            int
+                Variable
+                    n
+        In
+        Assign
+            Variable
+                    a
+            Value
+                Plus
+                    Plus
+                        Plus
+                            Plus
+                                Plus
+                                    Plus
+                                        Int
+                                            1
+                                        Int
+                                            2
+                                    Int
+                                        3
+                                Int
+                                    4
+                            Int
+                                5
+                        Times
+                            Int
+                                6
+                            Int
+                                3
+                    Div
+                        Int
+                            10
+                        Int
+                            2
+    Block End

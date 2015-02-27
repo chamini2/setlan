@@ -1,0 +1,35 @@
+Scope
+    Variable: a | Type: int | Value: 0
+    Variable: c | Type: int | Value: 0
+    Variable: b | Type: int | Value: 0
+    Variable: e | Type: set | Value: {}
+    Variable: d | Type: int | Value: 0
+    Variable: q | Type: set | Value: {}
+    Variable: r | Type: set | Value: {}
+    Variable: t | Type: set | Value: {}
+    Variable: w | Type: set | Value: {}
+    Variable: y | Type: bool | Value: False
+    Variable: x | Type: int | Value: 0
+    Variable: z | Type: bool | Value: False
+    Scope
+        Variable: y | Type: set | Value: {}
+        Variable: x | Type: int | Value: 0
+        Variable: z | Type: bool | Value: False
+        Scope
+            Variable: x | Type: set | Value: {}
+        End Scope
+        Scope
+            Variable: y | Type: bool | Value: False
+            Variable: z | Type: int | Value: 0
+        End Scope
+        Scope
+            Variable: i | Type: int | Value: 0
+        End Scope
+        Scope
+            Variable: i | Type: int | Value: 0
+            Scope
+                Variable: i | Type: bool | Value: False
+            End Scope
+        End Scope
+    End Scope
+End Scope

@@ -1,0 +1,65 @@
+program{
+	using 
+		int x,a,b,c,d;
+		set q,w,e,r,t;
+		bool y,z; 
+	in
+		repeat
+			scan x
+		while (x > 0) do
+			print x;
+		
+		scan x;
+		while (x > 0) do {
+			print x;
+			scan x;
+		};
+		scan x;
+		
+		repeat {
+			print x;
+			scan x;
+		} while (x > 0);
+
+		while (((a<=b) and (c >= d)) or ((a == d) or y)) do {
+			using
+				int x;
+				set y;
+				bool z;
+			in
+				println "start";
+				{
+					using
+						set x;
+					in
+						x = {0,1};
+						y = x ++ {2,3,4};
+						println 1, x;
+						println 2, y;
+						println 3, z;
+				};
+
+				{
+					using
+						bool y;
+						int z;
+					in
+						x = 10;
+						println 1, x;
+						println 2, y;
+						println 3, z;
+				};
+
+				for i max y do
+				print (i+x), " ";
+				println "";
+				for i min {7, 5, 8, 3, 9, 6, 4, 2, 1, 0} do {
+					using
+						bool i;
+					in
+						print i, " ";
+						i = false;
+				};
+				println "";
+		}
+}

@@ -1,0 +1,8 @@
+Scope
+    Variable: a | Type: int | Value: 0
+    Variable: b | Type: set | Value: {}
+    Scope
+        Variable: a | Type: bool | Value: False
+        Variable: b | Type: int | Value: 0
+    End Scope
+End Scope

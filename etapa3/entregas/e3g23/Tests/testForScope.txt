@@ -1,0 +1,13 @@
+program {
+    using
+        bool i;
+        int a;
+        set c,q;
+    in
+    for i max {1,2,3} do{
+        using 
+            set i; 
+        in
+            print i;
+    };
+}

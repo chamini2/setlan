@@ -1,0 +1,3 @@
+Error: Redeclaration: variable 'a', in line 5, column 13.
+Error: Redeclaration: variable 'q', in line 6, column 13.
+Error: Redeclaration: variable 'b', in line 7, column 13.

@@ -1,0 +1,3 @@
+Scope
+    Variable: n | Type: set | Value: {}
+End Scope

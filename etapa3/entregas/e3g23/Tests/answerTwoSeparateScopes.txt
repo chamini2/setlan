@@ -1,0 +1,11 @@
+Scope
+    Variable: a | Type: int | Value: 0
+    Variable: p | Type: bool | Value: False
+    Variable: c | Type: set | Value: {}
+    Variable: b | Type: set | Value: {}
+    Scope
+        Variable: q | Type: int | Value: 0
+        Variable: s | Type: set | Value: {}
+        Variable: boo | Type: bool | Value: False
+    End Scope
+End Scope

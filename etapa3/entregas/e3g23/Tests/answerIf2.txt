@@ -1,0 +1,51 @@
+Program
+    Block Start
+        If
+            Condition
+                GreaterThan
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If working!"
+        End If
+        If
+            Condition
+                LessThan
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If working 2!"
+        End If
+        If
+            Condition
+                Equals
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If working 3! "
+        End If
+        If
+            Condition
+                NotEquals
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If working 4!"
+        End If
+    Block End

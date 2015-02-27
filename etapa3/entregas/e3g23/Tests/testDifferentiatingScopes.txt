@@ -1,0 +1,13 @@
+program {
+    using
+        int a;
+        set b;
+    in
+    if (true) {
+        using
+            bool a;
+            int b;
+        in
+        a = 3;
+    }
+}

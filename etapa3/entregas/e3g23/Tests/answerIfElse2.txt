@@ -1,0 +1,86 @@
+Program
+    Block Start
+        If
+            Condition
+                GreaterThan
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If working!"
+            Statement False
+                Print
+                    String
+                        "Else working!"
+        End If
+        If
+            Condition
+                NotEquals
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Println
+                    String
+                        "If 2 working!"
+            Statement False
+                Print
+                    String
+                        "Else 2 working!"
+        End If
+        If
+            Condition
+                NotEquals
+                    Variable
+                        a
+                    Variable
+                        b
+            Statement True
+                Block Start
+                    If
+                        Condition
+                            LessThan
+                                Variable
+                                    a
+                                Variable
+                                    b
+                        Statement True
+                            Println
+                                String
+                                    "If 3.1 working!"
+                    End If
+                    If
+                        Condition
+                            GreaterThan
+                                Variable
+                                    a
+                                Variable
+                                    b
+                        Statement True
+                            Println
+                                String
+                                    "If 3.2 working!"
+                    End If
+                    If
+                        Condition
+                            Equals
+                                Variable
+                                    a
+                                Variable
+                                    b
+                        Statement True
+                            Println
+                                String
+                                    "If 3.3 working Char &$ " work? "
+                    End If
+                Block End
+            Statement False
+                Print
+                    String
+                        "Else 2 working!"
+        End If
+    Block End

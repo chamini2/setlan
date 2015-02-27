@@ -4,6 +4,7 @@ Matteo Ferrando, 09-10285
 """
 
 from collections import deque
+from copy import deepcopy
 
 import Errors
 
@@ -37,19 +38,29 @@ def update_stack(name, value):
 
 class Symbol(object):
     """A symbol that goes inside the symbol table"""
-    def __init__(self, data_type, var, value):
-        self.name = var.name
+    def __init__(self, data_type, name, lexspan, value):
+        self.name = name
         self.type = data_type
         self.value = value
-        self.lexspan = var.lexspan
+        self.lexspan = lexspan
 
     def __str__(self):
         return "'" + self.name + "': (" + str(self.type) + ", " + str(self.lexspan[0]) + ")"
 
+    def __deepcopy__(self, memo={}):
+        # A little hacky, but whatevs
+        name      = deepcopy(self.name)
+        data_type = deepcopy(self.type)
+        value     = deepcopy(self.value)
+        lexspan   = deepcopy(self.lexspan)
+        return Symbol(data_type, name, lexspan, value)
+
 class Scope(object):
     """A symbol table representation"""
-    def __init__(self):
-        self.scope = {}
+    def __init__(self, scope=None):
+        if scope is None:
+            scope = {}
+        self.scope = scope
 
     def __iter__(self):
         return iter(self.scope.values())
@@ -59,9 +70,12 @@ class Scope(object):
             return True
         else:
             return False
+            
+    def __deepcopy__(self, memo={}):
+        return Scope( deepcopy(self.scope) )
 
     def insert(self, dt, var, value):
-        symbol = Symbol(dt, var, value)
+        symbol = Symbol(dt, var.name, var.lexspan, value)
         if self.contains(symbol.name):
             before = self.scope[symbol.name]
             message = "ERROR: variable '%s' of type '%s' at line %d, column %d has"

@@ -8,7 +8,7 @@ from collections import deque
 import re
 
 import Errors
-from SymbolTable import scope_stack, Scope, lookup_stack, update_stack
+from SymbolTable import scope_stack, Scope, lookup_stack, update_stack, deepcopy
 
 ###############################################################################
 # Errors
@@ -159,7 +159,7 @@ class Block(Statement):
         scope_stack.popleft()
 
     def execute(self):
-        scope_stack.appendleft(self.sym_table)
+        scope_stack.appendleft( deepcopy(self.sym_table) )
         for stat in self.statements:
             stat.execute()
         scope_stack.popleft()
@@ -379,7 +379,7 @@ class For(Statement):
         else:
             in_value = sorted(in_value, reverse=True)
 
-        scope_stack.appendleft(self.sym_table)
+        scope_stack.appendleft( deepcopy(self.sym_table) )
         for elm in in_value:
             update_stack(self.variable.name, elm)
             self.statement.execute()

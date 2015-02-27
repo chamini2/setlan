@@ -4,26 +4,25 @@
 ####Diciembre - Marzo 2014-2015
 
 # Setlan - Etapa IV
-# Interpretador de código `Setlan` y Verificación Dinámica (12%)
+# Interpretador con verificaciones dinámicas (12%)
 
 ## Especificación de la entrega
 
 Finalizada la construcción del árbol abstracto sintáctico y la tabla de
-símbolos, corresponde la implementación del interpretador _final_ de código
-`Setlan`. Su programa principal deberá recorrer la estructura de un código en
-`Setlan`, ejecutar las instrucciones y evaluar las expresiones encontradas.
+símbolos, corresponde la implementación del interpretador _final_ de programas en 
+`Setlan`. Su programa principal deberá recorrer el árbol sintáctico abstracto, ejecutar
+las instrucciones y evaluar las expresiones encontradas.
 
 Para la clase correspondiente a las instrucciones del programa deberá 
-implementar un procedimiento `exec` (de _execute_, _ejecutar_ en inglés) y 
-para la clase que describe expresiones del lenguaje deberá implementar un 
-procedimiento `eval` (de _evaluate_, _evaluar_ en inglés). Note que su
-programa principal, para esta etapa final del desarrollo, únicamente deberá
-imprimir por salida estándar aquellas expresiones que son argumento de las
-instrucciones `print` y `prinln`.
+implementar un procedimiento `execute` (o `ejecutar` si está programando en castellano) 
+y para la clase que describe expresiones del lenguaje deberá implementar un 
+procedimiento `evaluate` (o `evaluar`). Para esta entrega no debe imprimirse información
+acerca del interpretador (tabla de símbolos, lista de tokens, etc.); sino debe correrse
+e imprimir lo que indique el programa en `Setlan`, es decir, imprimir por salida estándar
+sólo aquellas expresiones que son argumento de las instrucciones `print` y `prinln`.
 
-Por otro lado, para garantizar una ejecución _limpia_ del programa
-interpretado, su programa principal deberá mostrar -de existir- los errores a
-tiempo de ejecución:
+En <u>tiempo de ejecución</u> se deben considerar estas verifcaciones 
+dinámicas para garantizar una ejecución _limpia_ del programa interpretado:
 
 + Errores de división por cero.
 + Errores de _overflow_.
@@ -45,24 +44,17 @@ Ejemplo de impresión de errores:
 Programa:
 
 ```
-program {
-    using
-        int i,j,k;
-        set s;
-    in
-
-    s = {4,5,6,7,8,9};
-    for i min s do {
-        k = i/(i-5);
-        println k;
-    };
-}
+program
+	for i min {4,2,1,2,5} do
+		print i % (5 - i), " "
 ```
 
 Salida correspondiente:
 
 ```
-ERROR: division by zero in operation at line 9, column 13
+1 2 0
+
+ERROR: division by zero in operation at line 3, column 9
 ```
 
 Programa:
@@ -131,7 +123,7 @@ incluir un archivo comprimido **.zip** que contenga:
 
 + Código fuente debidamente documentado.
 + En caso de utilizar Haskell, deben incluir un archivo Makefile o cabal.
-Si su proyecto no compila, el proyecto no será corregido.
+  Si su proyecto no compila, el proyecto no será corregido.
 + Un archivo de texto con el nombre `LEEME.txt` donde **brevemente** 
 se expliquen:
     - Estado actual del proyecto.

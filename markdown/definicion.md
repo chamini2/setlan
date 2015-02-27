@@ -94,7 +94,7 @@ Ejemplo válido:
     
     program {
         using int age; in
-        print "how old are you?";
+        println "how old are you?";
         scan age;
         print "you said ", age, ", right?";
     }
@@ -109,7 +109,7 @@ Si el valor suministrado por el usuario es inválido se debe repetir el proceso 
 
 Puede exisitir cualquier cantidad de espacios en blanco antes o después del valor introducido.
 
-Esta instrucción funciona únicamente con variables (y valores) de tipo `bool` e `int`.
+Esta instrucción funciona únicamente con variables de tipo `bool` e `int`.
 
 
 ### Salida
@@ -123,6 +123,8 @@ El interpretador debe recorrer los elementos en orden e imprimirlos en pantalla.
 
 Las cadenas de caracteres deben estar encerradas entre comillas dobles (`"`) y sólo debe contener caracteres imprimibles. No se permite que tenga saltos de línea, comillas dobles o backslashes (`\`) a menos que sean escapados. Las secuencias de escape correspondientes son `\n`, `\"` y `\\`, respectivamente.
 
+**NOTA**: Al imprimir un valor de tipo `set`, se deben imprimir sus elementos en orden ascendente; si no tiene elementos, se debe imprimir `{}`.
+
 Ejemplo válido: 
 
     print "¡Hola, mundo! \nEsto es una comilla escapada \" y un backslash \\"
@@ -130,8 +132,31 @@ Ejemplo válido:
 Que generaría la siguiente impresión en salida estándar:
 
     $ ./setlan print.stl
-    ¡Hola, mundo! 
+    ¡Hola, mundo!
     Esto es una comilla escapada " y un backslash \
+    
+Ejemplo con valores:
+
+    program { 
+        using 
+            set s;
+            bool b;
+        in
+
+        println b, " | ", $? s, " | ", s;
+        
+        s = {7,8,1,2,3,5,1,2,1,2,1,2};
+        b = $? s > 5;
+        
+        println b, " | ", $? s, " | ", s;
+        
+    }
+
+Que generaría:
+
+     $ ./setlan valuesprint.stl
+    false | 0 | {}
+    true | 6 | { 1, 2, 3, 5, 7, 8 }
 
 ### Condicional `if then else`
 
@@ -197,26 +222,27 @@ Ejemplo equivalente:
 
     }
 
-Obviamente es más *estético* usar el primer o segundo ejemplo, pero quiere hacerse obvio que la instrucción del `else` es un `if` más, y no es una construcción compleja del lenguaje, así evitamos escribir casos especiales para `else if
+Obviamente es más *estético* usar el primer o segundo ejemplo, pero quiere hacerse obvio que la instrucción del `else` es un `if` más, y no es una construcción compleja del lenguaje, así evitamos escribir casos especiales para `else if`.
 
 ##### Asociatividad del `if then else`
 
 Setlan permite construcciones del siguiente estilo:
 
-	if (false)
+	if (true)
 		if (false)
 			print "no se debe imprimir"
 		else
-			print "tampoco se debe imprimir"
+			print "se debe imprimir"
 
 En este ejemplo hay una instrucción `if then` y una instrucción `if then else` dentro de ésta, se usó indentación para hacer obvio el comportamiento. Es decir, un `else` se debe *asociar* al `if` más cercano *hacia arriba*. Si quisieramos hacer una asociación diferente, se debe especificiar con el uso de llaves; por ejemplo:
 
-	if (false) {
-		if (true)
+	if (true) {
+		if (false)
 			print "no se debe imprimir"
 		;
-	} else
-		print "sí se debe imprimir"
+	} else {
+		print "esta vez NO se imprime";
+	}
 
 ### Iteración `for`
 
@@ -319,7 +345,7 @@ El siguiente ejemplo pone en evidencia estas reglas:
                 set x;          # inicializado en {}
             in
             x = {0,1};
-            y = x + {2,3,4};
+            y = x ++ {2,3,4};
             println 1, x;       # x es de tipo `set`
             println 2, y;       # y es de tipo `set`
             println 3, z;       # b es de tipo `bool`
@@ -345,7 +371,7 @@ El siguiente ejemplo pone en evidencia estas reglas:
                 bool i;         # esconde la variable `i` del for
             in
             print i, " ";       # siempre imprime `false`
-            i = false;
+            i = i or true;
         };
         println "";             # sólo para el salto de línea
     }

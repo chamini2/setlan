@@ -684,12 +684,16 @@ class Binary(Expression):
         if right_type == Type.IteratorT:
             right_type = Type.IntT
 
-        if Type.ErrorT not in (left_type, right_type) not in self.operand_types:
+        if Type.ErrorT in (left_type, right_type):
+            return Type.ErrorT
+
+        if (left_type, right_type) not in self.operand_types:
             message = "ERROR: operator '%s' used incorrectly with types '%s' and '%s'"
             message += " at line %d, column %d"
             lin, col = self.lexspan[0]
             data = self.operator, left_type, right_type, lin, col
             Errors.static_error.append(message % data)
+            return Type.ErrorT
 
         return self.return_type
 
@@ -983,12 +987,16 @@ class Unary(Expression):
         if exp_type == Type.IteratorT:
             exp_type = Type.IntT
 
-        if Type.ErrorT != exp_type != self.operand_type:
+        if Type.ErrorT == exp_type:
+            return Type.ErrorT
+
+        if exp_type != self.operand_type:
             message = "ERROR: operator '%s' used incorrectly with with type '%s'"
             message += " at line %d, column %d"
             lin, col = self.lexspan[0]
             data = self.operator, exp_type, lin, col
             Errors.static_error.append(message % data)
+            return Type.ErrorT
 
         return self.return_type
 

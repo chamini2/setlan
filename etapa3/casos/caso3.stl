@@ -1,0 +1,19 @@
+program {
+    using int b; in
+    b = 3 + 5;
+
+    {
+        using bool b; in
+        while (b) do {
+            println "Hola Mundo";
+        };
+    };
+    
+}
+
+# Symbol Table
+# 
+#     SCOPE
+#         'b': (int, (2, 12))
+#         SCOPE
+#             'b': (bool, (6, 14))

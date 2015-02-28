@@ -1,0 +1,15 @@
+program {
+    using bool b; in
+    b = 3 * 5;
+
+    {
+        using int b; in
+        while (b) do {
+            println "Hola Mundo";
+        };
+    };
+    
+}
+
+# ERROR: assigning expression of type 'int' to variable 'b' of type 'bool' at line 3, column 2
+# ERROR: expecting expression of type 'bool' and got type 'int' at line 7, column 10

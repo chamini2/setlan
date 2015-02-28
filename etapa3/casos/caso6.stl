@@ -1,0 +1,14 @@
+program { 
+    using int i; set s; in
+
+    for i min i <+> s do
+        print i;
+}
+
+# Symbol Table
+# 
+#     SCOPE
+#         'i': (int, (2, 15))
+#         's': (set, (2, 22))
+#         SCOPE
+#             'i': (int, (4, 9))

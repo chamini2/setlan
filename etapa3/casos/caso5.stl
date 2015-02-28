@@ -1,0 +1,14 @@
+program {
+    using 
+        set s1, s2, s3;
+        int x, y, z;
+        bool b1, b2, b3;
+    in
+    scan s1;
+    s2 = 2 <+> {1,2,3};
+    s3 = {3,5,2} </> {2};
+    s1 = s1 ++ s2;
+}
+
+# ERROR: scanning variable 's1' of type 'set' at line 7, column 3
+# ERROR: operator '</>' used incorrectly with types 'set' and 'set' at line 9, column 8

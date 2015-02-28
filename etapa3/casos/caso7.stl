@@ -1,0 +1,11 @@
+program { 
+    using int i; set s; in
+
+    for i min i + s do {
+        i = i + 1;
+        print i @ s;
+    };
+}
+
+# ERROR: operator '+' used incorrectly with types 'int' and 'set' at line 4, column 15
+# ERROR: assigning value to not modifiable variable 'i' at line 5, column 9

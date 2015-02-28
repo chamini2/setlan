@@ -1,0 +1,9 @@
+program {
+    using int b, s; in
+    while (b) do {
+        s = 2 <+> {1,2,3};
+    };
+}
+
+# ERROR: expecting expression of type 'bool' and got type 'int' at line 3, column 9
+# ERROR: assigning expression of type 'set' to variable 's' of type 'int' at line 4, column 3

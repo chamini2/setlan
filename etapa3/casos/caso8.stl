@@ -1,0 +1,21 @@
+program { using int a; in
+    if (a == 0) {
+        using set a; bool b; in
+        b = 2 @ a;
+        if (b and a) {};
+    };
+    print b;
+
+    for i min {1,2,3} do
+        print i
+    ;
+
+    if (i == 3)
+        print "yes"
+    ;
+
+}
+
+# ERROR: operator 'and' used incorrectly with types 'bool' and 'set' at line 5, column 13
+# ERROR: variable 'b' referenced at line 7, column 11 is not defined
+# ERROR: variable 'i' referenced at line 13, column 9 is not defined

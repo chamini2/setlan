@@ -1,0 +1,12 @@
+# Lenguaje de programacion para el proyecto: Ruby
+# Etapa del proyecto: Chequeo de Tipos
+# Autores: Jose Peña 11-10775 y Amin Arria 
+
+# Decisiones de Implementacion: Para esta entrega decidimos rehacer el parse con las librerias RACC de Ruby, el principio fue un problema con la documentacion debido a que no es tan explicativa y solo fue gracias a ejemplos de personas que realizaron un parser fue como pudimos crearlo. En principio, el parser tiene tiene una cierta cantidad de reglas que definen la precedencia de instrucciones como el if y el else para evitar problemas de shift/reduce, ademas de precedencias de expresiones que nos permiten resolver conflictos del mismo tipo. Este parser tiene la caracteristica que va construyendo arreglos dentro de arreglos, simulando la profundidad de los bloques e instrucciones, hay una cierta cantidad de reglas extras que permiten ejecutar instrucciones especiales para los nodos Terminales permitiendo construir el arreglo.
+# Por otro lado, el handler esta encargado de armar el arreglo de arreglos y luego se encarga de procesarlos, en primer lugar para imprimir el arbol AST y luego para construir la tabla de simbolos, todo esto sucede recorriendo los arreglos de arreglos con llamadas recursivas que permiten ir hasta lo mas profundo de los bloques o instrucciones. 
+# Por ultimo el chequeo de tipos, basicamente realiza la misma clase de busqueda sobre el arbol y cuando consigue una expresion 
+la analiza y chequea su tipo inmediatamente contra la tabla.
+
+# Estado del proyecto: Faltaron detalles de especificacion de errores
+# Problemas presentes: 
+No se puede especificar la ubicación de los errores

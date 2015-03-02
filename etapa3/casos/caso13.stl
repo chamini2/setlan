@@ -1,0 +1,24 @@
+#Redefiniciones
+
+program {
+    using
+        int i,i,i;
+    in
+
+    print i,i,i;
+
+    if (i+i == i+i) {
+        using
+            int i;
+            int j;
+            int k,k,k;
+        in
+
+        print k,k,k;
+    };
+}
+
+# ERROR: variable 'k' of type 'int' at line 14, column 19 has already been defined with type 'int' at line 14, column 17
+# ERROR: variable 'k' of type 'int' at line 14, column 21 has already been defined with type 'int' at line 14, column 17
+# ERROR: variable 'i' of type 'int' at line 5, column 15 has already been defined with type 'int' at line 5, column 13
+# ERROR: variable 'i' of type 'int' at line 5, column 17 has already been defined with type 'int' at line 5, column 13

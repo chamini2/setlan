@@ -1,0 +1,92 @@
+#Scope en bloques.
+program {
+    using
+        int i;
+        bool b;
+    in
+
+    for i min {1,2,3} do {
+        using
+            int i;
+        in
+
+        while(i/2 == 0) do {
+            using
+                int i;
+            in
+
+            repeat {
+                using
+                    int i;
+                in
+
+                print i;
+            }
+            while(i/3 == 0) do {
+                using
+                    int i;
+                in
+
+                repeat {
+                    using
+                        int i;
+                    in
+
+                    print i;
+                } while (i/5 == 0);
+            };
+        };
+    };
+
+    if (b) {
+        using
+            bool b;
+        in
+        
+        if(b) {
+            using
+                bool b;
+            in
+
+            if(b) {
+                using
+                    bool b;
+                in
+
+                b = true;
+            }
+            else
+                b = true;
+            print b;
+        }
+        else
+            b = true;
+        print b;
+    };
+
+    println i, b;
+}
+
+# Symbol Table
+# 
+#     SCOPE
+#         'i': (int, (4, 13))
+#         'b': (bool, (5, 14))
+#         SCOPE
+#             'i': (int, (8, 9))
+#             SCOPE
+#                 'i': (int, (10, 17))
+#                 SCOPE
+#                     'i': (int, (15, 21))
+#                     SCOPE
+#                         'i': (int, (20, 25))
+#                     SCOPE
+#                         'i': (int, (27, 25))
+#                         SCOPE
+#                             'i': (int, (32, 29))
+#         SCOPE
+#             'b': (bool, (43, 18))
+#             SCOPE
+#                 'b': (bool, (48, 22))
+#                 SCOPE
+#                     'b': (bool, (53, 26))

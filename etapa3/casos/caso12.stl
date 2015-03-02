@@ -1,0 +1,79 @@
+#Scope en bloques
+program {
+    using
+        set s;
+    in
+
+    {
+        using
+            set s;
+        in
+
+        {
+            using
+                set s;
+            in
+
+            {
+                using
+                    set s;
+                in
+
+                {
+                    using
+                        set s;
+                    in
+
+                    {
+                        using
+                            set s;
+                        in
+
+                        {
+                            using
+                                set s;
+                            in
+
+                            s = {1,2,3};
+                        };
+
+                        print s;
+                        s = {4,5,6};
+                    };
+
+                    print s;
+                    s = {7,8,9};
+                };
+
+                print s;
+                s = {10,11,12};
+            };
+
+            print s;
+            s = {13,14,15};
+        };
+
+        print s;
+        s = {16,17,18};
+    };
+
+    print s;
+    s = {19,20,21};
+}
+
+# Symbol Table
+# 
+#     SCOPE
+#         's': (set, (4, 13))
+#         SCOPE
+#             's': (set, (9, 17))
+#             SCOPE
+#                 's': (set, (14, 21))
+#                 SCOPE
+#                     's': (set, (19, 25))
+#                     SCOPE
+#                         's': (set, (24, 29))
+#                         SCOPE
+#                             's': (set, (29, 33))
+#                             SCOPE
+#                                 's': (set, (34, 37))

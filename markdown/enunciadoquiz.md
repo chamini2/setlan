@@ -50,7 +50,7 @@ sensibles a mayúsculas.
 ### Tipos de datos
 
 El lenguaje `expressive` **únicamente** cuenta con el tipo de
-datos `unsigned int`: Números enteros sin signo.
+datos enteros `int`: Números enteros sin signo.
 
 ### Definiciones
 

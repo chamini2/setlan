@@ -14,6 +14,10 @@ from ast import *
 
 # Toma la posicion de un simbolo especifico, linea y columna
 # To get position span for a specified symbol,
+
+#############################################################################
+######################COPIA DE CODIGO DE MATTEO FERRANDO#####################
+#############################################################################
 def span(symbol, pos):
     if isinstance(symbol[pos], (int, str)):
         lexspan = symbol.lexspan(pos)
@@ -105,7 +109,12 @@ def p_statement_statement_list(symbol):
 def p_statement_declare_list(symbol):
     """declare_list : data_type declare_comma_list TokenSemicolon
                     | data_type declare_comma_list TokenSemicolon declare_list"""
-    
+
+
+#############################################################################
+######################COPIA DE CODIGO DE MATTEO FERRANDO#####################
+#############################################################################
+
     def error_already_declared(variable, scope, data_type):
         message = "ERROR: declaring variable '%s' of type '%s' at "
         message += "line %d, column %d with previous declaration "

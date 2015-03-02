@@ -68,6 +68,11 @@ class Assign(Statement):
         string += self.expression.print_tree(level + 1)
         return string
 
+
+#############################################################################
+######################COPIA DE CODIGO DE MATTEO FERRANDO#####################
+#############################################################################
+
     def check(self):
         set_scope(self.variable, self.scope)
         set_scope(self.expression, self.scope)
@@ -330,6 +335,8 @@ class While(Statement):
         return boolean
 
 ##################################################
+
+## LOS REPEATS NO TIENEN CHECKEO
 
 class WhileRepeat(Statement):
 

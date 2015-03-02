@@ -1,9 +1,13 @@
 Universidad Simón Bolívar
+
 Departamento de Computación y Tecnología de la Información
+
 CI3725 - Traductores e Interpretadores
+
 Diciembre - Marzo 2014-2015
 
 Nombre:
+
 Carné:
 
 # Quiz de Laboratorio (4%)
@@ -30,11 +34,12 @@ define
 	<definición n>
 end
 
+# Comentario
+
 <aplicación 0>
 <aplicación 1>
 ...
 <aplicación m>
-#Esto es un comentario
 ```
 
 ### Identificadores
@@ -58,7 +63,7 @@ Un programa en `expressive` _puede_ tener un bloque incial de
 N-definiciones de funciones. Cada definición cumple con la
 siguiente estructura:
 
-<identificador 0>(<identificador 1>, <identificador 2>, ..., <identificador n>) = <expresión>
+    <identificador 0>(<identificador 1>, <identificador 2>, ..., <identificador n>) = <expresión>
 
 Las funciones en `expressive` pueden ser recursivas. El
 lenguaje permite la redefinición de funciones si una nueva
@@ -81,40 +86,40 @@ el argumento `then`, caso contrario evalúa `else`.
 De acuerdo con lo anterior, las siguientes son definiciones
 válidas del lenguaje `expressive`:
 
-```
+~~~
 define
-#Operaciones Booleanas
-not(x) = ifz(x,1,0)
-and(x,y) = ifz(x,0,ifz(y,0,1))
-or(x,y) = and(not(x),not(y))
+	#Operaciones Booleanas
+	not(x) = ifz(x,1,0)
+	and(x,y) = ifz(x,0,ifz(y,0,1))
+	or(x,y) = and(not(x),not(y))
 
-#Comparaciones
-ifnz(x,then,else) = ifz(not(x),then,else)
-ifeq(x,y,then,else) = ifz(sub(x,y),then,else)
-ifne(x,y,then,else) = ifeq(x,y,else,then)
+	#Comparaciones
+	ifnz(x,then,else) = ifz(not(x),then,else)
+	ifeq(x,y,then,else) = ifz(sub(x,y),then,else)
+	ifne(x,y,then,else) = ifeq(x,y,else,then)
 
-#Aritmética
-sum(x,y,z) = sum(x,sum(y,z))
-sub(x,y) = sum(x,negate(y))
-mult(x,y) = iflt(x
-				 ,0
-				 ,negate(mult(negate(x),y))
-				 ,iflt(y
-					   ,0
-					   ,negate(mult(x,negate(y)))
-					   ,ifeq(x
-							 ,1
-							 ,y
-							 ,mult(sub(x,1),sum(y,y))
-							 )
-					  )
-				)
-square(x) = mult(x,x)
+	#Aritmética
+	sum(x,y,z) = sum(x,sum(y,z))
+	sub(x,y) = sum(x,negate(y))
+	mult(x,y) = iflt(x
+					 ,0
+					 ,negate(mult(negate(x),y))
+					 ,iflt(y
+						   ,0
+						   ,negate(mult(x,negate(y)))
+						   ,ifeq(x
+								 ,1
+								 ,y
+								 ,mult(sub(x,1),sum(y,y))
+								 )
+						  )
+					)
+	square(x) = mult(x,x)
 
-#expressive es Turing-Completo
-loop() = loop()
+	#expressive es Turing-Completo
+	loop() = loop()
 end
-```
+~~~
 
 ### Expresiones
 
@@ -129,7 +134,7 @@ su resultado es mostrado por salida estándar seguido de un
 salto de línea. Las aplicaciones de funciones deben de seguir 
 la siguiente estructura:
 
-<identificador 0>(<expresión 0>,<expresión 1>,...<expresión n>)
+    <identificador 0>(<expresión 0>,<expresión 1>,...<expresión n>)
 
 El número de argumentos utilizados en la aplicación de una
 función debe de coincidir con el número de argumentos de
@@ -148,14 +153,14 @@ Programa:
 
 ```
 define
-	sumatorio(n) = ifz(n,0,suma(n,sumatorio(n-1)))
+	sumatoria(n) = ifz(n,0,suma(n,sumatoria(n-1)))
 end
 
-sumatorio(1)
-sumatorio(2)
-sumatorio(3)
-sumatorio(4)
-sumatorio(5)
+sumatoria(1)
+sumatoria(2)
+sumatoria(3)
+sumatoria(4)
+sumatoria(5)
 ```
 
 Salida correspondiente:
@@ -173,27 +178,27 @@ Salida correspondiente:
 A partir de la especificación del lenguaje `expressive`
 resuelva los siguientes ejercicios:
 
-1- Proponga la gramática para el lenguaje.
-2- Indique si existen conflictos del tipo _shift/reduce_. Explique el porqué.
-3- Suponga que el lenguaje cuenta con una tabla de símbolos cuyos
+1. Proponga la gramática para el lenguaje.
+2. Indique si existen conflictos del tipo _shift/reduce_. Explique el porqué.
+3. Suponga que el lenguaje cuenta con una tabla de símbolos cuyos
 elementos son almacenados en forma de `tupla`: `(identificador,numArgumentos)`.
 De acuerdo con esto, proponga cómo debe ser _llenada_ la
 tabla de símbolos en cada regla que así lo requiera. Para este
 apartado usted cuenta con los siguientes procedimientos:
 
-+ `SymTable.new()`: Constructor de una tabla de símbolos vacía.
-+ `SymTable.insert(tupla)`: Inserta un elemento en la tabla de
+    + `SymTable.new()`: Constructor de una tabla de símbolos vacía.
+    + `SymTable.insert(tupla)`: Inserta un elemento en la tabla de
 símbolos.
-+ `SymTable.delete(tupla)`: Elimina un elemento de la tabla de
+    + `SymTable.delete(tupla)`: Elimina un elemento de la tabla de
 símbolos.
-+ `SymTable.update(tupla)`: Actualiza la información de un elemento
+    + `SymTable.update(tupla)`: Actualiza la información de un elemento
 de la tabla de símbolos, suponiendo que éste existe.
-+ `SymTable.contains(tupla)`: Determina si un elemento está contenido
+    + `SymTable.contains(tupla)`: Determina si un elemento está contenido
 dentro de la tabla de símbolos.
-+ `SymTable.find(tupla)`: Asumiendo que está contenido en ella,
+    + `SymTable.find(tupla)`: Asumiendo que está contenido en ella,
 retorna la información de un elemento de la tabla de símbolos.
 
-4- Proponga un reporte de errores _estáticos_ básico para el
+4. Proponga un reporte de errores _estáticos_ básico para el
 lenguaje. Para ello, puede suponer que existe un procedimiento 
 `error()` que imprime un mensaje de error por salida estándar y
 aborta la ejecución del analizador.

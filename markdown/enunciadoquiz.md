@@ -54,8 +54,7 @@ sensibles a mayúsculas.
 
 ### Tipos de datos
 
-El lenguaje `expressive` **únicamente** cuenta con el tipo de
-datos enteros `int`: Números enteros sin signo.
+El lenguaje `expressive` **únicamente** cuenta con el tipo de datos *números enteros* `int`.
 
 ### Definiciones
 

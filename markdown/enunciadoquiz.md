@@ -59,7 +59,7 @@ El lenguaje `expressive` **únicamente** cuenta con el tipo de datos *números e
 ### Definiciones
 
 Un programa en `expressive` _puede_ tener un bloque incial de
-N-definiciones de funciones. Cada definición cumple con la
+n-definiciones de funciones. Cada definición cumple con la
 siguiente estructura:
 
     <identificador 0>(<identificador 1>, <identificador 2>, ..., <identificador n>) = <expresión>
@@ -73,7 +73,7 @@ El lenguaje cuenta **sólo** con las siguientes definiciones
 precargadas:
 
 + `negate(x)`: Devuelve el inverso aditivo del argumento `x`.
-+ `sum(x,y)`: Suma aritmeticamente el argumento `x` con el
++ `sum(x,y)`: Suma aritméticamente el argumento `x` con el
 argumento `y`.
 + `ifz(x,then,else)`: Verifica si el argumento `x` es igual a `0`
 y en caso de serlo evalúa el argumento `then`, caso contrario
@@ -152,14 +152,14 @@ Programa:
 
 ```
 define
-	sumatoria(n) = ifz(n,0,suma(n,sumatoria(n-1)))
+	sumatorio(n) = ifz(n,0,suma(n,sumatoria(n-1)))
 end
 
-sumatoria(1)
-sumatoria(2)
-sumatoria(3)
-sumatoria(4)
-sumatoria(5)
+sumatorio(1)
+sumatorio(2)
+sumatorio(3)
+sumatorio(4)
+sumatorio(5)
 ```
 
 Salida correspondiente:

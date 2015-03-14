@@ -1,0 +1,8 @@
+program {
+using
+int max_int, n;
+in
+max_int = 2147483646;
+n = 2 * max_int;
+print n
+}

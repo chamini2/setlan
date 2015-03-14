@@ -1,0 +1,31 @@
+##########################################
+# CI3725 Traductores e Interpretadores   #
+# Entrega 4. Grupo 6                     #
+# Maria Victoria Jorge 11-10495          #
+# Enrique Iglesias 11-10477              # 
+##########################################
+
+Implementación:
+	Para esta cuarta entrega se utilizó nuevamente el lenguaje Python (Versión 2.7) y PLY (Versión 3.4)
+	tanto para el desarrollo del lexer como del parser. Se implementaron las verificaciones dinámicas,
+	por lo tanto al ejecutar un programa en Setlan se recorre el árbol sintáctico, se ejecutan las 
+	instrucciones y se evalúan las expresiones encontradas. 
+
+	Para esto, agregamos el método execute en todas las clases correspondientes a instrucciones de Setlan,
+	y el método evaluate en las correspondientes a expresiones del lenguaje. En tiempo de ejecución se toman
+	en cuenta las siguientes verificaciones para garantizar una ejecución correcta del programa interpretado:
+		-> Errores de división por cero (tanto con los operadores aritméticos como con los conjunto-aritméticos).
+		-> Errores de overflow (tanto con los operadores aritméticos como con los conjunto-aritméticos).
+		-> Errores de máximo y mínimo elemento de un conjunto vacío.
+	Si se encuentra alguno de estos errores se imprime por salida estándar, usando el mismo formato para reporte
+	de errores de las entregas anteriores, y se aborta la ejecución del programa.
+
+Aclaratorias:
+	-> 	Se corrigió el error con las tablas de símbolos de la entrega pasada.
+	-> 	En caso que no existan errores lexicográficos, sintácticos ni de la verificación estática se ejecutará
+		el programa en Setlan, en caso contrario se imprimen los errores por salida estándar y se aborta la ejecución
+		del intérprete.
+	->	En caso de no ingresar flags al momento de ejecutar el intérprete se ejecutará el analizador lexicográfico,
+		el sintáctico y si no hay errores el programa en Setlan se ejecutará. Si quiere utilizar algún flag de la 
+		entrega pasada se realizará el mismo proceso mencionado anteriormente y luego se imprimirá por salida estándar
+		la información asociada al flag seleccionado.

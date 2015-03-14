@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+'''
+Creado el 22/1/2015
+Ult. Modificacion el 08/03/2015
+
+@author:  Aldrix Marfil     10-10940
+@author:  Leonardo Martinez 11-10576
+'''
+
+import parser
+import sys
+
+if __name__ == '__main__':
+    
+    #Comprobacion de los parametros de entrada. 
+    if len(sys.argv) < 2:
+        print "Error: Parametros de entrada incorrectos."
+        exit()
+    if len(sys.argv) > 2:
+        knownFlags = ['-t','-a','-s']
+        flags = sys.argv[2:]
+        for flag in flags:
+            if not flag in knownFlags:
+                print "Error: No se reconoce el flag: " + flag
+                exit() 
+
+    #Abrimos el archivo del codigo setlan
+    codeFile = open(sys.argv[1], 'r')
+    code = codeFile.read()
+
+    #Ejecutamos el Parser
+    arbol = parser.build_parser(code)
+
+
+    #Impresion en pantalla del primer error del Lexer
+    #(si hay alguno). 
+    if parser.lexer_errorList != []:
+        print parser.lexer_errorList[0]
+    else: 
+        #Impresion en pantalla del primer error del Parser 
+        #(si hay alguno). 
+        if parser.parser_errorList != []:
+            print parser.parser_errorList[0]
+
+        else:
+
+            # Involucramos los flags, para la impresion.
+            if '-t' in sys.argv:
+                print "\n\t ------- LEXER TOKENS -------"
+                parser.build_lexer(code)
+                print "\t ---------------------------- \n"
+            if '-a' in sys.argv:
+                print "\n\t ------- AST -------"
+                arbol.printTree(0)
+                print "\t ------------------- \n"
+
+            # Realizamos el chequeo de tipos
+            symTable = arbol.symbolcheck()
+
+            if parser.type_error_list:
+                for error in parser.type_error_list:
+                    print error
+                exit()
+
+            if '-s' in sys.argv:
+                print "\n\t ------- TABLA DE SIMBOLOS -------"
+                symTable.printTable(0)
+                print "\t --------------------------------- \n"
+
+            # Se ejecuta el programa Setlan
+            arbol.evaluate()

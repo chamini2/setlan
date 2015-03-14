@@ -1,0 +1,442 @@
+#!/usr/bin/env python
+# -*- coding: UTF8 -*-
+# ------------------------------------------------------------
+# Setlan
+#
+# Intérprete del lenguaje Setlan
+# Parte 2, Análisis Sintáctico
+# CI-3725
+# 02/02/2015
+#
+# Gustavo Siñovsky 09-11207
+# Luiscarlo Rivera 09-11020
+# ------------------------------------------------------------
+
+
+import ply.yacc as par
+from lexer import *
+from ast import *
+from table import *
+from settings import *
+
+global ast 
+global table
+global tableout
+global ErrorVer
+global ErrorSin
+table = None
+ast = '\n'
+tableout = '\n'
+
+# Precedencia de los operadores.
+precedence = (
+    ('nonassoc', 'THEN'),
+    ('right', 'tkELSE'),
+    ('left','tkOR'),
+    ('left','tkAND'),
+    ('right', 'tkNOT'),
+    ('nonassoc', 'tkGREATER', 'tkGREATERTHAN', 'tkLESS', 'tkLESSTHAN'),
+    ('left' ,'tkEQUAL','tkNOTEQUAL'),
+    ('nonassoc' ,'tkCONTAINS'),
+    ('left', 'tkPLUS', 'tkMINUS'),
+    ('left', 'tkTIMES','tkDIV','tkMOD'),
+    ('left', 'tkUNION','tkDIFFERENCE'),
+    ('left', 'tkINTERSECTION'),
+    ('left', 'tkSETPLUS', 'tkSETMINUS'),
+    ('left', 'tkSETTIMES', 'tkSETDIV', 'tkSETMOD'),
+    ('right', 'tkMAXVALUE', 'tkMINVALUE', 'tkSIZE', 'tkMINUSU'),
+    ('right','SETUN')
+)
+
+
+# Reglas de la gramática
+def p_PROGRAMA(p):
+    """
+    PROGRAMA : tkPROGRAM INSTRUCCION
+    """
+    p[0] = Program(p[2])
+    p[0].verify()
+    if (not ErrorSin and not ErrorVer): 
+        global table
+        global ast
+        global tableout
+        table = Table(None)
+        ast += p[0].toString("", False)
+        tableout += p[0].toStringTable("", False)
+        if ('-a' in sys.argv):
+            print ast
+        if ('-s' in sys.argv):
+            print tableout          
+        p[0].execute()
+
+def p_INSTRUCCION(p):
+    """
+    INSTRUCCION : ASIGNACION
+        | BLOQUE
+        | ENTRADA
+        | SALIDA
+        | CONDICIONAL
+        | ITERACION
+    """
+
+    p[0] = p[1]
+
+def p_ENTRADA(p):
+    """
+    ENTRADA : tkSCAN VARIABLE
+    """
+    p[0] = Entrada(p[2], fila = p.lineno(1), columna = Columna(p,1))
+
+def p_SALIDA(p):
+    """
+    SALIDA : tkPRINT IMPRIMIBLES
+        | tkPRINTLN  IMPRIMIBLES
+    """
+    if (p[1] == 'print'): p[0] = Salida('PRINT', p[2], fila = p.lineno(1), columna = Columna(p,1))
+    else: p[0] = Salida('PRINTLN', p[2], fila = p.lineno(1), columna = Columna(p,1))
+
+def p_IMPRIMIBLES(p):
+    """
+    IMPRIMIBLES : IMPRIMIBLES tkCOMMA IMPRIMIBLE
+        | IMPRIMIBLE
+    """
+    if (len(p) > 2): p[0] = Imprimibles(p[1], p[3])
+    else: p[0] = p[1]
+    
+
+def p_IMPRIMIBLE(p):
+    """
+    IMPRIMIBLE : tkSTRING
+        | EXP
+    """
+    if (type(p[1]) is str): 
+        p[0] = Simple('CADENA', p[1], p.lineno(1), Columna(p,1))
+    else: 
+        p[0] = p[1]
+
+def p_BLOQUE(p):
+    """
+    BLOQUE : tkLCURLYBRACKET DECLARACIONES INSTRUCCIONES tkRCURLYBRACKET
+        | tkLCURLYBRACKET tkRCURLYBRACKET
+    """
+    if (len(p) > 4):
+        p[0] = Bloque(p[2], p[3], p.lineno(1), Columna(p,1))
+    else:
+        p[0] = Bloque(None,None, p.lineno(1), Columna(p,1))
+
+def p_DECLARACIONES(p):
+    """
+    DECLARACIONES : tkUSING DECLARACION 
+        |
+    """
+    if len(p) > 1:
+        p[0] = p[2]
+    else:
+        p[0] = None
+
+def p_DECLARACION(p):
+    """
+    DECLARACION : TIPO VARIABLES tkSEMICOLON
+        | DECLARACION TIPO VARIABLES tkSEMICOLON
+    """
+    if len(p) < 5:
+        p[0] = Declaracion(None, p[1], p[2])
+    else:
+        p[0] = Declaracion(p[1], p[2], p[3])
+
+def p_VARIABLES(p):
+    """
+    VARIABLES : VARIABLE
+        | VARIABLES tkCOMMA VARIABLE 
+    """
+    if len(p) > 2:
+        p[0] = Variables(p[1], p[3])
+    else:
+        p[0] = Variables(p[1], None)
+
+def p_TIPO(p):
+    """
+    TIPO : tkINT
+        | tkBOOL
+        | tkSET
+    """
+    p[0] = p[1]    
+
+def p_INSTRUCCIONES(p):
+    """
+    INSTRUCCIONES : tkIN SECUENCIA
+        | tkIN
+        | SECUENCIA
+    """
+    if len(p) > 2:
+        p[0] = p[2]        
+    elif (p[1] == 'in'):
+        p[0] = None
+    else:
+        p[0] = p[1]
+
+def p_SECUENCIA(p):
+    """
+    SECUENCIA : INSTRUCCION tkSEMICOLON
+        | SECUENCIA INSTRUCCION tkSEMICOLON
+    """
+    if (len(p) < 4): 
+        p[0] = Secuencia(p[1], None)
+    else:
+        p[0] = Secuencia(p[1], p[2])
+
+def p_ASIGNACION(p):
+    """
+    ASIGNACION : VARIABLE tkASSIGN EXP
+    """
+    p[0] = Asignacion(p[1], p[3], p.lineno(1), Columna(p,1))
+
+def p_VARIABLE(p):
+    """
+    VARIABLE : tkID
+    """
+    p[0] = Simple('VARIABLE', p[1], p.lineno(1), Columna(p,1))
+
+def p_EXP(p):
+    """
+    EXP : tkLPAR EXP tkRPAR
+        | VARIABLE
+        | CONJUNTO
+        | EXPBOOLEANA
+        | EXPARITMETICA
+        | EXPCONJUNTOS
+    """
+    if (len(p) == 2): 
+        p[0] = p[1]
+    elif (len(p) == 4):
+        p[0] = p[2]
+
+def p_EXPBOOLEANA(p):
+    """
+    EXPBOOLEANA : BOOLEANO
+        | EXPBINBOOL
+        | EXPRELACIONAL
+        | UNEXPRBOOL
+    """
+    p[0] = p[1]
+
+def p_BOOLEANO(p):
+    """
+    BOOLEANO : tkTRUE
+        | tkFALSE
+    """
+    p[0] = Simple('BOOLEANO',p[1], p.lineno(1), Columna(p,1))
+
+def p_EXPRELACIONAL(p):
+    """
+    EXPRELACIONAL : EXP tkEQUAL EXP
+        | EXP tkNOTEQUAL EXP
+        | EXP tkLESS EXP
+        | EXP tkLESSTHAN EXP
+        | EXP tkGREATER EXP
+        | EXP tkGREATERTHAN EXP
+    """
+    if (p[2] == '=='): p[0] = ExpBinaria("IGUAL", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '/='): p[0] = ExpBinaria("DIFERENTE", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '<'): p[0] = ExpBinaria("MENOR", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '<='): p[0] = ExpBinaria("MENORIGUAL", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '>'): p[0] = ExpBinaria("MAYOR", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '>='): p[0] = ExpBinaria("MAYORIGUAL", p[1],p[3], p.lineno(1), Columna(p,1))
+
+
+def p_EXPBINBOOL(p):
+    """
+    EXPBINBOOL : EXP tkOR EXP
+        | EXP tkAND EXP
+        | EXP tkCONTAINS EXP        
+    """
+    if (p[2] == 'or'): p[0] = ExpBinaria("OR", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == 'and'): p[0] = ExpBinaria("AND", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '@'): p[0] = ExpBinaria("CONTIENE", p[1],p[3], p.lineno(1), Columna(p,1))
+
+def p_UNEXPRBOOL(p):
+    """
+    UNEXPRBOOL : tkNOT EXP
+    """
+    p[0] = ExpUnaria("NEGACION_BOOL", p[1] , p[2], p.lineno(1), Columna(p,1)) 
+
+def p_EXPARITMETICA(p):
+    """
+    EXPARITMETICA : EXPBINARIA
+        | EXPRARITMEUNARIA
+        | NUMERO
+    """
+    p[0] = p[1]
+
+def p_EXPBINARIA(p):
+    """
+    EXPBINARIA : EXP tkPLUS EXP
+        | EXP tkMINUS EXP
+        | EXP tkTIMES EXP
+        | EXP tkDIV EXP
+        | EXP tkMOD EXP
+    """
+    if (p[2] == '+'): p[0] = ExpBinaria("SUMA", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '-'): p[0] = ExpBinaria("RESTA", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '*'): p[0] = ExpBinaria("MULT", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '/'): p[0] = ExpBinaria("DIV", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '%'): p[0] = ExpBinaria("MOD", p[1],p[3], p.lineno(1), Columna(p,1))
+
+def p_EXPRARITMEUNARIA(p):
+    """
+    EXPRARITMEUNARIA : tkMINUS EXP %prec tkMINUSU
+    """
+    p[0] = ExpUnaria('MENOS_UNARIO', p[1] , p[2], p.lineno(1), Columna(p,1))
+
+
+def p_NUMERO(p):
+    """
+    NUMERO : tkNUM
+    """
+    p[0] = Simple('LITERAL_NUM', p[1], p.lineno(1), Columna(p,1))
+
+
+def p_EXPCONJUNTOS(p):
+    """
+    EXPCONJUNTOS : EXPCONJUNTOSBIN
+        | EXPCONJUNTOSUNARIA
+    """
+    p[0] = p[1]
+
+def p_EXPCONJUNTOSBIN(p):
+    """
+    EXPCONJUNTOSBIN : EXP tkUNION EXP
+        | EXP tkDIFFERENCE EXP
+        | EXP tkINTERSECTION EXP
+        | EXP tkSETPLUS EXP
+        | EXP tkSETMINUS EXP
+        | EXP tkSETTIMES EXP
+        | EXP tkSETDIV EXP
+        | EXP tkSETMOD EXP
+    """
+    if (p[2] == '++'): p[0] = ExpBinaria("UNION", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '\\'): p[0] = ExpBinaria("DIFERENCIA", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '><'): p[0] = ExpBinaria("INTERSECCION", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '<+>'): p[0] = ExpBinaria("SETSUMA", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '<->'): p[0] = ExpBinaria("SETRESTA", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '<*>'): p[0] = ExpBinaria("SETMULT", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '</>'): p[0] = ExpBinaria("SETDIV", p[1],p[3], p.lineno(1), Columna(p,1))
+    elif (p[2] == '<%>'): p[0] = ExpBinaria("SETMOD", p[1],p[3], p.lineno(1), Columna(p,1))    
+
+
+def p_EXPCONJUNTOSUNARIA(p):
+    """
+    EXPCONJUNTOSUNARIA : tkMAXVALUE EXP %prec SETUN
+        | tkMINVALUE EXP %prec SETUN
+        | tkSIZE EXP %prec SETUN
+    """
+    if (p[1] == '>?'): p[0] = ExpUnaria('VALOR_MAXIMO', p[1] , p[2], p.lineno(1), Columna(p,1))
+    elif (p[1] == '<?'): p[0] = ExpUnaria('VALOR_MINIMO', p[1] , p[2], p.lineno(1), Columna(p,1))
+    elif (p[1] == '$?'): p[0] = ExpUnaria('SIZE', p[1] , p[2], p.lineno(1), Columna(p,1))
+
+def p_CONJUNTO(p):
+    """
+    CONJUNTO : tkLCURLYBRACKET tkRCURLYBRACKET
+        | tkLCURLYBRACKET EXPRESIONES tkRCURLYBRACKET
+    """
+    if (len(p) == 3):
+        p[0] = Conjunto(None, p.lineno(1), Columna(p,1))
+    else:
+        p[0] = Conjunto(p[2], p.lineno(1), Columna(p,1))
+
+def p_EXPRESIONES(p):
+    """
+    EXPRESIONES : EXPRESIONES tkCOMMA EXP
+        | EXP
+    """
+    if (len(p) == 2):
+        p[0] = p[1]
+    else:
+        p[0] = Expresiones(p[1], p[3])
+
+def p_CONDICIONAL(p):
+    """
+    CONDICIONAL : tkIF tkLPAR EXP tkRPAR INSTRUCCION %prec THEN
+        | tkIF tkLPAR EXP tkRPAR INSTRUCCION tkELSE INSTRUCCION
+    """
+    if (len(p)>6):
+        p[0] = Condicional(p[3],p[5],p[7], p.lineno(1), Columna(p,1))
+    else:
+        p[0] = Condicional(p[3],p[5],None, p.lineno(1), Columna(p,1))
+
+def p_ITERACION(p):
+	"""
+   	ITERACION : tkFOR VARIABLE DIRECCION EXP tkDO INSTRUCCION
+        | tkREPEAT INSTRUCCION tkWHILE tkLPAR EXP tkRPAR tkDO INSTRUCCION
+        | tkREPEAT INSTRUCCION tkWHILE tkLPAR EXP tkRPAR
+        | tkWHILE tkLPAR EXP tkRPAR tkDO INSTRUCCION
+    """	
+
+	if p[1] == 'for':
+		p[0] = IteracionConjunto(p[2], p[3], p[4], p[6], p.lineno(1), Columna(p,1))
+	elif (p[1] == 'repeat' and len(p) == 9):
+		p[0] = IteracionIndeterminada(p[2], p[5], p[8], p.lineno(1), Columna(p,1))
+	elif (p[1] == 'repeat' and len(p) == 7):
+		p[0] = IteracionIndeterminada(p[2], p[5], None, p.lineno(1), Columna(p,1))
+	elif (p[1] == 'while'):
+		p[0] = IteracionIndeterminada(None, p[3], p[6], p.lineno(1), Columna(p,1)) 
+
+def p_DIRECCION(p):
+    """
+    DIRECCION : tkMIN
+        | tkMAX
+    """
+    p[0] = Direccion(p[1])
+
+# Manejador de errores
+def t_error(t):
+    global ErrorLex
+    print 'Error: Se encontró un caracter inesperado "%s" en la Línea %d, Columna %d. ' %( t.value[0],t.lineno,find_column(ent,t))
+    t.lexer.skip(1)
+    ErrorLex = True
+
+def p_error(p):
+    global ErrorSin
+    if (ErrorSin != True and p != None):
+        ErrorSin = True
+        sys.exit("Error de sintaxis en la linea %s, columna %s: token '%s' inesperado." %(p.lineno , find_column(ent, p), p.value))
+    else:
+        ErrorSin = True
+        sys.exit("ERROR: Fin de entrada inesperado")
+global ent
+
+def Columna(p,x):
+    column = (ent).rfind('\n',0,p.lexpos(x))
+    if column < 0:
+       pos = p.lexpos(x)
+    else:
+       pos = p.lexpos(x) - column -1
+    return pos
+
+# Declaración del Lexer
+lexer = lex.lex()
+# Declaración del Parser  
+parser = par.yacc()
+# Verificación de entrada
+if (len(sys.argv) > 5):
+    print 'Usage: ./setlan filename [-t] [-a] [-s]' 
+else:
+    try:
+        with open(sys.argv[1],"r") as f:
+            ent = f.read()
+            lexer.input(ent)            
+            tokens = []
+            if '-t' in sys.argv:
+                # Consume tokens mientra no haya error
+                while True:
+                    tok = lexer.token()
+                    if not tok: break
+                    tokens.append(tok)
+                if (not ErrorLex):
+                    # Muestra por pantalla cada token consumido
+                    for tok in tokens:
+                        print 'token %-20s' % tok.type, 'value (%s) at line %d, column %d' % (str(tok.value), tok.lineno,find_column(ent,tok))
+            result = parser.parse(ent)
+    #Si ocurre un error, se imprime en pantalla.
+    except IOError:
+        print 'Not a valid filename.'

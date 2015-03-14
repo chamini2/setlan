@@ -1,0 +1,2026 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#Jesus Sanchez 10-10898
+#Jose Barrientos 10-10800
+#Entrega 3 ci-3725
+
+import ply.lex as lex
+import ply.yacc as yacc
+import sys
+import copy
+from SymTable import *
+
+#inicializacion de listas de tokens y errores encontrados
+data =''
+conteo=[]
+lexer_tokens = []
+lista_aux = []
+lexer_errores = []
+errores=[]
+parser=""
+tabla= SymTable()
+numCiclo=2
+vacio= Atributos('','')
+verificacion=False
+
+#lista de palabras reservadas
+reserved = {
+    'if' : 'IF',
+    'else' : 'ELSE',
+    'while' : 'WHILE',
+    'do' : 'DO',
+    'for' : 'FOR',
+    'repeat' : 'REPEAT',
+    'in' : 'IN',
+    'program' : 'PROGRAM',
+    'using' : 'USING',
+    'set' : 'SET',
+    'print' : 'PRINT',
+    'println' : 'PRINTLN',
+    'bool' : 'BOOL',
+    'int' : 'INT',
+    'scan' : 'SCAN',
+    'not' : 'NOT',
+    'and' : "AND",
+    'or' : "OR",
+    'min' : "MIN",
+    'max' : "MAX"
+}
+
+#lista de tokens definidos
+tokens = list(reserved.values()) + [
+
+    'NUMERO','TRUE','FALSE','STRING','ID',
+    'PLUS','MINUS','TIMES','DIVIDE','LPAREN','RPAREN',
+    'SEMICOLON','EQUIV','ASIGNA','COMA','MODULE',
+    'LESSTEQ','LESST','GREATEQ', 'GREATT','NOTEQ',
+    'UNION', 'DIFERENCIA', 'INTERSECT', 'PLUSCONJ',
+    'MINUSCONJ','TIMESCONJ', 'DIVCONJ','RESTOCONJ',
+    'MAXCONJ', 'MINCONJ', 'SIZECONJ', 'CONTIENECONJ',
+    'LLAVEIZ', 'LLAVEDE'
+
+]
+
+#expresiones regulares para atrapar tokens
+
+t_PLUS    = r'\+'
+t_MINUS   = r'-'
+t_TIMES   = r'\*'
+t_DIVIDE  = r'/'
+t_LPAREN  = r'\('
+t_RPAREN  = r'\)'
+t_SEMICOLON = r';'
+t_EQUIV = r'=='
+t_ASIGNA = r'='
+t_COMA = r','
+t_MODULE = r'%'
+t_LESSTEQ = r'<='
+t_LESST = r'<'
+t_GREATEQ = r'>='
+t_GREATT = r'>'
+t_NOTEQ = r'/='
+t_UNION  = r'\+\+'
+t_DIFERENCIA  = r'\\'
+t_INTERSECT  = r'><'
+t_PLUSCONJ  = r'<\+>'
+t_MINUSCONJ  = r'<\->'
+t_TIMESCONJ  = r'<\*>'
+t_DIVCONJ  = r'</>'
+t_RESTOCONJ  = r'<%>'
+t_MAXCONJ  = r'>\?'
+t_MINCONJ  = r'<\?'
+t_SIZECONJ  = r'\$\?'
+t_CONTIENECONJ  = r'@'
+t_LLAVEIZ = r'{'
+t_LLAVEDE = r'}'
+t_ignore  = ' \t'
+
+#funcion que identifica un token NUMERO y guarda su valor entero
+def t_NUMERO(t):
+    r'\d+'
+    if((int(t.value)>2147483647) or (int(t.value)+ 2147483648)<0):
+        print "El numero introducido excede 32 bits"
+        exit(0)
+    else:
+        t.value = int(t.value)
+    return t
+
+#funcion que identifica un token TRUE y guarda su valor booleano
+def t_TRUE(t):
+    r'(\btrue\b)'
+    t.value = "true"
+    return t
+
+#funcion que identifica un token FALSE y guarda su valor booleano
+def t_FALSE(t):
+    r'(\bfalse\b)'
+    t.value = "false"
+    return t
+
+#funcion que identifica un token STRING y lo retorna
+def t_STRING(t):
+    r'\"([^\n\"\\]|\\n|\\"|\\\\)*\"'
+    return t
+
+#funcion que identifica un token ID para nombres de variables
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = reserved.get(t.value,'ID')
+    return t
+
+#metodo que identifica saltos de linea
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
+#metodo que identifica comentarios
+def t_COMMENT(t):
+    r'\#.*'
+
+#funcion que calcula la columna de la palabra o simbolo que lee actualmente
+def calcular_columna(input, tok):
+    ultimo_salto = input.rfind('\n', 0, tok.lexpos)
+    if ultimo_salto < 0:
+        ultimo_salto = 0
+    else:
+        ultimo_salto += 1;
+    columna = (tok.lexpos - ultimo_salto) + 1
+    return columna
+
+#metodo que almacena palabras o simbolos inesperadas en la lista de errores
+def t_error(t):
+    lexer_errores.append("Error: Se ha conseguido un caracter inesperado '%s' en linea %s, columna %s." %(t.value[0],t.lineno,str(calcular_columna(t.lexer.lexdata,t))))
+    t.lexer.skip(1)
+
+
+#metodo que almacena palabras o simbolos en la lista de tokens encontrados
+def buscar(input, lexer):
+    global lexer_tokens
+    lexer.input(input)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        lexer_tokens.append(tok)
+
+def recorrer(palabra):
+    global lista_aux
+    
+    for x in lista_aux:
+        
+        if str(x.value) == str(palabra):
+            lista_aux.remove(x)
+            return x
+        
+def buscatipo(palabra):
+    global tabla
+    if (lexer.type == 'TRUE' or lexer.type=='FALSE'):
+        return 'bool'
+    elif (lexer.type=='NUMERO'):
+        return 'int'
+    elif (lexer.type=='ID'):
+        aux = tabla.find(str(lexer.value))
+        return aux.getTipo()
+    else:
+        return 'set'        
+
+lexer = lex.lex()  
+
+#################################################################################
+
+indentar= ""
+indentarbloque= ""
+
+def check_int(s):
+    if (s != ''):
+        if s[0] in ('-', '+', ''):
+            return s[1:].isdigit()
+    return s.isdigit()
+
+def agregar(indentar):
+    return indentar+"\t"
+
+
+def eliminar(indentar):
+    return indentar[:-1]
+
+def ejecutar(instruccion,param1,param2,param3,param4):
+    global tabla
+    global casos_case
+    if instruccion=='asignacion':
+        
+        fst= param1.split('&')
+        snd= param2.split('&')
+        aux=[]
+        if (snd[-2]=='set' and snd[-1]==''):
+            j=1
+            
+            for i in range(0, len(snd)/6):
+                aux.append(snd[j])
+                aux = map(int, aux)
+                j=j+3
+                
+            aux = sorted(aux)
+            aux = map(int, aux)
+        
+        elif (snd[-2]=='set' and snd[-1]!=''):
+            aux = snd[-1]
+        
+        
+        else:
+            aux=snd[3]
+        
+        
+        tmp=tabla.find(param1)
+        tabla.update(param1,aux)
+        tmp=tabla.find(param1)
+        
+    elif instruccion=='print':
+        fst= param1.split('&')
+        tipo=fst[-1]
+        
+        if(tipo[-1]==']'):
+            tipo = tipo.replace("[","")
+            tipo = tipo.replace("]","")
+            tipo = tipo.replace(" ","")
+            tipo = '{'+str(tipo)+'}'
+            tipo = tipo.replace("'", "")
+            sys.stdout.write(tipo)
+        
+        else:    
+            x=3
+            while x< len(fst):
+                sys.stdout.write(fst[x])
+                x=x+4
+                
+    elif instruccion=='println':
+        fst= param1.split('&')
+        tipo=fst[-1]
+        
+        if tipo != '':
+            if(tipo[-1]==']'):
+                tipo = tipo.replace("[", "")
+                tipo = tipo.replace("]", "")
+                tipo = tipo.replace(" ", "")
+                tipo = '{'+str(tipo)+'}'
+                tipo = tipo.replace("'", "")
+                sys.stdout.write(tipo)
+                sys.stdout.write('\n')
+        
+        else:
+            x=3
+            while x< len(fst):
+                sys.stdout.write(fst[x])
+                x=x+4
+            sys.stdout.write('\n')
+
+    elif instruccion=='condicional':
+        fst=str(param1).split('&')
+        
+        if fst[3]=='true':
+            aux=str(param2)
+        else:
+            if param3!='':
+                aux=str(param3)
+
+    elif instruccion=='for':
+        snd=param2.split('&')
+        
+        snd[3] = snd[3].replace("[","")
+        snd[3] = snd[3].replace("]","")
+        snd[3] = snd[3].replace(" ","")
+        
+        aux=snd[3].split(',')
+        tabla.aux_update(param1,aux[0])
+        
+        if (param4 == 'min'):
+            for x in range(0, len(aux)):       
+                tabla.aux_update(param1,aux[x])          
+                str(param3)
+        
+        else:
+            for x in range(1, len(aux)+1):       
+                tabla.aux_update(param1,aux[-x])          
+                str(param3)
+        
+    elif instruccion=='while':
+        
+        fst=str(param2).split('&')
+        
+        aux=fst[-1]
+        
+        while aux=='true':
+            str(param1)
+            str(param3)
+            fst=str(param2).split('&')
+            aux=fst[-1]
+    
+    elif instruccion=='scan':
+        
+        x=False
+        atrib=tabla.find(param1)
+        tipo=atrib.getTipo()
+        while not x:
+            toda= sys.stdin.readline()
+            sinsalto= toda.split('\n')
+            valor=sinsalto[0]
+            valor=valor.strip()
+            if tipo=='int':
+                if check_int(valor) and (int(valor)<= 2147483647 and int(valor) >= -2147483648):
+                    x=True
+                    tabla.update(param1,valor)
+                else:
+                    print "valor de tipo incorrecto, mal suministrado o fuera de rango. Vuelva a intentarlo"
+            elif tipo=='bool':
+                if valor=='true' or valor=='false':
+                    x=True
+                    tabla.update(param1,valor)
+                else:
+                    print "valor de tipo incorrecto o mal suministrado. Vuelva a intentarlo"
+          
+    else:
+        pass
+    
+def evaluar(operador1,operador2,operando,tipo):
+    if tipo=='int':
+        if operando=='+':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif int(operador1)+int(operador2) > 2147483647 or int(operador1)+int(operador2) < -2147483648:
+                print "Error: Resultado no puede representarse en 32 bits"
+                sys.exit(0)
+            else:
+                return str(int(operador1)+int(operador2))
+        elif operando=='*':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif int(operador1)*int(operador2) > 2147483647 or int(operador1)*int(operador2) < -2147483648:
+                print "Error: Resultado no puede representarse en 32 bits"
+                sys.exit(0)
+            else:
+                return str(int(operador1)*int(operador2))
+        elif operando=='%':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif int(operador1)%int(operador2) > 2147483647 or int(operador1)%int(operador2) < -2147483648:
+                print "Error: Resultado no puede representarse en 32 bits"
+                sys.exit(0)
+            else:
+                return str(int(operador1)%int(operador2))
+        elif operando=='/':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif int(operador2)== 0:
+                print "Error: Intento de division por cero"
+                sys.exit(0)             
+            elif int(operador1)/int(operador2) > 2147483647 or int(operador1)/int(operador2) < -2147483648:
+                print "Error: Resultado no puede representarse en 32 bits"
+                sys.exit(0)
+            else:
+                return str(int(operador1)/int(operador2))
+        elif operando=='-' and operador2 !='':
+            if operador1=='' :
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif int(operador1)-int(operador2) > 2147483647 or int(operador1)-int(operador2) < -2147483648:
+                print "Error: Resultado no puede representarse en 32 bits"
+                sys.exit(0)
+            else:
+                return str(int(operador1)-int(operador2))
+        elif operando=='-' and operador2=='':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif -int(operador1) > 2147483647 or -int(operador1) < -2147483648:
+                print "Error: Resultado no puede representarse en 32 bits"
+                sys.exit(0)
+            else:
+                return str(-int(operador1))
+        elif operando=='==':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(int(operador1)==int(operador2)).lower()
+        elif operando=='/=':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(int(operador1) != int(operador2)).lower()
+        elif operando=='<':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(int(operador1)<int(operador2)).lower()
+        elif operando=='<=':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(int(operador1)<=int(operador2)).lower()
+        elif operando=='>':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(int(operador1)>int(operador2)).lower()
+        elif operando=='>=':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(int(operador1)>=int(operador2)).lower()
+    elif tipo=='bool':
+        if operando=='not':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            if operador1=='true':
+                return 'false'
+            else:
+                return 'true'
+        elif operando=='and':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            if operador1=='true' and operador2=='true':
+                return 'true'
+            else:
+                return 'false'
+        elif operando=='or':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            if operador1=='false' and operador2=='false':
+                return 'false'
+            else:
+                return 'true'
+        elif operando=='==':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(operador1 == operador2).lower()
+        elif operando=='/=':
+            if operador1=='' or operador2=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            return str(operador1 != operador2).lower()
+        
+    elif tipo=='set':
+        if operando =='++':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            
+            operador1 = operador1.replace("[","")
+            operador1 = operador1.replace("]","")
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+            
+            fst= operador1.split(',')
+            snd= operador2.split(',')
+            
+            if operador1=='{}':
+                snd1 = snd[0]
+                snd1 = snd1.replace("\n","")
+                snd1 = snd1.replace("\t","")
+                return list(snd1)
+            
+            elif operador2=='{}':
+                fst1 = fst[0]
+                fst1 = fst1.replace("\n","")
+                fst1 = fst1.replace("\t","")
+                return list(fst1)
+            
+            aux=[]
+            aux1=[]
+            j=0
+                       
+            for i in range(0, len(fst)):
+                aux.append(fst[j])
+                j=j+1
+            
+            aux = map(int, aux)
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+     
+            union = list(aux)
+            union.extend(x for x in aux1 if x not in union)
+
+            union = sorted(union)
+            return union
+        
+ 
+        elif operando =='><':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+                
+            elif operador1=='{}':
+                return '{}'
+            
+            elif operador2=='{}':
+                return '{}'
+            
+            operador1 = operador1.replace("[","")
+            operador1 = operador1.replace("]","")
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+            
+            fst= operador1.split(',')
+            snd= operador2.split(',')
+            
+            aux=[]
+            aux1=[]
+            j=0
+                       
+            for i in range(0, len(fst)):
+                aux.append(fst[j])
+                j=j+1
+            
+            aux = map(int, aux)
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+     
+            interseccion = []
+            interseccion.extend(x for x in aux1 if x in aux)
+
+            interseccion = sorted(interseccion)
+            return interseccion
+        
+        
+        elif operando =='\\':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+                
+            elif operador1=='{}':
+                return '{}'
+            
+            operador1 = operador1.replace("[","")
+            operador1 = operador1.replace("]","")
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+            
+            fst= operador1.split(',')
+            snd= operador2.split(',')
+           
+            if operador2=='{}':
+                fst1 = fst[0]
+                fst1 = fst1.replace("\n","")
+                fst1 = fst1.replace("\t","")
+                return list(fst1)
+            
+            aux=[]
+            aux1=[]
+            j=0
+                       
+            for i in range(0, len(fst)):
+                aux.append(fst[j])
+                j=j+1
+            
+            aux = map(int, aux)
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+     
+            diferencia = []
+            diferencia.extend(x for x in aux if x not in aux1)
+
+            diferencia = sorted(diferencia)
+            return diferencia
+        
+
+        elif operando =='<+>':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+                
+            elif operador2=='{}':
+                return '{}'
+            
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+         
+            snd= operador2.split(',')
+           
+            aux1=[]
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+     
+            sumamap = []
+           
+            for i in range(0, len(aux1)):
+                aux1[i] = aux1[i]+int(operador1)
+                
+            sumamap.extend(x for x in aux1)
+            sumamap = sorted(sumamap)
+            
+            return sumamap
+        
+        
+        elif operando =='<->':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            
+            elif operador2=='{}':
+                return '{}'
+            
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+         
+            snd= operador2.split(',')
+           
+            aux1=[]
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+     
+            restamap = []
+           
+            for i in range(0, len(aux1)):
+                aux1[i] = aux1[i]-int(operador1)
+                
+            restamap.extend(x for x in aux1)
+            restamap = sorted(restamap)
+            
+            return restamap
+        
+        elif operando =='<*>':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+             
+            elif operador2=='{}':
+                return '{}'
+            
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+         
+            snd= operador2.split(',')
+            
+            aux1=[]
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+            
+            multimap = []
+           
+            for i in range(0, len(aux1)):
+                aux1[i] = aux1[i]*int(operador1)
+                
+            multimap.extend(x for x in aux1)
+            multimap = sorted(multimap)
+            
+            return multimap
+        
+        elif operando =='</>':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            
+            elif operador2=='{}':
+                return '{}'
+            
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+            
+            snd= operador2.split(',')
+            
+            aux1=[]
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+     
+            divimap = []
+           
+            for i in range(0, len(aux1)):
+                aux1[i] = aux1[i]/int(operador1)
+                
+            divimap.extend(x for x in aux1)
+            divimap = sorted(divimap)
+            
+            return divimap
+        
+        elif operando =='<%>':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            
+            elif operador2=='{}':
+                return '{}'
+            
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+            
+            snd= operador2.split(',')
+           
+            aux1=[]
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+            
+            modmap = []
+           
+            for i in range(0, len(aux1)):
+                aux1[i] = aux1[i]%int(operador1)
+                
+            modmap.extend(x for x in aux1)
+            modmap = sorted(modmap)
+            
+            return modmap
+        
+        elif operando =='@':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+                
+            elif operador2=='{}':
+                return 'false'
+            
+            operador2 = operador2.replace("[","")
+            operador2 = operador2.replace("]","")
+            
+            snd= operador2.split(',')
+           
+            aux1=[]
+                        
+            j=0
+                       
+            for i in range(0, len(snd)):
+                aux1.append(snd[j])
+                j=j+1
+                            
+            aux1 = map(int, aux1)    
+           
+            for i in range(0, len(aux1)):
+                if aux1[i]==int(operador1):
+                    return 'true'
+            return 'false'
+        
+        elif operando =='>?':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif operador1=='{}':
+                print "El conjunto esta vacio, imposible calcular maximo"
+                sys.exit(0)
+            
+            operador1 = operador1.replace("[","")
+            operador1 = operador1.replace("]","")
+            
+            fst= operador1.split(',')
+           
+            aux=[]
+                        
+            j=0
+                       
+            for i in range(0, len(fst)):
+                aux.append(fst[j])
+                j=j+1
+                            
+            aux = map(int, aux)    
+            
+            maxconj = max(aux)
+            
+            return maxconj
+        
+        elif operando =='<?':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+            elif operador1=='{}':
+                print "El conjunto esta vacio, imposible calcular minimo"
+                sys.exit(0)
+            
+            operador1 = operador1.replace("[","")
+            operador1 = operador1.replace("]","")
+            
+            fst= operador1.split(',')
+            
+            
+           
+            aux=[]
+                        
+            j=0
+                       
+            for i in range(0, len(fst)):
+                aux.append(fst[j])
+                j=j+1
+                            
+            aux = map(int, aux)    
+            
+            minconj = min(aux)
+            
+            return minconj
+        
+        elif operando =='$?':
+            if operador1=='':
+                print "Error: Variable no inicializada"
+                sys.exit(0)
+                
+            elif operador1=='{}':
+                return '0'    
+            
+            operador1 = operador1.replace("[","")
+            operador1 = operador1.replace("]","")
+            
+            fst= operador1.split(',')
+           
+            aux=[]
+                        
+            j=0
+                       
+            for i in range(0, len(fst)):
+                aux.append(fst[j])
+                j=j+1
+                            
+            aux = map(int, aux)    
+            
+            cardconj = len(aux)
+            
+            return cardconj
+    else:
+        return "a"
+############################################################################################################
+        
+class cnum:
+    def __init__(self, numero):
+        self.numero = numero
+    def __str__(self):
+        global indentar
+        s= "CONSTANTE_ENT"
+        indentar=agregar(indentar)
+        s=s+"\n"+indentar+"valor: "+str(self.numero)
+        indentar=eliminar(indentar)
+        return s+"&"+str(self.numero)+"&int&"+str(self.numero)
+
+class cbool:
+    def __init__(self, boo):
+        self.boo = boo
+    def __str__(self):
+        global indentar
+        s= "CONSTANTE_BOOL"
+        indentar=agregar(indentar)
+        s=s+"\n"+indentar+"valor: "+str(self.boo)
+        indentar=eliminar(indentar)
+        return s+"&"+str(self.boo)+"&bool&"+str(self.boo)
+
+class variable:
+    def __init__(self, ident):
+        self.ident = ident
+    def __str__(self):
+        global indentar
+        global tabla
+        global data
+        global errores
+        tipo='unknow'
+        s=""
+        value=""
+        if not verificacion:
+            help=recorrer(self.ident)
+            indentar=agregar(indentar)
+            if tabla.hay_iter():
+                tmp=tabla.perteneceCiclos(self.ident,2)
+                if tmp!=2:#Si la variable a la q quiero asignar esta en algun ciclo el cual esta identificado por tmp =>
+                    lista_tmp= tabla.buscar(tmp,numCiclo)
+                    if lista_tmp!='':# si hay bloques internos a ese for
+                        if (lista_tmp.isMember(self.ident)): #si es miembro de algun bloque interno uso la tabla de bloques
+                            aux=tabla.find(self.ident)
+                            tipo= aux.getTipo()
+                            value= aux.getValor()
+                        else:# si no agarro el valor q esta en la tabla de for
+                            aux=tabla.aux_find(self.ident)
+                            tipo= aux.getTipo()
+                            value= aux.getValor()
+                    else: # si no hay bloques internos directamente uso la tabla de fors
+                        aux=tabla.aux_find(self.ident)
+                        tipo= aux.getTipo()
+                        value= aux.getValor()
+                else:# si la variable no es de un ciclo uso la tabla de bloques
+                    if tabla.deepestMember_aux(self.ident):
+                        aux=tabla.find(self.ident)
+                        tipo= aux.getTipo()
+                        value= aux.getValor()
+                    else:               
+                        errores.append("Error en la linea '%s', columna '%s': no puede usar la variable '%s' pues no ha sido declarada"%(help.lineno,str(calcular_columna(data,help)),self.ident))      
+                
+            else:           
+                if not(tabla.isMember(self.ident)):             
+                    errores.append("Error en la linea '%s', columna '%s': no puede usar la variable '%s' pues no ha sido declarada"%(help.lineno,str(calcular_columna(data,help)),self.ident))
+                else:
+                    aux=tabla.find(self.ident)
+                    tipo= aux.getTipo()
+                    value= aux.getValor()
+            s = "VARIABLE \n"+indentar+"nombre: "+str(self.ident)
+            indentar=eliminar(indentar)
+        else:
+            
+            if tabla.hay_iter():
+                tmp=tabla.perteneceCiclos(self.ident,2)
+                if tmp!=2:#Si la variable a la q quiero asignar esta en algun ciclo el cual esta identificado por tmp =>
+                    lista_tmp= tabla.buscar(tmp,numCiclo)
+                    if lista_tmp!='':# si hay bloques internos a ese for
+                        if (lista_tmp.isMember(self.ident)): #si es miembro de algun bloque interno uso la tabla de bloques
+                            aux=tabla.find(self.ident)
+                            tipo= aux.getTipo()
+                            value= aux.getValor()
+                        else:# si no agarro el valor q esta en la tabla de for
+                            aux=tabla.aux_find(self.ident)
+                            tipo= aux.getTipo()
+                            value= aux.getValor()
+                    else: # si no hay bloques internos directamente uso la tabla de fors
+                        aux=tabla.aux_find(self.ident)
+                        tipo= aux.getTipo()
+                        value= aux.getValor()
+                else:# si la variable no es de un ciclo uso la tabla de bloques
+                    aux=tabla.find(self.ident)
+                    tipo= aux.getTipo()
+                    value= aux.getValor()
+            else:# si no hay iteracion uso la tabla de bloques
+                aux=tabla.find(self.ident)
+                tipo= aux.getTipo()
+                value= aux.getValor()
+            if value=='':
+                print "Error: La variable \"%s\" no ha sido inicializada"%(self.ident)
+                sys.exit(0) 
+            s = "VARIABLE \n"+indentar+"nombre: "+str(self.ident)
+        
+        indentar=eliminar(indentar)
+        
+        if (str(value)=='none'):
+            return s+"&"+str(self.ident)+"&"+tipo+"&"+''
+        else:
+            return s+"&"+str(self.ident)+"&"+tipo+"&"+str(value)
+
+class unario:
+    def __init__(self,oper,ident):
+        self.oper = oper
+        self.ident = ident
+    def __str__(self):
+        global indentar
+        global tabla
+        global data
+        global errores
+        global verificacion
+        value=''
+        t=''
+        if self.oper=='-':
+            t= 'menos unario'
+        elif self.oper=='>?':
+            t = 'max conjunto'
+        elif self.oper=='<?':
+            t = 'min conjunto'
+        elif self.oper=='$?':
+            t = 'cardinalidad conjunto'
+        else:
+            t = 'not'
+            
+        extra= str(self.ident).split("&")
+        tipo= extra[2]
+        expr= extra[1]
+        if not verificacion:
+            help=recorrer(self.oper)
+            if(self.oper=='-' and tipo != 'int'):
+                errores.append("Error en la linea '%s', columna '%s': intento de aplicar \"menos unario\" a '%s' de tipo '%s' "%(help.lineno,str(calcular_columna(data,help)),str(expr),tipo))
+            
+            elif(self.oper=='-' and tipo == 'int'):
+                t = 'menos unario'
+                
+            if(self.oper=='not' and tipo != 'bool'):
+                errores.append("Error en la linea '%s', columna '%s': intento de aplicar \"not\" a variable '%s' de tipo '%s' "%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),str(expr),tipo))
+            elif(self.oper=='not' and tipo == 'bool'):
+                t = 'not'
+                
+            if((self.oper=='>?' or self.oper=='<?' or self.oper=='$?') and tipo != 'set'):
+                errores.append("Error en la linea '%s', columna '%s': intento de aplicar '%s' a variable '%s' de tipo '%s' "%(help.lineno,str(calcular_columna(data,help)),str(self.oper),str(expr),tipo))
+            elif((self.oper=='>?' or self.oper=='<?' or self.oper=='$?') and tipo == 'set'):
+                t = self.oper
+                
+        else:
+            if extra[3]=='':
+                print "Error: La variable \"%s\" no ha sido inicializada"%(extra[1])
+                sys.exit(0)
+            value= evaluar(extra[3],"",self.oper,tipo)
+       
+        if not(self.oper=='>?' or self.oper=='<?' or self.oper=='$?'):
+            
+            s= "EXPRESION_UN\n"+indentar+"operador: "+str(t)+"\n"+indentar+"operando: "+str(extra[0])
+            indentar=eliminar(indentar)
+            
+            if (str(value)=='none'):
+                return s+"&"+str(self.oper)+expr+"&"+tipo+"&"+''
+            else:
+                return s+"&"+str(self.oper)+expr+"&"+tipo+"&"+str(value)
+        
+        else:
+            s= "EXPRESION_UN\n"+indentar+"operador: "+str(t)+"\n"+indentar+"operando: "+str(extra[0])
+            indentar=eliminar(indentar)
+            
+            if (str(value)=='none'):
+                return s+"&"+str(self.oper)+expr+"&"+'int'+"&"+''
+            else:
+                return s+"&"+str(self.oper)+expr+"&"+'int'+"&"+str(value)
+        
+
+class binario:
+    def __init__(self,prim,oper,seg):
+        self.prim = prim
+        self.oper = oper
+        self.seg = seg
+    
+    def __str__(self):
+        global indentar
+        global tabla
+        global data
+        global errores
+        op=''
+        s=''
+        nuevaVar=''
+        value=''
+        if(self.oper=='+'):
+            op='mas'
+        elif(self.oper=='-'):
+            op='resta'
+        elif(self.oper=='*'):
+            op='por'
+        elif(self.oper=='/'):
+            op='division'
+        elif(self.oper=='%'):
+            op='modulo'
+        elif(self.oper=='<'):
+            op='menor que'
+        elif(self.oper=='>'):
+            op='mayor que'
+        elif(self.oper=='<='):
+            op='menor o igual que'
+        elif(self.oper=='>='):
+            op='mayor o igual que'
+        elif(self.oper=='=='):
+            op='equivalente'
+        elif(self.oper=='/='):
+            op='no igual a'
+        elif(self.oper=='><'):
+            op='interseccion'
+        elif(self.oper=='++'):
+            op='union'
+        elif(self.oper=='<+>'):
+            op='suma mapeada'
+        elif(self.oper=='<->'):
+            op='resta mapeada'
+        elif(self.oper=='<*>'):
+            op='multiplicacion mapeada'
+        elif(self.oper=='</>'):
+            op='division mapeada'
+        elif(self.oper=='<%>'):
+            op='resto division mapeada'
+        elif(self.oper=='@'):
+            op='contencion conjunto'
+        elif(self.oper=='or'):
+            op='or'
+        elif(self.oper=='and'):
+            op = 'and'
+        else:
+            op = 'diferencia'
+        final='unknow'
+        
+        extra1= str(self.prim).split("&")
+        tipo1= extra1[2]
+        expr1= extra1[1]
+        extra2= str(self.seg).split("&")
+        tipo2= extra2[2]
+        expr2= extra2[1]
+        
+        if tipo1=='bool':
+            nuevaVar='bool'
+        elif tipo1=='int' and tipo2=='int':
+            nuevaVar='int'
+        elif tipo1=='set' or tipo2=='set':
+            nuevaVar='set'
+        
+        if not verificacion:
+            help=recorrer(self.oper)
+            if ((self.oper=='+' or self.oper=='-' or self.oper =='*' or self.oper =='/' or self.oper =='%') and (tipo1 != 'int' or tipo2 != 'int')) or\
+            ((self.oper=='and' or self.oper=='or') and (tipo1 != 'bool' or tipo2 != 'bool')) or\
+            ((self.oper=='==' or self.oper=='/=') and ((tipo1 != 'int' and tipo2 != 'int') and (tipo1 != 'bool' and tipo2 != 'bool'))) or\
+            ((self.oper=='<' or self.oper=='<=' or self.oper=='>' or self.oper=='>=') and\
+            ((tipo1 != 'int' or tipo2 != 'int'))):
+                errores.append("Error en la linea '%s', columna '%s': intento de aplicar \"%s\" a '%s' de tipo '%s' con '%s' de tipo '%s' "%\
+                              (help.lineno,str(calcular_columna(data,help)),op,str(expr1),str(tipo1),str(expr2),str(tipo2)))
+                      
+            elif ((self.oper=='-' or self.oper=='/' or self.oper =='%' or self.oper=='+' or self.oper=='*') and (tipo1 == 'int' and tipo2 == 'int') ):
+                final='int'
+        
+            elif ((self.oper=='++' or self.oper=='\\' or self.oper=='><') and (tipo1=='set' and tipo2=='set')) or\
+                 ((self.oper=='<+>' or self.oper=='<->' or self.oper=='<*>' or self.oper=='</>' or self.oper=='<%>') and\
+                 ((tipo1=='int' and tipo2=='set') or (tipo2=='int' and tipo1=='set'))):
+                final='set'
+        
+            elif ((self.oper=='and' or self.oper=='or') and (tipo1 == 'bool' and tipo2 == 'bool')) or\
+                 ((self.oper=='@') and (tipo1 == 'int' and tipo2 == 'set')) or\
+                 ((self.oper=='<' or self.oper=='<=' or self.oper=='>' or self.oper=='>=') and (tipo1 == 'int' and tipo2 == 'int')) or\
+                 ((self.oper=='==' or self.oper=='/=') and ((tipo1 == 'bool' and tipo2 == 'bool') or (tipo1 == 'int' and tipo2 == 'int'))):
+                final='bool'
+            
+            indentar=agregar(indentar)
+            s= "EXPRESION_BIN\n"+indentar+"operador: "+op+"\n"+indentar+"operando izq: "+str(extra1[0])+"\n"+indentar+"operando der: "+str(extra2[0])
+            indentar=eliminar(indentar)
+            
+        else:
+            if ((self.oper=='-' or self.oper=='/' or self.oper =='%' or self.oper=='+' or self.oper=='*') and (tipo1 == 'int' and tipo2 == 'int') ):
+                final='int'
+        
+            elif ((self.oper=='++' or self.oper=='\\' or self.oper=='><') and (tipo1=='set' and tipo2=='set')) or\
+                 ((self.oper=='<+>' or self.oper=='<->' or self.oper=='<*>' or self.oper=='</>' or self.oper=='<%>') and\
+                 ((tipo1=='int' and tipo2=='set') or (tipo2=='int' and tipo1=='set'))):
+                final='set'
+        
+            elif ((self.oper=='and' or self.oper=='or') and (tipo1 == 'bool' and tipo2 == 'bool')) or\
+                 ((self.oper=='@') and (tipo1 == 'int' and tipo2 == 'set')) or\
+                 ((self.oper=='<' or self.oper=='<=' or self.oper=='>' or self.oper=='>=' or self.oper=='==' or self.oper=='/=') and (tipo1 == 'int' and tipo2 == 'int')):
+                final='bool'
+            
+            if extra1[3]=='':
+                print "Error: La variable \"%s\" no ha sido inicializada"%(extra1[1])
+                sys.exit(0)
+            if extra2[3]=='':
+                print "Error: La variable \"%s\" no ha sido inicializada"%(extra2[1])
+                sys.exit(0)
+            
+            value=evaluar(extra1[3],extra2[3],str(self.oper),nuevaVar)
+   
+        return s+'&'+expr1+str(self.oper)+expr2+'&'+final+"&"+str(value)
+
+class elemconj:
+    def __init__(self,num,val):
+        self.num = num
+        self.val = val
+    def __str__(self):
+        global indentar
+        s=str(self.num)+"\n"+indentar+str(self.val)
+        return s
+  
+class conjunto:
+    def __init__(self,nom):
+        self.nom = nom
+    def __str__(self):
+        global indentar
+        value = ''
+        indentar=agregar(indentar)
+        s= "CONJUNTO\n"+indentar+"MIEMBROS: \n"+indentar+str(self.nom)+"\n"+indentar
+        indentar=eliminar(indentar)
+        return s+"&"+str(self.nom)+"&set"+"&"+value
+
+class separa:
+    def __init__(self,val1,val2):
+        self.val1 = val1
+        self.val2 = val2
+    def __str__(self):
+        if not verificacion:
+            global indentar
+            indentar=agregar(indentar)
+            s= indentar+""+str(self.val1)+"\n"+indentar+"SEPARADOR"
+            indentar=eliminar(indentar)
+            z= recorrer(";")
+            s=s+"\n"+str(self.val2)
+            return s
+        else:
+            str(self.val1)
+            str(self.val2)
+            return ""
+
+class chain:
+    def __init__(self,nom):
+        self.nom = nom
+    def __str__(self):
+        global indentar
+        indentar=agregar(indentar)
+        s= "CADENA\n"+indentar+"valor: "+str(self.nom)
+        indentar=eliminar(indentar)
+        tmp= str(self.nom).replace("\\n","\n")
+        tmp=tmp.replace("\\\"","\"")
+        tmp=tmp.replace("\\\\","\\")[1:-1]
+        extra= tmp.split('\\"')
+        return s+'&&&'+extra[0]
+      
+class lectura:
+    def __init__(self,nom):
+        self.nom = nom
+    def __str__(self):
+        global indentar
+        global tabla
+        global errores
+        s= "SCAN"
+        
+        if not verificacion:
+            help=recorrer(self.nom)
+            if tabla.hay_iter():
+                tmp=tabla.perteneceCiclos(self.nom,2)
+                if tmp!=2:
+                    lista_tmp= tabla.buscar(tmp,numCiclo)
+                    if lista_tmp!='':   
+                        if lista_tmp.deepestMember_aux(self.nom): 
+                            indentar=agregar(indentar)
+                            s= s+"\n"+indentar+"variable: "+str(self.nom)
+                            indentar=eliminar(indentar) 
+                        else: 
+                            errores.append("Error en la linea \"%s\", columna \"%s\": se intenta modificar la variable \"%s\" la cual pertenece a una iteracion"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))
+                    else:
+                        errores.append("Error en la linea \"%s\", columna \"%s\": se intenta modificar la variable \"%s\" la cual pertenece a una iteracion"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))
+                else:
+                    if not(tabla.isMember(self.nom)):               
+                        errores.append("Error en la linea '%s', columna '%s': no puede usar la variable '%s' pues no ha sido declarada"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))          
+                    else:
+                        indentar=agregar(indentar)
+                        s= s+"\n"+indentar+"variable: "+str(self.nom)
+                        indentar=eliminar(indentar)
+            else:  
+                if not(tabla.isMember(self.nom)):   
+                    errores.append("Error en la linea '%s', columna '%s': no puede usar la variable '%s' pues no ha sido declarada"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))
+                else:
+                    indentar=agregar(indentar)
+                    s= s+"\n"+indentar+"variable: "+str(self.nom)
+                    indentar=eliminar(indentar)
+        else:
+            ejecutar('scan',str(self.nom),'','','')
+        return s
+
+class escritura:
+    def __init__(self,nom,val):
+        self.nom = nom
+        self.val = val
+    def __str__(self):
+        global indentar
+        indentar=agregar(indentar)
+        if (str(self.nom)=='print'):
+            s= str(self.nom).upper()+"\n"
+            s= s+""+indentar+"elemento: "+str(self.val)
+        else:
+            s= "PRINT\n"
+            s= s+""+indentar+"elemento: "+str(self.val)
+            s= s+"\n"+indentar+"elemento: CADENA"
+            indentar=agregar(indentar)
+            s= s+"\n"+indentar+"valor: \\n"
+            indentar=eliminar(indentar)
+        indentar=eliminar(indentar)
+        
+        if verificacion:   
+            ejecutar(self.nom,str(self.val),'','','')
+        return s
+
+class inicio:
+    def __init__(self,nom):
+        self.nom = nom
+    def __str__(self):
+        global indentar
+        indentar=agregar(indentar)
+        s= "\n"+"PROGRAM"+"\n"+indentar+str(self.nom)
+        indentar=eliminar(indentar)
+        return s
+      
+class inicializar:
+    def __init__(self,nom,val):
+        self.nom = nom
+        self.val = val
+    def __str__(self):
+        global indentar
+        indentar=agregar(indentar)
+        if (self.val!=""):
+            s= indentar+"USING: "
+            indentar=agregar(indentar)
+            s= s+str(self.nom)
+            indentar=eliminar(indentar)
+            s= s+"\n"+indentar+"IN: "+"\n"+str(self.val)
+        else:
+            s= indentar+str(self.nom)
+        indentar=eliminar(indentar)
+        return s
+
+class ausar:
+    def __init__(self,nom,val):
+       self.nom = nom
+       self.val = val
+    def __str__(self):
+        global indentar
+
+        if (self.val!=""):
+            s= str(self.nom)+str(self.val)
+        else:
+            s=str(self.nom)   
+        return s
+      
+class diferenciar:
+    def __init__(self,nom,val):
+        self.nom = nom
+        self.val = val
+    def __str__(self):
+        global indentar
+        s="\n"+indentar+str(self.nom)+" "+str(self.val)
+        return s
+
+class organizar:
+    def __init__(self,nom,val):
+        self.nom = nom
+        self.val = val
+    def __str__(self):
+        global indentar
+        s=str(self.nom)+str(self.val)
+        return s	      
+
+class sonvarios:
+    def __init__(self,nom,val):
+        self.nom = nom
+        self.val = val
+    def __str__(self):
+        global indentar
+        s= str(self.nom)+", "+str(self.val)   
+        return s
+
+class bloque:
+    def __init__(self,nom):
+        self.nom = nom
+    def __str__(self):
+        global indentar
+        global tabla
+        tmpTabla= SymTable()
+        tabla.insert('0', tmpTabla)
+        tabla.insert(numCiclo,vacio)
+        indentarbloque = indentar
+        s= "BLOQUE"
+        s= s+"\n"+str(self.nom)
+        s= s+"\n"+indentarbloque+"FINAL DEL BLOQUE"
+        tabla.delete()
+        return s
+
+class asignacion:
+    def __init__(self,nom,val):
+        self.nom = nom
+        self.val = val
+    def __str__(self):
+        global tabla
+        if not verificacion:            
+            global errores
+            global indentar
+            ayuda= str(self.val).split('&')
+            expr=ayuda[0]
+            s= "ASIGNACION"
+            help=recorrer(self.nom)
+            if tabla.hay_iter():
+                tmp=tabla.perteneceCiclos(self.nom,2)
+                if tmp!=2:#Si la variable a la q quiero asignar esta en algun \ciclo el cual esta identificado por tmp =>
+                    lista_tmp= tabla.buscar(tmp,numCiclo)
+                    if lista_tmp!='':#tengo al menos 1 bloque dentro del for al cual estoy interesado revisar hasta llegar al final recursivamente
+                        if lista_tmp.deepestMember_aux(self.nom): # esta de ahi para adelante en el mas interno BIEN
+                            symbol=tabla.find(self.nom)
+                            sym= symbol.getTipo()
+                            if ayuda[-2] != sym:
+                                errores.append("Error en la linea '%s', columna '%s': no puede asignar a la variable '%s' de tipo '%s' el valor '%s' de tipo '%s' "%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom,str(sym),str(ayuda[1]),str(ayuda[2])))
+                            else:
+                                indentar=agregar(indentar)
+                                s= s+"\n"+indentar+"var: "+str(self.nom)+"\n"+indentar+"val: "+expr
+                                indentar=eliminar(indentar) 
+                        else: #la variable es de la iter y no esta en los bloques internos a ese ciclo ERROR
+                            errores.append("Error en la linea \"%s\", columna \"%s\": se intenta modificar la variable \"%s\" la cual pertenece a una iteracion"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))
+                    else:# no tengo bloques internos al for ERROR
+                        errores.append("Error en la linea \"%s\", columna \"%s\": se intenta modificar la variable \"%s\" la cual pertenece a una iteracion"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))
+                else:# si la variable no es de  un ciclo verifico si esta declarada en cualquier bloque
+                    if not(tabla.isMember(self.nom)):#hay iter y no esta ni en la tabla de los fors ni en la de los bloques             
+                        errores.append("Error en la linea '%s', columna '%s': no puede usar la variable '%s' pues no ha sido declarada"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))                          
+                    else: # no es miembro del for y esta en algun bloque (valido) anterior al for 
+                        symbol=tabla.find(self.nom)
+                        sym= symbol.getTipo()
+                        if ayuda[-2] != sym:
+                            errores.append("Error en la linea '%s', columna '%s': no puede asignar a la variable '%s' de tipo '%s' el valor '%s' de tipo '%s' "%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom,str(sym),str(ayuda[1]),str(ayuda[2])))
+                        else:
+                            indentar=agregar(indentar)
+                            s= s+"\n"+indentar+"var: "+str(self.nom)+"\n"+indentar+"val: "+expr
+                            indentar=eliminar(indentar)     
+
+            else:  # no hay iter
+                
+                if not(tabla.isMember(self.nom)): # no esta en la tabla de los bloques              
+                    errores.append("Error en la linea '%s', columna '%s': no puede usar la variable '%s' pues no ha sido declarada"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom))
+                else: #esta en la tabla de los bloques
+                    symbol=tabla.find(self.nom)
+                    sym= symbol.getTipo()
+                    if ayuda[-2] != sym:
+                        
+                        errores.append("Error en la linea '%s', columna '%s': no puede asignar a la variable '%s' de tipo '%s' el valor '%s' de tipo '%s' "%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.nom,str(sym),str(ayuda[1]),str(ayuda[2])))         
+                    if (sym=='set' and len(ayuda)>3):
+                        indentar=agregar(indentar)
+                        j=0
+                        for i in range(0, len(ayuda)/4):
+                            s= s+"\n"+indentar+"var: "+str(self.nom)+"\n"+indentar+"val: "+ayuda[j]
+                            j=j+2
+                        indentar=eliminar(indentar)
+                    else:
+                        indentar=agregar(indentar)
+                        s= s+"\n"+indentar+"var: "+str(self.nom)+"\n"+indentar+"val: "+expr
+                        indentar=eliminar(indentar)
+            return s
+        else:
+            
+            ejecutar('asignacion',str(self.nom),str(self.val),'','')
+            return ""
+
+class condicional:
+    def __init__(self,nom,val,otro):
+        self.nom = nom
+        self.val = val
+        self.otro = otro
+    def __str__(self):      
+        extra= str(self.nom).split("&")
+        tipo= extra[2]
+        expr= extra[1]
+        valor= extra[3] #
+        if not verificacion:
+            global indentar
+            global errores
+            s= "CONDICIONAL"
+            help= recorrer('if')            
+            if tipo!='bool':
+                errores.append("Error en la linea '%s', columna '%s': la expresion'%s' de tipo '%s' no es condicion valida para if"%(help.lineno,str(calcular_columna(data,help)),str(expr),str(tipo)))         
+            indentar=agregar(indentar)
+            if (self.otro!=""):
+                s= s+"\n"+indentar+"condicion: "+str(extra[0])+"\n"+indentar+"eval_true: "+str(self.val)+"\n"+indentar+"eval_false: "+str(self.otro)
+            else:
+                s= s+"\n"+indentar+"condicion: "+str(extra[0])+"\n"+indentar+"eval_true: "+str(self.val)
+            indentar=eliminar(indentar)
+            return s
+        else:
+            ejecutar('condicional',self.nom,self.val,self.otro,'')
+            return ""
+
+
+class iterindet:
+    def __init__(self,nom,val,otro):
+        self.nom = nom
+        self.val = val
+        self.otro = otro
+    def __str__(self):
+        if not verificacion:
+            global indentar
+            global errores
+            help=recorrer('while')
+            s= "ITERACION_INDET"
+            extra= str(self.val).split("&")
+            tipo= extra[-2]
+            expr= extra[1]
+            
+            if tipo!='bool':
+                errores.append("Error en la linea '%s', columna '%s': la expresion'%s' de tipo '%s' no es condicion valida para while"%(help.lineno,str(calcular_columna(data,help)),str(expr),str(tipo)))
+                for x in errores:
+                        print x
+                sys.exit(0)
+            if(self.otro!=""):
+                indentar=agregar(indentar)
+                s= s+"\n"+indentar+"instruccion 1: "
+                indentar=agregar(indentar)
+                s= s+"\n"+indentar+str(self.nom)
+                indentar=eliminar(indentar)
+                s= s+"\n"+indentar+"condicion: "+str(self.val)+"\n"+indentar+"instruccion 2: "
+                indentar=agregar(indentar)
+                s= s+"\n"+indentar+str(self.otro)
+                indentar=eliminar(indentar)
+                return s
+            else:
+                indentar=agregar(indentar)
+                s= s+"\n"+indentar+"condicion: "+str(self.val)+"\n"+indentar+"instruccion: "
+                indentar=agregar(indentar)
+                s= s+"\n"+indentar+str(self.nom)
+                indentar=eliminar(indentar)
+                return s
+        else:
+            ejecutar('while',self.nom,self.val,self.otro,'')
+            return ""
+
+class iterdet:
+    def __init__(self,nom,direc,val,foo):
+        self.nom = nom
+        self.direc = direc
+        self.val = val
+        self.foo = foo
+    def __str__(self):
+        global numCiclo
+        global indentar
+        global tabla
+        
+        if not verificacion:
+        
+            global errores
+            help= recorrer('for')
+            extra= str(self.val).split("&")
+            tipo= extra[-2]
+            expr= extra[1]
+            division = 4
+            
+            if tipo!='set':
+                errores.append("Error en la linea '%s', columna '%s': la expresion'%s' de tipo '%s' no es rango valido para for, debe ser de tipo 'set'"%(help.lineno,str(calcular_columna(data,help)),str(expr),str(tipo)))
+            numCiclo+=1
+            help=recorrer(self.nom)
+            tmpTabla=SymTable()
+            tabla.aux_insert('1',tmpTabla)
+            tabla.aux_insert(numCiclo,vacio)
+            a= Atributos('int','5')
+            tabla.aux_insert(self.nom,a)
+            
+            
+            s= "ITERACION_DET"
+            indentar=agregar(indentar)
+            s= s+"\n"+indentar+"variable: "+str(self.nom)+"\n"+indentar+"direccion: "+str(self.direc)+"\n"+indentar+"rango: "
+            j=0
+            for i in range(0, len(extra)/division):
+                s= s+str(extra[j]).lstrip("int")
+                j=j+2
+            s=s+"\n"+indentar+"instruccion: "    
+            indentar=agregar(indentar)
+            s= s+"\n"+indentar+str(self.foo)
+            indentar=eliminar(indentar)
+            indentar=eliminar(indentar)
+            tabla.aux_delete()
+            numCiclo-=1
+            return s
+        
+        else:           
+            numCiclo+=1             
+            tmpTabla=SymTable()
+            tabla.aux_insert('1',tmpTabla)
+            tabla.aux_insert(numCiclo,vacio)
+            a= Atributos('int','500')
+            tabla.aux_insert(self.nom,a)
+            ejecutar('for',str(self.nom),str(self.val),self.foo,self.direc)
+            tabla.aux_delete()
+            numCiclo-=1         
+            return ""
+     
+class auxiliar:
+    def __init__(self,nom):
+        self.nom= nom
+    def __str__(self):
+        if not verificacion:
+            global indentar
+            indentar=agregar(indentar)
+            s= indentar+""+str(self.nom)
+            indentar= eliminar(indentar)
+            return s
+        else:
+
+            str(self.nom)
+            return ""
+    
+class escribeuno:
+    def __init__(self,nom):
+        self.nom= nom
+    def __str__(self):
+        if not verificacion:
+            global indentar
+            extra= str(self.nom).split("&")
+            s= str(extra[0])+"\n"+indentar
+            return s
+        else:
+            extra= str(self.nom).split("&")
+            if extra[3]=='':
+                print "Error: La variable \"%s\" no ha sido inicializada"%(extra[1])
+                sys.exit(0)
+            return '&&&'+extra[3]
+    
+class escribedos:
+    def __init__(self,nom,val,aux):
+        self.nom= nom
+        self.aux=aux
+        self.val= val
+    def __str__(self):
+        if not verificacion:
+            global indentar
+            help=recorrer(",")
+            extra= str(self.nom).split("&")
+            extra2= str(self.val).split("&")
+            s= str(extra[0])+"\n"+indentar
+            s= s+ "elemento: "+str(extra2[0])
+            return s
+        else:
+            extra= str(self.nom).split("&")
+            extra2= str(self.val)
+            if self.aux=='expresion' and extra[3]=='':
+                print "Error: La variable \"%s\" no ha sido inicializada"%(extra[1])
+                sys.exit(0)
+            return '&&&'+extra[3]+'&'+extra2
+
+#################################################################################
+
+class declaro_una:
+    def __init__(self,clave,tipo):
+        self.clave= clave
+        self.tipo= tipo
+    def __str__(self):
+        global tabla
+        a= Atributos(str(self.tipo),"")
+        if not verificacion:#aca cambie esto
+            global lista_aux
+            global indentar
+            global errores
+            help=recorrer(self.clave)
+            if not(tabla.deepestMember_aux2(self.clave)):               
+                tabla.insert(self.clave,a)
+            else:
+                errores.append("Error en la linea '%s', columna '%s': la variable '%s' ya ha sido declarada"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),self.clave))
+            s= tabla.__str__(indentar)
+            return s
+        else:
+            tabla.insert(self.clave,a)
+            return ""
+        
+class hacertabla:
+    def __init__(self,variables,instrucciones):
+        self.variables=variables
+        self.instrucciones=instrucciones
+    def __str__(self):
+        if not verificacion:
+            global indentar
+            indentar=agregar(indentar)
+            s= indentar+"TABLA DE SIMBOLOS\n"
+            s= s+str(self.variables)+"\n"
+            indentar= eliminar(indentar)
+            s= s+str(self.instrucciones)
+            return s
+        else:
+            str(self.variables)
+            str(self.instrucciones)
+            return ""
+
+class declaro_muchas:
+    def __init__(self,claves,tipo):
+        self.claves=claves
+        self.tipo=tipo
+    def __str__(self):
+        global tabla
+        if not verificacion:#aca cambie esto
+            global lista_aux
+            global errores
+            aux=str(self.claves).split(",")
+            a=Atributos(str(self.tipo),"")      
+            for x in aux:
+                help=recorrer(x)
+                if not(tabla.deepestMember_aux2(x)):
+                    tabla.insert(x,a)
+                else:
+                    errores.append("Error en la linea '%s', columna '%s': la variable '%s' ya ha sido declarada"%(help.lineno,str(calcular_columna(help.lexer.lexdata,help)),x)) 
+            s= tabla.__str__(indentar)
+            return s
+        else:
+            aux=str(self.claves).split(",")
+            a=Atributos(str(self.tipo),"")
+            for x in aux:
+
+                tabla.insert(x,a)
+               
+            return ""   
+
+class enlistar_var:
+    def __init__(self,ident,otro):
+        self.ident=ident
+        self.otro=otro
+    def __str__(self):
+        return str(self.ident)+","+str(self.otro)
+
+class multi:
+    def __init__(self,claves,tipos,mas):
+        self.claves=claves
+        self.tipos=tipos
+        self.mas=mas
+    def __str__(self):
+        aux= str(declaro_muchas(self.claves,self.tipos))
+        return str(self.mas)
+
+class simple:
+    def __init__(self,claves,tipos,mas):
+        self.claves=claves
+        self.tipos=tipos
+        self.mas=mas
+    def __str__(self):
+        aux= str(declaro_una(self.claves,self.tipos))
+        return str(self.mas)
+
+
+
+
+
+#################################################################################
+start = 'program'
+
+precedence = ( 
+    ('left','OR'),
+    ('left','AND'),
+    ('right','NOT'),
+    ('nonassoc','LESST','LESSTEQ','GREATT','GREATEQ'),
+    ('nonassoc','NOTEQ','EQUIV'),
+    ('nonassoc','CONTIENECONJ'),
+    ('left','PLUS','MINUS'),
+    ('left','TIMES','DIVIDE','MODULE'),
+    ('left','PLUSCONJ','MINUSCONJ'),
+    ('left','TIMESCONJ','DIVCONJ','RESTOCONJ'),
+    ('left','UNION','DIFERENCIA'),
+    ('left','INTERSECT'),
+    ('right','UMINUS','MAXCONJ','MINCONJ','SIZECONJ'),
+    ('nonassoc','LPAREN','RPAREN')
+)
+
+#Gramatica
+#principal
+def p_prog(p): 
+    'program : PROGRAM instruccion'
+    p[0]= inicio(p[2])
+
+# Variables a declarar
+def p_vars(p):
+    '''vars : INT ID SEMICOLON
+        | SET ID SEMICOLON
+        | BOOL ID SEMICOLON
+        | INT ID asTipo
+        | SET ID asTipo
+        | BOOL ID asTipo'''
+    if (p[3]==';'):
+        p[0]=declaro_una(p[2],p[1])
+    else:
+        p[0]=simple(p[2],p[1],p[3])
+        
+
+def p_vars2(p):
+    '''vars : INT varios SEMICOLON
+        | BOOL varios SEMICOLON
+        | SET varios SEMICOLON
+        | INT varios asTipo
+        | BOOL varios asTipo
+        | SET varios asTipo'''     
+    if (p[3]==';'):
+        p[0]=declaro_muchas(p[2],p[1])
+    else:
+        p[0]=multi(p[2],p[1],p[3])
+
+
+# Tipo de variables declaradas
+def p_asTipo(p):
+    'asTipo : SEMICOLON vars'
+    p[0]=p[2]
+
+#Secuencia de elementos separados por coma      
+def p_varios(p):
+    'varios : ID COMA ID'
+    p[0]=enlistar_var(p[1],p[3])
+
+def p_varios2(p):
+    'varios : ID COMA varios'   
+    p[0]=enlistar_var(p[1],p[3])
+
+#Expresiones binarias, constantes,variables, unarios y funciones incluyendo parentesis
+def p_expBinUnFun(p): 
+    '''expBinUnFun : LPAREN expBinUnFun RPAREN
+        | expBinUnFun TIMES expBinUnFun
+        | expBinUnFun DIVIDE expBinUnFun
+        | expBinUnFun MODULE expBinUnFun
+        | expBinUnFun PLUS expBinUnFun
+        | expBinUnFun MINUS expBinUnFun
+        | expBinUnFun LESSTEQ expBinUnFun
+        | expBinUnFun LESST expBinUnFun
+        | expBinUnFun GREATEQ expBinUnFun
+        | expBinUnFun GREATT expBinUnFun
+        | expBinUnFun EQUIV expBinUnFun
+        | expBinUnFun NOTEQ expBinUnFun
+        | expBinUnFun AND expBinUnFun
+        | expBinUnFun OR expBinUnFun
+        | expBinUnFun UNION expBinUnFun
+        | expBinUnFun INTERSECT expBinUnFun
+        | expBinUnFun DIFERENCIA expBinUnFun
+        | expBinUnFun CONTIENECONJ expBinUnFun
+        | expBinUnFun PLUSCONJ expBinUnFun
+        | expBinUnFun MINUSCONJ expBinUnFun
+        | expBinUnFun TIMESCONJ expBinUnFun
+        | expBinUnFun DIVCONJ expBinUnFun
+        | expBinUnFun RESTOCONJ expBinUnFun
+        | MINUS expBinUnFun %prec UMINUS
+        | LLAVEIZ elementosconj LLAVEDE
+        | NOT expBinUnFun
+        | MAXCONJ expBinUnFun
+        | MINCONJ expBinUnFun
+        | SIZECONJ expBinUnFun
+        | NUMERO 
+        | TRUE 
+        | FALSE
+        | ID'''
+
+    if(len(p)==2):
+        aux=""
+        aux2=[]
+        if(str(p[1]).isdigit()):
+            p[0]= cnum(p[1])
+        elif(p[1]=='true' or p[1]=='false'):
+            p[0]= cbool(p[1])
+        else:
+            p[0]= variable(p[1])
+    elif(len(p)==3):
+        p[0]= unario(p[1],p[2])
+    elif(len(p)==4):
+        if(p[3]==')'):
+            p[0]= p[2]
+        elif(p[1]=='{'):
+            p[0]= conjunto(p[2])
+        else:
+            p[0]= binario(p[1],p[2],p[3])
+
+# Regla para trabajar elementos sobre conjunto
+def p_elementosconj(p):
+    ''' elementosconj : expBinUnFun COMA elementosconj
+        | expBinUnFun
+        | ''' # Vacio
+    if(len(p)==1):
+        p[0]= "Vacio"
+    elif(len(p)==2):
+        p[0]= p[1]
+    else:
+        p[0]= elemconj(p[1],p[3])
+
+# Operacion string a imprimir uno o varios      
+def p_aImprimir(p):
+    ''' aImprimir : cadena COMA aImprimir
+        | cadena'''
+    if(len(p)==2):
+        p[0]= p[1]
+    else:
+        p[0]= escribedos(p[1],p[3],'cadena')
+
+def p_aImprimir2(p):
+    ''' aImprimir : expBinUnFun COMA aImprimir
+        | expBinUnFun''' 
+    if(len(p)==2):
+        p[0]= escribeuno(p[1])
+    else:
+        p[0]= escribedos(p[1],p[3],'expresion')
+
+# Instrucciones
+def p_instruccion(p):
+    ''' instruccion : LLAVEIZ DeclaracionInstrucion LLAVEDE
+        | ID ASIGNA expBinUnFun
+        | SCAN ID
+        | PRINTLN aImprimir
+        | PRINT aImprimir
+        | IF LPAREN expBinUnFun RPAREN instruccion ELSE instruccion
+        | IF LPAREN expBinUnFun RPAREN instruccion
+        | FOR ID MIN expBinUnFun DO instruccion
+        | FOR ID MAX expBinUnFun DO instruccion
+        | REPEAT instruccion WHILE LPAREN expBinUnFun RPAREN DO instruccion
+        | WHILE LPAREN expBinUnFun RPAREN DO instruccion
+        | REPEAT instruccion WHILE LPAREN expBinUnFun RPAREN'''
+
+    if(len(p)==3):
+        if(p[1]=='scan'):
+            p[0]= lectura(p[2])
+        else:
+            p[0]= escritura(p[1],p[2])
+    elif(len(p)==4):
+        if(p[1]=='{'):
+            p[0]= bloque(p[2])
+        else:
+            p[0]= asignacion(p[1],p[3])
+    elif(len(p)==6):	
+        p[0]= condicional(p[3],p[5],"")
+    elif(len(p)==7):
+        if(p[1]=='for'):
+            p[0]= iterdet(p[2],p[3],p[4],p[6])
+        elif(p[1]=='repeat'):
+            p[0]= iterindet(p[2],p[5],"")
+        else:
+            p[0]= iterindet(p[6],p[3],"")
+    elif(len(p)==8):
+        p[0]= condicional(p[3],p[5], p[7])
+    else:
+        p[0]= iterindet(p[8],p[5],p[2])
+
+# Instrucciones internas
+def p_variasInstr(p):
+    ''' variasInstr : instruccion SEMICOLON variasInstr
+        | instruccion SEMICOLON'''
+    if(len(p)==4):
+        p[0]= separa(p[1],p[3])
+    else:
+        p[0]= auxiliar(p[1])    
+
+#Declaracion de variables
+def p_DeclaracionInstrucion(p):
+    ''' DeclaracionInstrucion : USING vars IN variasInstr
+        | variasInstr
+        | USING vars IN
+        | ''' #Vacio
+    if(len(p)==1):
+        p[0]=inicializar("","")
+    elif(len(p)==2):
+        p[0]=p[1]
+    elif(len(p)==5):
+        p[0]=hacertabla(p[2],p[4])
+
+#Cadena
+def p_cadena(p):
+    'cadena : STRING'
+    p[0]= chain(p[1])
+
+#Permite la deteccion de errores y detencion del programa cuando esto sucede	
+def p_error(p):
+    if( p is None ):
+        print "Error de sintaxis al final del archivo"	
+    else:
+        print "Error de sintaxis en linea '%s', columna '%s': token '%s' inesperado"%(str(p.lineno),str(calcular_columna(p.lexer.lexdata,p)),str(p.value))
+    sys.exit(0)
+
+def imprimir(input, lexer):
+    buscar(input, lexer)
+    if len(lexer_errores) > 0:
+        for tok in lexer_errores:
+            print(tok)
+    else:
+        for tok in lexer_tokens:
+            if(tok.type=='ID' or tok.type=='STRING' or tok.type=='NUMBER'):
+                if(tok.type=='STRING'):
+                    print "Tk%s %s (Linea %s, Columna %s)" % (tok.type, tok.value, tok.lineno,str(calcular_columna(input,tok)))
+                else:   
+                    print "Tk%s \"%s\" (Linea %s, Columna %s)" % (tok.type, tok.value, tok.lineno,str(calcular_columna(input,tok)))
+
+            else:
+                print "Tk%s (Linea %s, Columna %s)" % (tok.type,tok.lineno,str(calcular_columna(input,tok)))    
+lexer = lex.lex()
+#################################################################################
+
+#Principal
+if __name__ == '__main__':
+
+    if(len(sys.argv) != 2):
+        print "Falta un argumento. \nDebe ser: ./rangex Archivo.extension"
+    else:
+        archivo = sys.argv[1]
+        data=""
+        try:
+            fh = open(archivo, 'r')
+            data = fh.read()
+            fh.close()
+            buscar(data, lexer)
+            if len(lexer_errores) > 0:
+                for tok in lexer_errores:
+                    print(tok)
+            else:
+                lista_aux= lexer_tokens
+                lexer.lineno=1
+                parser = yacc.yacc()
+                arbol = parser.parse(data)
+                a_arbol=str(arbol)
+                if not errores:
+                    verificacion=True
+                    str(arbol)
+                else:                   
+                    for x in errores:
+                        print x
+        except IOError:
+            print 'No se puede abrir el archivo:', archivo
+        

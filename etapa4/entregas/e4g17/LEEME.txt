@@ -1,0 +1,19 @@
+GRUPO 17
+ENTREGA 4
+>Carlos Martínez.		~11-10584
+>Christian Teixeira.	~11-11016
+
+Estado actual del proyecto:
+	Suponemos y esperamos que el interpetador de setlan está listo y correcto.
+	Se solventaron los conflictos shift/reduce existentes y ya no queda ninguno.
+	
+
+Problemas presentes:
+	La impresión de los errores de tipos del programa no es exacta como la mostrada
+	en el enunciado.
+
+Comentarios finales:
+	El código no es hermoso ni perfecto pero cumple lo especificado. Tenemos planeado
+	mejorarlo por hobbie más adelante y quizás agregarle nuevas cosas al lenguaje por
+	puro amor al aprendizaje. Nos encontramos altamente agradecidos por su buena labor
+	como preparadores y su dedicación a lo largo del curso.

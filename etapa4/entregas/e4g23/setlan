@@ -1,0 +1,7 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import parser, sys
+
+output = parser.mainFlags(sys.argv)
+if output: print output

@@ -1,0 +1,14 @@
+CI3725
+Integrantes:
+Fabio, Castro, 10-10132
+Antonio, Scaramazza 11-10957
+
+Setlan - Etapa IV
+
+Interpretador con verificaciones dinámicas
+
+Herramienta utilizada: Python Lex-Yacc (PLY).
+
+Con esta entrega final se posee un lenguaje de programacion que implementa todas las funcionalidades especificadas, y todas las validaciones pertinentes para garantizar su correcto despliegue. 
+
+Durante las pruebas aplicadas no se encontraron errores que impidieran la correcta ejecucion del codigo.

@@ -1,0 +1,10 @@
+program {
+    using int y,z; in    
+    y = 1;
+    z = 1;
+    while (true) do {
+        y = y * z;
+        println z, "! = ", y;
+        z = z + 1;
+    };
+}

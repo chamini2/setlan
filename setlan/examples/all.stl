@@ -35,9 +35,9 @@ program {
 
   println a + b, ", ", a - b, ", ", a * b, ", ", a / b, ", ", a % b, ", ", -a;
   println c ++ d, ", ", c >< d, ", ", c \ d, ", ", >? c, ", ", <? c, ", ", $? c;
-  println a <+> c, ", ", c <-> a, ", ", a <*> c, ", ", c </> a, ", ", c <%> a, ", ", a @ c;
+  println a <+> c, ", ", c <-> a, ", ", a <*> c, ", ", c </> a, ", ", ", ", a @ c, c <%> a;
+  println a > b, a <= b, a < b, a >= b;
   println e or f, ", ", e and f, ", ", not e;
-  println a < b, a <= b, a > b, a >= b;
   println a == b, a /= b;
   println c == d, c /= d;
   print e == f, e /= f;

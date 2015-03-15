@@ -1,0 +1,17 @@
+# fibs until overflow
+program {
+    using
+        int low, high, count, tmp;
+    in
+
+    count = 0;
+    low = 0;
+    high = 1;
+    while (true) do {
+        tmp = low + high;
+        low = high;
+        high = tmp;
+        println "fib(", count, ") = ", low;
+        count = count + 1;
+    };
+}

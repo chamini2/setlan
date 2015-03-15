@@ -1,0 +1,9 @@
+first: 3, second: false
+3, -3, 0, 0, 0, 0
+{ 1, 2, 3, 4, 6, 8 }, { 2, 3, 4 }, { 1, 6, 8 }, 8, 1, 6
+{ 1, 2, 3, 4, 6, 8 }, { -8, -6, -4, -3, -2, -1 }, { 0 }, { 0 }, , false{ 0 }
+falsetruetruefalse
+true, true, false
+falsetrue
+falsetrue
+truefalse

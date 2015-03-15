@@ -1,0 +1,11 @@
+program {
+    using 
+        int a; 
+        bool b;
+        set s;
+    in
+    # Prueben colocar números con overflow
+    scan a;
+    scan b;
+    println "a es ", a, ", b es ", b, ", s es ", s;
+}

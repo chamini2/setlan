@@ -1,0 +1,13 @@
+program {
+    using set s; in
+    s = {0,1,2,3,4,5};
+    s = s ++ 2 <*> s;
+    s = s ++ 2 <*> s;
+
+    println s;
+
+    for i min s do print i, " ";
+    println "";
+    for i max s do print i, " ";
+    println "";
+}

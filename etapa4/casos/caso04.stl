@@ -1,0 +1,22 @@
+program {
+    using int a; in
+
+    println "repeat";
+    repeat {
+        println a;
+        a = a + 1;
+    } while (a <= 5);
+
+    println "while";
+    while (a > 0) do {
+        println a;
+        a = a - 1;
+    };
+
+    println "repeat-while";
+    repeat {
+        println a;
+    } while (a < 5) do {
+        a = a + 1;
+    };
+}

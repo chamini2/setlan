@@ -1,0 +1,3 @@
+Impresiones de debugging
+scan "mañoso"
+variable en for "ignorada" -- o el último alcance agregado ignorado

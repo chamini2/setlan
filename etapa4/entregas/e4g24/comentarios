@@ -1,0 +1,6 @@
+operaciones de map sobre conjunto al revés:
+    10 </> {5,10} == {2,1} != {0,1}
+manejo extraño de alcances
+impresiones de debugging
+$? da resultados incorrectos
+mantienen la información variables en alcances que no deberían (en bloques que se corren varias veces por un for/while)

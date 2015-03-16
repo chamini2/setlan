@@ -255,7 +255,7 @@ def ejecutar(instruccion,param1,param2,param3,param4):
         fst= param1.split('&')
         tipo=fst[-1]
         
-        if tipo != '':
+        if (tipo[-1]==']'):
             if(tipo[-1]==']'):
                 tipo = tipo.replace("[", "")
                 tipo = tipo.replace("]", "")

@@ -1,9 +1,0 @@
-program {
-    using 
-        int a,c;
-        bool b;
-    in
-    scan a;
-    scan b;
-    print b, a;
-}

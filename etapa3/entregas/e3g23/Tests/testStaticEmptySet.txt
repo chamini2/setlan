@@ -1,6 +1,0 @@
-program {
-    using
-        set n;
-    in
-    n = {};
-}

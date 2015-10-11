@@ -1,4 +1,0 @@
-program {
-    for i min d ++ c do
-        c = c + i;
-}

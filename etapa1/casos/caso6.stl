@@ -1,9 +1,0 @@
-program {
-
-	println "Hola soy un String que abrieron en la linea 3
-	y cerraron en la linea 4";
-
-}
-
-# ERROR: unexpected character '"' at line 3, column 10
-# ERROR: unexpected character '"' at line 4, column 26

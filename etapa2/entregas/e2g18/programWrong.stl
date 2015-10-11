@@ -1,9 +1,0 @@
-program {
-    #Soy yo otra vez, el comentario, ¿me extrañaste? :)
-    using
-        int $,x;
-    in
-    scan y;
-    x = true+~;
-    print &;
-}

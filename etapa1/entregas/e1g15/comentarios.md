@@ -1,8 +1,0 @@
-- `setlan`, no `satlan.py` (nota que pusiste una `a` en vez de `e` y el `.py`)
-- archivo envíado con nombre diferente al exigido
-- no corre como se exigió, `./setlan`, o en su defecto `./satlan.py`, sino haciendo `python satlan.py`
-- para que reconociera `?`, te faltaba *escaparlo*: `r'\>\?'` , ya que `?` es parte de la sintaxis de expresiones regulares
-- algunos tokens tienen sintaxis de expresiones regulares no escapada, como `r'\<*>'`, que debería ser `r'<\*>'`, o en su defecto `r'\<\*\>'`. Si tienes problemas con la idea de "escapar caracteres", puedes preguntarme a mí o a alguno de los preparadores
-- el Token para punto (`r'\.'`) no tiene uso en el lenguaje, de manera que deja de reportar errores.
-- el Token para dos-puntos (`r':'`) no tiene uso en el lenguaje, de manera que deja de reportar errores.
-- regex de strings está mal, *agarra* strings de una línea a la otra.

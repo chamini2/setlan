@@ -1,4 +1,0 @@
-program { using int a, b; set a, b; in print a; }
-
-# ERROR: variable 'a' of type 'set' at line 1, column 31 has already been defined with type 'int' at line 1, column 21
-# ERROR: variable 'b' of type 'set' at line 1, column 34 has already been defined with type 'int' at line 1, column 24

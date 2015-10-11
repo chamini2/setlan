@@ -1,9 +1,0 @@
-program {
-    using 
-        bool p,   q;
-        int a,b,c;
-        set S,Q;
-    in
-    print p == q, S;
-    println Q, "hola"
-}

@@ -1,1 +1,0 @@
-static_checking_errors = ''

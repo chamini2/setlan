@@ -1,8 +1,0 @@
-Oriana Graterol 10-11248
-	
-Fallas:
-	 - A la hora de poner el repeat no imprime las instrucciones seguientes despues del bloque del while.
-	- Falta la expresion set
-	- No admite que se declaren mas de una variable en una misma linea
-	- A veces tiene problemas con los corchetes en la instruccion else, si se lo quitan no presenta algun problema.
-	- Este proyecto lo hice yo sola. Ya que mi compañero no se esmero la cantidad suficiente como lo requiere este tipo de proyecto.

@@ -1,5 +1,0 @@
-program {
-    print b;
-}
-
-# ERROR: variable 'b' referenced at line 2, column 8 is not defined

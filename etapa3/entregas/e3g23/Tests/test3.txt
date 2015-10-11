@@ -1,4 +1,0 @@
-program myProg {
-    def a(b):
-        return "a,b";
-}

@@ -1,4 +1,0 @@
-- archivo con nombre diferente al especificado
-- regex de strings está mal, *agarra* strings de una línea a la otra.
-- token flecha `->` no está en el lenguaje
-- considerar overflow/underflow de los enteros leídos

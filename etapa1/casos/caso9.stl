@@ -1,8 +1,0 @@
-program {
-	using
-		bool !;
-	in
-		print "! no es un identificador válido"
-}
-
-# ERROR: unexpected character '!' at line 3, column 8

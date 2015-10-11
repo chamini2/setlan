@@ -1,6 +1,0 @@
-program {
-    while (count <= n) do {
-        println "fib(", count, ") = ", low;
-        count = count + 1;
-    };
-}

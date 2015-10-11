@@ -1,1 +1,0 @@
-Error: Redeclaration: variable 'a', in line 5, column 13.

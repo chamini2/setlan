@@ -1,8 +1,0 @@
-#Error 4
-
-program {
-	!
-	print "Aun se deben reconocer si los hay errores lexicograficos";
-}
-
-# ERROR: unexpected character '!' at line 4, column 2

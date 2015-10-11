@@ -1,7 +1,0 @@
-Scan no funciona bien
-No imprimen conjuntos de menor a mayor
-Guardan repeticiones en conjunto
-No recorren correctamente conjuntos en un for
-No revisan dinámicamente que un conjunto esté vació o no al preguntar su máximo/mínimo
-No revisan dinámicamente algunas divisiones por cero
-El proyecto "explota" con errores de python

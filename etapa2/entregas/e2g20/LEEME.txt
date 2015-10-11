@@ -1,4 +1,0 @@
-Autor: Jose Daniel Duran Toro
-Carnet: 10-10222
-Estado: Completo, pero con un problema en el cual algunas expresiones no son reconocidas cuando tienen variables
-si se usa la misma expresion pero con numeros, bools o set explicitos funciona
